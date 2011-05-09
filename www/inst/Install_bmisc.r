@@ -17,3 +17,4 @@ if (length(necessary[installed]) >=1)
 # Install what is not already installed and necessary for bmisc to work
 if (length(necessary[!installed]) >=1)
   install.packages(necessary[!installed], dependencies=T)
+
