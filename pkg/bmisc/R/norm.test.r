@@ -228,7 +228,8 @@ norm.test.default <-  function(x, title = NULL, type="mc", comment=T ){
     DNAME = deparse(substitute(x))
     x <- sort(x[complete.cases(x)])
     n = length(x)
-    if (n < 16) warning("Sample size must be at least 16. Do not rely on the skewness test results.")
+    if (n < 16 & n > 7) warning("Sample size must be at least 16. Do not rely on the skewness test results.")
+    if (n < 8 ) warning("Statistics can not be calculated. Need more than 7 values.")
 
     b1= function (x){
       meanX = mean(x)
@@ -292,8 +293,8 @@ norm.test.default <-  function(x, title = NULL, type="mc", comment=T ){
     x <- sort(x[complete.cases(x)])
     n = length(x)
     
-    if (n < 16) warning("Sample size must be at least 16. Do not rely on the kurtosis test results.")
-    
+    if (n < 16 & n > 7) warning("Sample size must be at least 16. Do not rely on the kurtosis test results.")
+    if (n < 8 ) warning("Statistics for skewness can not be calculated. Need more than 7 values.")
     meanX = mean(x)
     s =  sqrt(mean((x-meanX)**2))
     a4 = mean((x-meanX)**4)/s**4
