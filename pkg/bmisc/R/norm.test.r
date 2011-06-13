@@ -17,13 +17,14 @@ norm.test <- function (x,...) UseMethod("norm.test")
 
 norm.test.default <-  function(x, title = NULL, type="mc", comment=T ){   
 
-   
+  
     # Data Set Name:
     
     DNAME <- paste(deparse(substitute(x), 500), collapse="\n")
     
     # Convert Type:
-    if (class(x) == "fREG") x = residuals(x)
+
+    if (!is.vector(x)) x = residuals(x)
     x = as.vector(x)
     
     # Call:
