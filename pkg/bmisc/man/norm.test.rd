@@ -15,7 +15,7 @@ D'Agostino Skewness, Anscombe-Glynn Kurtosis and D'Agostino-Pearson normality te
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x }{numeric vector or an object on which \code{residuals()} can be used such as lm, glm, aov , gam etc.}
+  \item{x }{numeric vector.}
   \item{title }{the title at the top of the results. Default is "Normality Tests".}
   \item{type }{type of skewness used in D'Agostino skewness test. Can be \code{"G1"},\code{"b1"} or \code{"mc"}. Read details.}
 }
