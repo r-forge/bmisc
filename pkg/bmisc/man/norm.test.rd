@@ -32,9 +32,9 @@ duplicate values in it. The more duplicate values in a vector, the more
 Shapiro-Wilk will be far from correctly testing the \eqn{H0} hypothesis.
 
 Given samples from a population, the equation for the sample skewness \eqn{g1}
-is a biased estimator of the population skewness. The use of \eqn{G{_1}} or \eqn{b1} is advisable.
+is a biased estimator of the population skewness. The use of \eqn{G1} or \eqn{b1} is advisable.
 For large samples, the various skewness estimates yield similar results. For small
-normal distributed samples, \eqn{b{_1}} is less biased than \eqn{G1}.
+normal distributed samples, \eqn{b1} is less biased than \eqn{G1}.
 However, for small non-normal distributed samples, \eqn{G1} is less biased than \eqn{b1}.
 These two skewness estimate can be sensitive to outliers in the data (contaminated data).
 Therefore, the medcouple \code{\link{mc}} is also an option in \code{type}. It has a good
