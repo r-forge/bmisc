@@ -15,15 +15,14 @@
 
 norm.test <- function (x,...) UseMethod("norm.test")
 
-norm.test.default <-  function(x, title = NULL, type="mc", comment=T ){   
+norm.test.default <-  function(x, title = NULL, sk=c("G1","b1","mc"), comment=T ){   
 
    
     # Data Set Name:
-    
+    sk<- match.arg(sk)
     DNAME <- paste(deparse(substitute(x), 500), collapse="\n")
     
-    # Convert Type:
-    if (!is.vector(x)) x = residuals(x)
+    # ConvertTO VECTOR:
     x = as.vector(x)
     
     # Call:
@@ -34,7 +33,7 @@ norm.test.default <-  function(x, title = NULL, type="mc", comment=T ){
     lill = .lil.test(x)
     shaf = .sf.test(x)
     shap = .shap.test(x)
-    skew = .skew.test(x, type=type)
+    skew = .skew.test(x, sk=sk)
     kurt = .kurt.test(x)
     test = .dp.test(x)
 
@@ -45,7 +44,7 @@ norm.test.default <-  function(x, title = NULL, type="mc", comment=T ){
         "Lilliefor               ",
         "Shapiro-Francia         ",
         "Shapiro-Wilk            ",
-        "Agostino Skewness       ",
+        paste("Agostino Skewness (",sk,")  ", sep=""),
         "Anscombe-Glynn Kurtosis ",
         "D'Agostino Pearson      ")
 
@@ -54,12 +53,12 @@ norm.test.default <-  function(x, title = NULL, type="mc", comment=T ){
     STATISTIC = c(lill$statistic,shaf$statistic, shap$statistic, skew$statistic[2], kurt$statistic[2],test$statistic)
   
     names(STATISTIC) = c(
-        paste(names(lill$statistic),"    | Lilliefor               "),
-        paste(names(shaf$statistic),"    | Shapiro-Francia         "),
-        paste(names(shap$statistic),"    | Shapiro-Wilk            "),
-        paste(names(skew$statistic[2])," | Agostino Skewness       "),
-        paste(names(kurt$statistic[2])," | Anscombe-Glynn Kurtosis "),
-        paste(names(test$statistic)," | D'Agostino Pearson      ") )
+        paste(names(lill$statistic),"    | Lilliefor               ", sep=""),
+        paste(names(shaf$statistic),"    | Shapiro-Francia         ", sep=""),
+        paste(names(shap$statistic),"    | Shapiro-Wilk            ", sep=""),
+        paste(names(skew$statistic[2])," | Agostino Skewness (",sk,")  ", sep=""),
+        paste(names(kurt$statistic[2])," | Anscombe-Glynn Kurtosis ", sep=""),
+        paste(names(test$statistic)," | D'Agostino Pearson      ", sep="") )
 
         RVAL = list(
         statistic = STATISTIC,
@@ -217,7 +216,7 @@ norm.test.default <-  function(x, title = NULL, type="mc", comment=T ){
 # A function implemented by Diethelm Wuertz anf modified by Benoit Bruneau
 # ------------------------------------------------------------------------------
 
-.skew.test <- function(x, type="mc")
+.skew.test <- function(x, sk="mc")
 {   
     # Internal Function for Agostino Normality Test:
 
@@ -243,7 +242,7 @@ norm.test.default <-  function(x, title = NULL, type="mc", comment=T ){
       s3
       }
      
-    switch(type,
+    switch(sk,
         mc = s3 <- mc(x) ,
         b1 = s3 <- b1(x) ,
         G1 = s3 <- G1(x) )
@@ -268,7 +267,7 @@ norm.test.default <-  function(x, title = NULL, type="mc", comment=T ){
         statistic =  c(skew = s3, Z3),
         p.value = pZ3,
         alternative = "skewness is not equal to 0",
-        method = paste ("D'Agostino Skewness Test: Skewness estimated by ", type, sep="") ,
+        method = paste ("D'Agostino Skewness Test: Skewness estimated by ", sk, sep="") ,
         data.name = DNAME)
     options(warn=0)    
     # Return Value:
@@ -354,6 +353,14 @@ norm.test.default <-  function(x, title = NULL, type="mc", comment=T ){
     # Return Value:
     class(RVAL) = "htest"
     RVAL
+}
+
+norm.test.lm <-  function(mod,type=c("working", "response", "deviance", "pearson","partial"),...){
+
+  type <- match.arg(type)
+  x=residuals(mod, type=type)
+  norm.test.default(x,...)
+
 }
 
 

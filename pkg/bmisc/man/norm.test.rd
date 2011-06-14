@@ -11,15 +11,22 @@ Lilliefors (Kolmogorov-Smirnov), Shapiro-Francia, Shapiro-Wilk,
 D'Agostino Skewness, Anscombe-Glynn Kurtosis and D'Agostino-Pearson normality tests.
 }
 \usage{
-\method{plot}{default} (norm.test(x, title=NULL, type=c("G1","b1","mc")))
+\method{default} (norm.test(x, title=NULL, sk=c("G1","b1","mc"), type))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x }{numeric vector.}
+  \item{x }{numeric vector or an object of class \code{"lm"} (i.e. lm, aov, glm, gam, ...).}
   \item{title }{the title at the top of the results. Default is "Normality Tests".}
-  \item{type }{type of skewness used in D'Agostino skewness test. Can be \code{"G1"},\code{"b1"} or \code{"mc"}. Read details.}
+  \item{sk }{type of skewness used in D'Agostino skewness test. Can be \code{"G1"},\code{"b1"} or \code{"mc"}. Read details.}
+  \item{type }{type of residuals which should be used. See details.}
 }
 \details{
+This function can be used on objects having \code{"lm"} in their \code{class} description. 
+For example, \code{class(}aov.model\code{)} gives \code{"aov" "lm"} and \code{class(}glm.model\code{)} 
+gives \code{"glm" "lm"}. The \code{type} of residuals can be defined. It generally includes 
+\code{c("working", "response", "deviance", "pearson", "partial")}.
+
+
 D'Agostino-Pearson's test is more appropriate for analysing a vector with
 duplicate values in it. The more duplicate values in a vector, the more
 Shapiro-Wilk will be far from correctly testing the \eqn{H0} hypothesis.
@@ -89,7 +96,7 @@ More will be added to this section especially for Anscombe-Glynn Kurtosis test.
 
 }
 \author{
-%%  ~~who you are~~
+Benoit Bruneau
 }
 \note{
 %%  ~~further notes~~
@@ -98,14 +105,19 @@ More will be added to this section especially for Anscombe-Glynn Kurtosis test.
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{residuals}}, \code{\link{residuals.lm}}, \code{\link{residuals.glm}}, and \code{\link{residuals.gam}}
 }
 \examples{
 x <- rnorm(300, 50, 10)
+y  <- 5*(x +10*(rnorm(300,1,2)))
+
 histplot(x)
 norm.test(x)            ## mc skewness
 norm.test(x, type="G1") ## G1 skewness
 norm.test(x, type="b1") ## b1 skewness
+
+mod <- lm(y~x)
+norm.test(mod)
 
 }
 
