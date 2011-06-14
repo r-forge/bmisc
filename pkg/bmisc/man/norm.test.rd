@@ -11,7 +11,7 @@ Lilliefors (Kolmogorov-Smirnov), Shapiro-Francia, Shapiro-Wilk,
 D'Agostino Skewness, Anscombe-Glynn Kurtosis and D'Agostino-Pearson normality tests.
 }
 \usage{
-\method{default} (norm.test(x, title=NULL, sk=c("G1","b1","mc"), type))
+\method{norm.test}{default} (norm.test(x, title=NULL, sk=c("G1","b1","mc"), type))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
