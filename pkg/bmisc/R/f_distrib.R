@@ -1,0 +1,133 @@
+##form=age~longueur..mm.
+#form=age~longueur..mm.
+#
+#distrib(form=age~longueur..mm., data=com3, n.level=10)
+
+dist.age <- function(form, data,boxp=TRUE, densp=TRUE, histp=FALSE,n.level=NULL,cex.stat=0.8, 
+                    lpos=c("right","left"),save.fig=FALSE, fty=c('wmf','png'),file=NULL,xlab='Longueur (mm)', ylab='Âge',  ... ){
+
+    if('bmisc' %nin% (.packages()) ) library(bmisc)
+    lpos=match.arg(lpos)
+    fty=match.arg(fty)
+    
+
+    
+    vars=all.vars(form)
+    c.a=which(names(data)==vars[1])
+    c.b=which(names(data)==vars[2])
+    
+    
+    yval=list(unique(data[,c.a]))
+    n.vec=1
+    if(!is.null(n.level)){    
+      yval1=min(yval[[1]]):max(yval[[1]])
+      yu=sort(unique(data[,c.a]))
+      sel=which(yval1 %nin% yu)
+      yval2=yval1
+      yval2[sel]=NA
+      n.vec=1:ceiling(n(yval1)/n.level)
+      vec=rep(n.vec,each=n.level)[seq(n(yval1))]
+      yval=split(yval2, vec)
+    }
+    
+    minvec=vector()
+    maxvec=vector()
+    for(l in unique(data[,c.a])){
+       dat1=data[,c.b][data[,c.a]==l]
+       if(n(dat1)>1){
+          dat2=max(density(dat1)$x)
+          dat3=min(density(dat1)$x)}
+       minvec[l]=dat2
+       maxvec[l]=dat3
+    }
+     
+    xlim=range(minvec,maxvec,max(data[,c.b],na.rm=T),min(data[,c.b],na.rm=T), na.rm=T)
+
+    if(lpos=="right"){ xlim[2]=(xlim[2]-xlim[1])/5 +xlim[2]
+      }else{if(lpos=="left"){xlim[1]=xlim[1]*0.8}}
+    
+    for(j in n.vec){
+
+        if(save.fig & is.null(file)){stop("The 'file' option must be spcefied when 'save.file' is TRUERUE. See ?distrib.")}
+        if(save.fig & fty=="wmf"){win.metafile(filename=paste(j,file, sep=''),width=11, height=8.5, restoreConsole = TRUE)}
+        if(save.fig & fty=="png"){png(filename=paste(j,file, sep=''),width=11, height=8.5,units ="in", res=150, restoreConsole = TRUE)}
+        
+        ylim=c(min(yval[[j]],na.rm=TRUE),max(yval[[j]],na.rm=TRUE)+0.9)
+    
+    
+        plot(1, type='n',xlim=xlim,ylim=ylim,xaxt='n', yaxt='n',xlab=xlab, ylab=ylab,...)
+        limit=par('usr')
+        abline(v=ceiling(seq(xlim[1],xlim[2],100)), col='gray')
+        axis(side=1,at=seq(0,10000,100),... )
+        axis(side=2,at=ylim[1]:ylim[2], las=2, ...)
+    
+        yseq=yval[[j]][!is.na(yval[[j]])]
+        for(i in yseq){
+            abline(h=i,col='gray')
+            long=data[c.b][data[c.a]==i]
+    
+            if(n(long)<2) points(y=i,x=long)
+    
+            if(n(long)>1){
+            
+                if(histp){
+                    p=hist(long,  plot=F)
+                    px=p$breaks
+                    py=p$density
+                    k=0.8/max(py, na.rm=TRUE)
+                    py=(p$density *k)+i
+                    pox=c(1,2,2,1)
+                    poy=c(1,1)
+                    nbar=n(p$mids)
+                    for(z in 1:nbar){
+                       polygon(x=px[pox+z-1], y=c(i,i,py[poy+z-1])  )
+                    }
+                }
+                
+                
+                dens=try(density(long))
+                k=0.8/max(dens$y, na.rm=TRUE)
+                dens$y=(dens$y*k)+ i
+                m=mean(long, na.rm=TRUE)
+                std2=2*sd(long)
+                inf=m-std2
+                sup=m+std2
+    
+                if(densp){
+                points(x=dens$x, y=dens$y, type='l')
+                }
+                
+                sel=which.min(abs(dens$x-m))
+                sel.inf=which.min(abs(dens$x-inf))
+                sel.sup=which.min(abs(dens$x-sup))
+                          
+                lines(x=c(m,m),y=c(min(dens$y),dens$y[sel]),lwd=3, col='darkgreen')
+                lines(x=c(inf,inf),y=c(i-0.1,dens$y[sel.inf]),lwd=3, col='darkgreen')
+                lines(x=c(sup,sup),y=c(i-0.1,dens$y[sel.sup]),lwd=3, col='darkgreen')
+    
+                box=boxplot(long,col=gray(0.8), boxwex=0.2,staplewex = 1.5,staplelwd=3,staplecol='blue', whisklwd=2,
+                          at=i, add=TRUE, horizontal=TRUE, cex=0.7, pch=19, outcol='red', outpch=NA, xaxt='n', plot=boxp)
+    
+                outliers=long[long<inf |long>sup | long< box$stats[1] | long> box$stats[5]]
+                points(x=outliers, y=rep(i, n(outliers)), pch=8, cex=0.8, col='red')
+    
+                m.vals=c(paste('moy =',round(m  , digits=1),sep=' '),
+                          paste('inf =',round(inf, digits=1),sep=' '),
+                          paste('sup =',round(sup, digits=1),sep=' '),
+                          paste('med =',round(box$stats[3]  , digits=1),sep=' '),
+                          paste('inf =',round(box$stats[1], digits=1),sep=' '),
+                          paste('sup =',round(box$stats[5], digits=1),sep=' '))
+                
+                
+                xpos=range(dens$x)
+    
+                if(lpos=="right"){p=xpos[2]}else{p=xpos[1]}
+                ll=legend(x=p, y=i, legend=m.vals,xpd=TRUE,xjust=0, yjust=0, cex=cex.stat, 
+                        ncol=2, x.intersp=0,y.intersp=1, adj=c(0,1), bty='n')
+    
+            }
+        }
+        
+        if(save.fig){graphics.off()}
+    }
+}
