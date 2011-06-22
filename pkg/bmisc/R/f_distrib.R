@@ -1,8 +1,3 @@
-##form=age~longueur..mm.
-#form=age~longueur..mm.
-#
-#distrib(form=age~longueur..mm., data=com3, n.level=10)
-
 dist.age <- function(form, data,boxp=TRUE, densp=TRUE, histp=FALSE,n.level=NULL,cex.stat=0.8, 
                     lpos=c("right","left"),save.fig=FALSE, fty=c('wmf','png'),file=NULL,xlab='Longueur (mm)', ylab='Âge',  ... ){
 
@@ -122,7 +117,7 @@ dist.age <- function(form, data,boxp=TRUE, densp=TRUE, histp=FALSE,n.level=NULL,
                 xpos=range(dens$x)
     
                 if(lpos=="right"){p=xpos[2]}else{p=xpos[1]}
-                ll=legend(x=p, y=i, legend=m.vals,xpd=TRUE,xjust=0, yjust=0, cex=cex.stat, 
+                legend(x=p, y=i, legend=m.vals,xpd=TRUE,xjust=0, yjust=0, cex=cex.stat, 
                         ncol=2, x.intersp=0,y.intersp=1, adj=c(0,1), bty='n')
     
             }
