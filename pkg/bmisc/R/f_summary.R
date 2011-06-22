@@ -1,3 +1,5 @@
+# COMMNEATIUYKGFSAEDFKJHBZS
+
 s.var <- function(data){
 
     if('pds_tot..g.'%in% names(data)){
