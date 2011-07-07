@@ -133,7 +133,6 @@ function(fsel.type,last.age, vonB, l.start, LW, F.max, F.incr.YPR, M, full.mat, 
     
     res=list(ref=ref.table,ypr=YPR.table)
     
-    print(res$ref)
     res
 }
 
