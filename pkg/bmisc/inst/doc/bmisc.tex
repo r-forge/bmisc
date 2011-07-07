@@ -2049,5 +2049,62 @@ week.num(dated, "monday")
 week.num(dated)
 \end{ExampleCode}
 \end{Examples}
+
+\inputencoding{utf8}
+\newpage
+\HeaderA{YPR.l}{Length Based Yield Per Recruit}{YPR.l}
+%
+\begin{Description}\relax
+Length based Yield Per Recruit model is define by fishery selectivity and life history parameters related to length. 
+
+
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+YPR.l(fsel.type, last.age, vonB, l.start, LW, F.max, F.incr.YPR, 
+      M, full.mat, f.MSP)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{fsel.type}] a list containing the type of fishery selectivity and the values needed for the function related to the type. See Details. 
+
+\item[\code{last.age}] last age to be considered in the model
+
+\item[\code{vonB}] a vector containing \code{c(Linf,K)} from von Bertalanffy grotwh curve. 
+
+\item[\code{l.start}] length at the starting age
+
+\item[\code{LW}] a vector containing \code{c(alpha,beta)} from length-weight curve.
+
+\item[\code{F.max}] maximum value of instantaneous rate of fishing mortality (\code{F})
+
+\item[\code{F.incr.YPR}] increment value to be used for YPR calculation
+
+\item[\code{M}] instantaneous rate of natural mortality (\code{M})
+
+\item[\code{full.mat}] fully mature length value
+
+\item[\code{f.MSP}] reference point defined as the fraction of maximum spawning potential
+
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+More to come.
+\end{Details}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+YPR.l(fsel.type=list("ramp",650,900), vonB=c(coeffs3[1],coeffs3[2]), 
+      l.start=72.53,last.age=25, LW=c(coeffs2[2],coeffs2[1]),F.max=2, 
+      F.incr.YPR=0.01, M=0.2, full.mat=900, f.MSP=0.4) 
+
+\end{ExampleCode}
+\end{Examples}
 \printindex{}
 \end{document}

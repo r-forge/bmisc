@@ -63,9 +63,8 @@ More to com.
 }
 \examples{
 
-YPR.l(fsel.type=list("ramp",650,900), vonB=c(coeffs3[1],coeffs3[2]), l.start=72.53,last.age=25,
-        LW=c(coeffs2[2],coeffs2[1]),F.max=2, F.incr.YPR=0.01, M=0.2, full.mat=900, f.MSP=0.4) 
+YPR.l(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), l.start=72.53,last.age=25,
+        LW=c(exp( -18.47894),3.043),F.max=2, F.incr.YPR=0.01, M=0.2, full.mat=900, f.MSP=0.4) 
 
+}
 
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
