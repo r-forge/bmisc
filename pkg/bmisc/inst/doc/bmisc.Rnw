@@ -2068,7 +2068,7 @@ YPR.l(fsel.type, last.age, vonB, l.start, LW, F.max, F.incr.YPR,
 %
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{fsel.type}] a list containing the type of fishery selectivity and the values needed for the function related to the type. See Details. 
+\item[\code{fsel.type}] a list containing the type of fishery selectivity and the values needed for the function related to the type. See 'Details'. 
 
 \item[\code{last.age}] last age to be considered in the model
 

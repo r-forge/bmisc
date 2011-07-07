@@ -98,7 +98,7 @@ function(fsel.type,last.age, vonB, l.start, LW, F.max, F.incr.YPR, M, full.mat, 
     
     
     ##############################################################################
-    ##                          TRUEableau de YPR vs Fi                            ##
+    ##                          Tableau de YPR vs Fi                            ##
     ##############################################################################
     
     YPR.table=data.frame(F=Fi, catch.num=n.catch1, ypr=pds.catch1, stock.num=n.stock1, 
@@ -112,7 +112,7 @@ function(fsel.type,last.age, vonB, l.start, LW, F.max, F.incr.YPR, M, full.mat, 
 #}
     
     ##############################################################################
-    ##                     TRUEableau des points de references                  ##
+    ##                     Tableau des points de references                  ##
     ##############################################################################
     f.MSP.name=paste('F',round(f.MSP*100,digits=0),sep=".")
     ref.table=data.frame(F=NA,YPR=NA,SSB.R=NA,TBmass.R=NA)
@@ -137,3 +137,21 @@ function(fsel.type,last.age, vonB, l.start, LW, F.max, F.incr.YPR, M, full.mat, 
     res
 }
 
+
+.fish.select.ramp <- function(sel.zero, sel.full, L) {
+    mod.ramp=coef(lm(c(0,1)~c(sel.zero,sel.full)))
+    ramp=which(L >= sel.zero & L <= sel.full)
+    zero=which(L < sel.zero)
+    full=which(L >sel.full)
+    
+    F.sel=vector()
+    F.sel[zero]=0
+    F.sel[ramp]=L[ramp]*mod.ramp[2]+mod.ramp[1]
+    F.sel[full]=1
+    return(F.sel)
+}
+
+.fish.select.logistic <- function(alpha,beta, L) {
+    Fsel=1/(1+exp(-(alpha+beta*(L))))
+    return(F.sel)
+}

@@ -14,7 +14,7 @@ YPR.l(fsel.type, last.age, vonB, l.start, LW, F.max, F.incr.YPR, M, full.mat, f.
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{fsel.type}{a list containing the type of fishery selectivity and the values needed for the function related to the type. See ‘Details’. 
+  \item{fsel.type}{a list containing the type of fishery selectivity and the values needed for the function related to the type. See 'Details'. 
 }
   \item{last.age}{last age to be considered in the model
 }
