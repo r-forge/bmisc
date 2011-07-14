@@ -1,6 +1,6 @@
-\name{YPR.l}
-\alias{YPR.l}
-%- Also NEED an '\alias' for EACH other topic documented here.
+\name{ypr.l}
+\alias{ypr.l}
+
 \title{
 Length Based Yield Per Recruit 
 }
@@ -10,13 +10,16 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 
 }
 \usage{
-YPR.l(fsel.type, last.age, vonB, l.start, LW, F.max, F.incr.YPR, M, full.mat, f.MSP)
+ ypr.l(fsel.type, last.age, age.step, vonB, l.start, LW, F.max, F.incr.YPR, mat, 
+         M, f.MSP, riv.calc=FALSE)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{fsel.type}{a list containing the type of fishery selectivity and the values needed for the function related to the type. See 'Details'. 
 }
   \item{last.age}{last age to be considered in the model
+}
+  \item{age.step}{steps used to generate ages (\code{0:last.age}). Default is \code{1}.
 }
   \item{vonB}{a vector containing \code{c(Linf,K)} from von Bertalanffy grotwh curve. 
 }
@@ -24,20 +27,21 @@ YPR.l(fsel.type, last.age, vonB, l.start, LW, F.max, F.incr.YPR, M, full.mat, f.
 }
   \item{LW}{}{a vector containing \code{c(alpha,beta)} from length-weight curve.
 }
-  \item{F.max}{maximum value of instantaneous rate of fishing mortality (\code{F})
+  \item{F.max}{maximum value of instantaneous rate of fishing mortality (\code{F}). Default is \code{2}.
 }
-  \item{F.incr.YPR}{increment value to be used for YPR calculation
+  \item{F.incr.YPR}{increment value to be used for YPR calculation. Default is \code{0.0001}.
 }
-  \item{M}{instantaneous rate of natural mortality (\code{M})
+  \item{M}{instantaneous rate of natural mortality (\code{M}). Default is \code{0.2}.
 }
-  \item{full.mat}{fully mature length value
+  \item{mat}{a list containing the type of maturity definition and the values needed for the function related to the type. See 'Details'.
 }
-  \item{f.MSP}{reference point defined as the fraction of maximum spawning potential
-
+  \item{f.MSP}{reference point defined as the fraction of maximum spawning potential. Default is \code{0.4}.
+}
+  \item{riv.calc}{a logical value indicating whether to use Rivard weights calculation (\code{TRUE}) or not. Default is \code{FALSE}.
 }
 }
 \details{
-More to com.
+More to come.
 }
 \value{
 %%  ~Describe the value returned
@@ -63,8 +67,9 @@ More to com.
 }
 \examples{
 
-YPR.l(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), l.start=72.53,last.age=25,
-        LW=c(exp( -18.47894),3.043),F.max=2, F.incr.YPR=0.01, M=0.2, full.mat=900, f.MSP=0.4) 
+ypr.l(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), 
+      l.start=72.53,last.age=25,LW=c(exp( -18.47894),3.043), F.max=2,
+      F.incr.YPR=0.01, M=0.2, mat=list('full',900), f.MSP=0.4, riv.calc=F) 
 
 }
 
