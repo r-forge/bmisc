@@ -1,7 +1,7 @@
 ypr.l <- 
         function(fsel.type,last.age, l.start, age.step=1, LW, vonB, F.max=2, 
                 F.incr.YPR=0.0001, M=0.2, mat, f.MSP=0.4, riv.calc=TRUE) {
-    #title = "Length based Yield per Recruit"    
+  
     age=seq(0,last.age,by=age.step)
     age=as.integer(age*1000000)
     age=age/1000000

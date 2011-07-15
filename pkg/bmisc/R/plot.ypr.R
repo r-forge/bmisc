@@ -9,7 +9,8 @@ plot.ypr <-
                 col.ypr='blue',
                 col.ssb='red', 
                 ref=TRUE,
-                legend=TRUE){
+                legend=TRUE ){
+    
     
     YPR=object@YPR
     ref.line.sel=object@ref.line.sel
@@ -45,4 +46,6 @@ plot.ypr <-
                 horiz=TRUE, bty='o', bg='white')
     }
 }
+
+
 
