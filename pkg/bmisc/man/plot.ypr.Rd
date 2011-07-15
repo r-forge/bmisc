@@ -8,12 +8,27 @@ Standard Yield per Recruit plot.
 Yield per Recruit and Spawning Stock Biomass per Recruit are plotted with standard reference points. 
 }
 \usage{
- plot.ypr(data, main, ylab.ypr, ylab.ssb, xlab, col.ypr, col.ssb, ref, legend)
+ plot.ypr(object, main, ylab.ypr, ylab.ssb, xlab, col.ypr, col.ssb, ref, legend)
 }
 
 \arguments{
-  \item{data}{
-%%     ~~Describe \code{fsel.type} here~~
+  \item{object}{an object og \code{class 'ypr'}
+}
+  \item{main}{main title for the graph
+}
+  \item{ylab.ypr}{a label for the YPR \code{y} axis
+}
+  \item{ylab.ssb}{a label for the SSB/R \code{y} axis
+}
+  \item{xlab}{a label for the YPR \code{x} axis.
+}
+  \item{col.ypr}{the color of the the color of the YPR line.
+}
+  \item{col.ssb}{the color of the the color of the SSB/R line.
+}
+  \item{ref}{logical; if \code{TRUE}, standard reference points are added to the plot.
+}
+  \item{legend}{logical; if \code{TRUE}, a legend is added in the \code{'topright'} corner of the plot.
 }
 }
 \details{
