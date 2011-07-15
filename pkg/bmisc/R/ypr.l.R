@@ -1,20 +1,20 @@
 ypr.l <- 
         function(fsel.type,last.age, l.start, age.step=1, LW, vonB, F.max=2, 
                 F.incr.YPR=0.0001, M=0.2, mat, f.MSP=0.4, riv.calc=TRUE) {
-    title = "Length based Yield per Recruit"    
-    ti=seq(0,last.age,by=age.step)
-    ti=as.integer(ti*1000000)
-    ti=ti/1000000
+    #title = "Length based Yield per Recruit"    
+    age=seq(0,last.age,by=age.step)
+    age=as.integer(age*1000000)
+    age=age/1000000
     
-    l.age=vonB[1]*(1-exp(-vonB[2]*ti)) + l.start*exp(-vonB[2]*ti)
-    
+    l.age=vonB[1]*(1-exp(-vonB[2]*age)) + l.start*exp(-vonB[2]*age)
+
     if(riv.calc){
         p.age=LW[1]*l.age^LW[2]
         p.age.riv=rivard(data.frame(p.age,p.age),pred=FALSE,plus.gr=FALSE)[,2]
-        YPR=data.frame(ti,l.age, p.age, p.age.riv)
+        YPR=data.frame(age,l.age, p.age, p.age.riv)
     }else{
         p.age=LW[1]*l.age^LW[2]
-        YPR=data.frame(ti,l.age, p.age)
+        YPR=data.frame(age,l.age, p.age)
     }
     
     F.i=seq(0,F.max, by=F.incr.YPR)
@@ -87,7 +87,7 @@ ypr.l <-
     p.moy=sweep(n.stock,MARGIN=1,YPR$p.age,"*")
     p.moy1=colSums(p.moy, na.rm=TRUE)/n.stock1
     
-    age.moy=sweep(n.stock,MARGIN=1,YPR$t,"*")
+    age.moy=sweep(n.stock,MARGIN=1,YPR$age,"*")
     age.moy1=colSums(age.moy, na.rm=TRUE)/n.stock1
     
     ##############################################################################
@@ -228,11 +228,12 @@ ypr.l <-
     
     ref.line.sel=data.frame(c(sel2,sel4, sel3))
     rownames(ref.line.sel)=r.names[c(4,2,3)]
-    res=new("ypr",ref=ref.table,
+    res=new("ypr",base=YPR,
+            ref=ref.table,
             YPR.short=YPR.table.short,
             YPR=YPR.table,
             ref.line.sel=ref.line.sel,
-            title=title,
+            title="Length based Yield per Recruit"  ,
             VonB.parms=vonB,
             LW.parms=LW)
     
@@ -274,6 +275,7 @@ logistic.sel <- function(alpha,beta, L) {
 
 setClass("ypr",
         representation(
+                base="data.frame",
                 ref="data.frame",
                 YPR.short="data.frame",
                 YPR="data.frame",
