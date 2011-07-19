@@ -94,6 +94,8 @@ ypr.l <-
     ##            recalcul en fonction du premier janvier avec Rivard           ##
     ##############################################################################
     if(riv.calc){
+        title= "Length based Yield per Recruit\nRivard weights calculations"
+
         F.ts=sweep(F.,MARGIN=2,0.5,`*`)
         M.ts=M*0.5
         Z.ts=F.ts+M.ts
@@ -170,7 +172,9 @@ ypr.l <-
         
         ref.table[4,]=c(F.i[sel4],pds.catch1[sel4], ssb.ts1[sel4],pds.stock.ts1[sel4], l.moy1[sel4],p.moy1[sel4],age.moy1[sel4])
         
-    }else{    
+    }else{
+        
+        title="Length based Yield per Recruit"
         
         ##############################################################################
         ##                          Tableau de YPR vs F.i                           ##
