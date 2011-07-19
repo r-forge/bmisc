@@ -18,7 +18,11 @@ histplot(dat, breaks="Sturges", barc="steelblue", borc="white",
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{dat}{numeric vector}
+  \item{dat}{one of:
+    \itemize{
+      \item a numeric vector,
+      \item an object of class \code{"norm"}resulting from a
+    		call to \code{\link{norm.test}}}
   \item{breaks}{one of:
     \itemize{
       \item a vector giving the breakpoints between histogram cells,

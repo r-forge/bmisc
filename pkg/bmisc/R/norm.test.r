@@ -436,6 +436,3 @@ summary.norm=function(object){
     
 }
 
-plot.norm=function(object,...){
-    histplot(object@data, main=paste("Histogram of", object@data.name,sep=" "),xlab=object@data.name,... )
-}

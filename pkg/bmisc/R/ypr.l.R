@@ -281,7 +281,8 @@ setClass("ypr",
                 ref.line.sel="data.frame",
                 title = "character",
                 VonB.parms="numeric",
-                LW.parms="numeric")
+                LW.parms="numeric"),
+sealed=TRUE
 )
 
 
@@ -294,21 +295,23 @@ setMethod("show", "ypr",
         }
 )
 
+setMethod("summary", "ypr",
+        function(object){
+            
+            # Title:
+            cat("\nTitle:\n ",object@title, "\n", sep = "")
+            
+            #VonB parameters:
+            cat("\nvon Bartalanffy growth parameters:\n Linf=", object@VonB.parms[[1]], "  K=",object@VonB.parms[[2]] , sep = "")
+            
+            #LW parameters:
+            cat("\nLength-Weight curve parameters:\n log(alpha)=", log(object@LW.parms[[1]]), "  beta=",object@LW.parms[[2]] , sep = "")
+            
+            # Test Results:
+            results = object@ref
+            cat("\n\nResults:\n", sep = "")
+            print(results)
+        }
+)
 
-summary.ypr=function(object){
-    
-    # Title:
-    cat("\nTitle:\n ",object@title, "\n", sep = "")
-    
-    #VonB parameters:
-    cat("\nvon Bartalanffy growth parameters:\n Linf=", object@VonB.parms[[1]], "  K=",object@VonB.parms[[2]] , sep = "")
-    
-    #LW parameters:
-    cat("\nLength-Weight curve parameters:\n log(alpha)=", log(object@LW.parms[[1]]), "  beta=",object@LW.parms[[2]] , sep = "")
-    
-    # Test Results:
-    results = object@ref
-    cat("\n\nResults:\n", sep = "")
-    print(results)
-}
 
