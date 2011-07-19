@@ -22,7 +22,7 @@ QQplot(dat, quant=TRUE,cex.q=2,norm=T, ...)
   \item{quant}{logical; T for adding quantiles 75, 50 (median) and 25.}
   \item{cex.q}{numeric vector giving the amount by which plotting symbols should be magnified relative to the default}
   \item{norm}{logical; T adds a line to a normal quantile-quantile plot.}
-  \item{...}{additional arguments to be passed (see \code{\link{par}}, \code{\link{qqnorm}}}
+  \item{...}{additional arguments to be passed (see \code{\link{par}}, \code{\link{qqnorm}}})
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~

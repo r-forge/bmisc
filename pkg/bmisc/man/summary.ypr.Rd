@@ -12,7 +12,8 @@
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{an object of class \code{"ypr"} resulting from a
-    call to \code{\link{ypr.l}}.}
+    call to \code{\link{ypr.l}}.
+  }
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
