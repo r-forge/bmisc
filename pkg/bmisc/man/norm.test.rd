@@ -111,7 +111,6 @@ Benoit Bruneau
 x <- rnorm(300, 50, 10)
 y  <- 5*(x +10*(rnorm(300,1,2)))
 
-histplot(x)
 norm.test(x)            ## mc skewness
 norm.test(x, type="G1") ## G1 skewness
 norm.test(x, type="b1") ## b1 skewness

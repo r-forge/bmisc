@@ -13,7 +13,7 @@
 # for the code accessed (or partly included) from other R-ports:
 #   see R's copyright and license files
 
-#norm.test <- function (x,...) UseMethod("norm.test")
+norm.test <- function (x,...) UseMethod("norm.test")
 
 norm.test.default <-  function(x, title = NULL, sk=c("G1","b1","mc"), comment=TRUE ){   
     

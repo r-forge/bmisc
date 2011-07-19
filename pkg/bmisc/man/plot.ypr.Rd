@@ -61,7 +61,7 @@ ypr.mod = ypr.l(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765),
                 l.start=72.53,last.age=25,LW=c(exp( -18.47894),3.043), F.max=2,
                 F.incr.YPR=0.01, M=0.2, mat=list('full',900), f.MSP=0.4, riv.calc=F)  
 
-plot.ypr(ypr.mod)
+plot(ypr.mod)
 
 }
 

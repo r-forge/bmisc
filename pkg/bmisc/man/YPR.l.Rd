@@ -11,7 +11,7 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 }
 \usage{
  ypr.l(fsel.type, last.age, age.step, vonB, l.start, LW, F.max, F.incr.YPR, mat, 
-         M, f.MSP, riv.calc=FALSE)
+         M, f.MSP, riv.calc=FALSE, F.f=0, M.f=0.5)
 }
 
 \arguments{
@@ -29,7 +29,7 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 }
   \item{F.max}{maximum value of instantaneous rate of fishing mortality (\code{F}). Default is \code{2}.
 }
-  \item{F.incr.YPR}{increment value to be used for YPR calculation. Default is \code{0.0001}.
+  \item{F.incr.YPR}{increment for generating the \code{F} values to be used for YPR calculation. Default is \code{0.0001}.
 }
   \item{M}{instantaneous rate of natural mortality (\code{M}). Default is \code{0.2}.
 }
@@ -38,6 +38,10 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
   \item{f.MSP}{reference point defined as the fraction of maximum spawning potential. Default is \code{0.4}.
 }
   \item{riv.calc}{a logical value indicating whether to use Rivard weights calculation (\code{TRUE}) or not. Default is \code{FALSE}.
+}
+  \item{F.f}{fraction of instantaneous rate of fishing mortality (\code{F}) before spawning.
+}
+  \item{M.f}{fraction of instantaneous rate of natural mortality (\code{M}) before spawning.
 }
 }
 \details{
