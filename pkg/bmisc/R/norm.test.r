@@ -13,9 +13,9 @@
 # for the code accessed (or partly included) from other R-ports:
 #   see R's copyright and license files
 
-norm.test <- function (x,...) UseMethod("norm.test")
+#norm.test <- function (x,...) UseMethod("norm.test")
 
-norm.test.default <-  function(x, title = NULL, sk=c("G1","b1","mc"), comment=T ){   
+norm.test.default <-  function(x, title = NULL, sk=c("G1","b1","mc"), comment=TRUE ){   
     
     
     # Data Set Name:
@@ -24,9 +24,7 @@ norm.test.default <-  function(x, title = NULL, sk=c("G1","b1","mc"), comment=T 
     
     # ConvertTO VECTOR:
     x = as.vector(x)
-    
-    # Call:
-    call = match.call()
+
     
     # Tests:
     ans = NA
@@ -60,33 +58,29 @@ norm.test.default <-  function(x, title = NULL, sk=c("G1","b1","mc"), comment=T 
             paste(names(kurt$statistic[2])," | Anscombe-Glynn Kurtosis ", sep=""),
             paste(names(test$statistic)," | D'Agostino Pearson      ", sep="") )
     
-    RVAL = list(
-            statistic = STATISTIC,
-            method = "Normality tests",
-            p.value = PVAL,
-            data.name = DNAME)
-    #test$statistic = STATISTIC
-    #test$p.value = PVAL
-    class(RVAL) = "list"
-    
-    # Add:
+        
+    # Title:
     if (is.null(title)) title = paste("Normality Tests on", DNAME)
-    
-    
-    # Return Value:
-    
-    print(new("fHTEST",
-                    data = list(x = x), 
-                    test = RVAL,
-                    title = as.character(title) ))
-    
+        
     if(comment){
         mess= "\n If p_value is greater than 0.05, difference between 
                 distribution of values and normal (gaussian) distribution 
                 is not statiscally significant (i.e. data is normaly distributed).\n\n"
-        cat(mess) 
     }
+    
+    # Return Value:
+
+res=new("norm",
+        statistics = STATISTIC,
+        p.value = PVAL,
+        data=x,
+        data.name = DNAME,
+        title=title ) 
+
+res
 }
+
+ 
 
 
 
@@ -368,84 +362,29 @@ norm.test.lm <-  function(mod,type=c("working", "response", "deviance", "pearson
 
 
 
-
-
-
-setClass("fHTEST",
+setClass("norm",
         representation(
-                data = "list",
-                test = "list",
-                title = "character")
+                statistics="numeric",
+                p.value="numeric",
+                data="numeric",
+                data.name="character",
+                title="character")
 )
 
 
-setMethod("show", "fHTEST",
-        function(object)
-        {
-            # A function implemented by Diethelm Wuertz
+setMethod("show", "norm",
+        function(object){
+            #Title
+            #cat("\nTitle:\n ", object@title, "\n", sep = "")
             
-            # Source:
-            #   This function copies code from base:print.htest
+            #cat("\nTests Result:\n", sep = "")
             
-            # FUNCTION:
-            
-            # Unlike print the argument for show is 'object'.
-            x = object
-            
-            # Title:
-            cat("\nTitle:\n ", x@title, "\n", sep = "")
-            
-            
-            
-            # Data Name:
-            # cat("\nData Name:\n", ans@data.name, "\n", sep = "")
-            
-            # Test Results:
-            test = x@test
-            cat("\nTest Results:\n", sep = "")
-            
-            # Tests from tseries package:
-            
-            # Parameter:
-            if (!is.null(test$parameter)) {
-                parameter = test$parameter
-                Names = names(parameter)
-                cat("  PARAMETER:\n")
-                for ( i in 1: length(Names) )
-                    cat(paste("    ", names(parameter[i]), ": ",
-                                    formatC(parameter[i], digits=4,width=10,format="f"), "\n", sep = "") )
-            }
-            
-            # Sample Estimates:
-            if (!is.null(test$estimate)) {
-                estimate = test$estimate
-                Names = names(estimate)
-                cat("  SAMPLE ESTIMATES:\n")
-                for (i in 1:length(Names)) {
-                    cat(paste("    ", Names[i], ": ",
-                                    formatC(estimate[i], digits=4,width=10,format="f"), "\n", sep = "" ) )
-                }
-            }
-            
-            # Statistic:
-            if (!is.null(test$statistic)) {
-                statistic = test$statistic
-                Names = names(statistic)
-                cat("  STATISTIC:\n")
-                for (i in 1:length(Names)) {
-                    if (!is.na(statistic[i])) {
-                        cat(paste("    ", Names[i], ": ",
-                                        formatC(statistic[i], digits=4,width=10,format="f"), "\n", sep = "" ) )
-                    }
-                }
-            }
-            
-            # P-Value:
-            if (!is.null(test$p.value)) {
-                pval = test$p.value
+            #p-value
+            if (!is.null(object@p.value)) {
+                pval = object@p.value
                 Names = names(pval)
                 if (Names[1] == "") space = "" else space = ": "
-                cat("  P VALUE:\n")
+                #cat("  P VALUE:\n")
                 for (i in 1:length(Names)) {
                     if (!is.na(pval[i])) {
                         if (class(version) != "Sversion") {
@@ -458,29 +397,45 @@ setMethod("show", "fHTEST",
                     }
                 }
             }
-            
-            # Confidence Interval:
-            if (!is.null(test$conf.int)) {
-                conf = test$conf.int
-                # For SPlus compatibility use dimnames istead of colnames!
-                colNames = dimnames(conf)[[2]]
-                cat("  CONFIDENCE INTERVAL:\n")
-                for (i in 1:length(colNames)) {
-                    cat(paste("    ", colNames[i], ": ",
-                                    formatC(conf[1, i], digits=4,width=10,format="f"), ", ",
-                                    formatC(conf[2, i], digits=4,width=10,format="f"), "\n", sep = "" ) )
+        }
+)
+
+summary.norm=function(object){
+    cat("\nTitle:\n ", object@title, "\n", sep = "")
+    cat("\nTests Result:\n", sep = "")
+    
+    if (!is.null(object@statistics)) {
+        statistics = object@statistics
+        Names = names(statistics)
+        cat("  STATISTICS:\n")
+        for (i in 1:length(Names)) {
+            if (!is.na(statistics[i])) {
+                cat(paste("    ", Names[i], ": ",
+                                formatC(statistics[i], digits=4,width=10,format="f"), "\n", sep = "" ) )
+            }
+        }
+    }
+    
+    if (!is.null(object@p.value)) {
+        pval = object@p.value
+        Names = names(pval)
+        if (Names[1] == "") space = "" else space = ": "
+        cat("  P VALUE:\n")
+        for (i in 1:length(Names)) {
+            if (!is.na(pval[i])) {
+                if (class(version) != "Sversion") {
+                    cat(paste("    ", Names[i], space,
+                                    formatC(pval[i], digits=4,width=10,format="f"), " \n", sep = "" ) )
+                } else {
+                    cat(paste("    ", Names[i], space,
+                                    formatC(pval[i], digits=4,width=10,format="f"), " \n", sep = "" ) )
                 }
             }
-            
-            
-            
-            # More Specific Output Results:
-            if (!is.null(test$output)) {
-                cat(test$output, fill = FALSE, sep = "\n")
-            }
-            
-            
-            
-            # Return Value:
-            #   invisible()  # made visible by DW
-        })
+        }
+    }
+    
+}
+
+plot.norm=function(object,...){
+    histplot(object@data, main=paste("Histogram of", object@data.name,sep=" "),xlab=object@data.name,... )
+}

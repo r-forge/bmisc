@@ -11,3 +11,9 @@ QQplot.default <- function (dat, quant=TRUE,cex.q=2,norm=T,main=paste("Normal Q-
 }
 
 
+QQplot.norm=function(object,...){
+    QQplot(dat=object@data, main=paste("Normal Q-QPlot of", object@data.name,sep=" "),... )
+    
+}
+
+

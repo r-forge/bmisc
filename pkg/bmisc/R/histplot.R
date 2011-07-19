@@ -2,7 +2,7 @@ histplot <- function (dat,...) UseMethod("histplot")
 
 histplot.default <-
 function(dat, breaks="Sturges", barc="steelblue", borc="white", fit.norm=TRUE, lcol="brown", stat=NULL, stat.lab=c("Mean","Median"),
-  box=TRUE, rug=TRUE , main=paste("Histogram of" , DNAME),...)
+  box=TRUE, rug=TRUE , main=paste("Histogram of" , DNAME),xlab=DNAME,...)
 {
 
     DNAME <- paste(deparse(substitute(dat), 500), collapse="\n")
@@ -22,7 +22,7 @@ function(dat, breaks="Sturges", barc="steelblue", borc="white", fit.norm=TRUE, l
 
 #Graph
 
-    plot(hdat,freq=FALSE, col=barc ,border=borc, xlim=xlim, ylim=ylim, main=main,...)
+    plot(hdat,freq=FALSE, col=barc ,border=borc,, xlab=xlab, xlim=xlim, ylim=ylim, main=main,...)
     abline(h = par("usr")[3], col = "black")
 
     if(box) {box()}
@@ -60,5 +60,10 @@ function(dat, breaks="Sturges", barc="steelblue", borc="white", fit.norm=TRUE, l
                 
         if (rug) {rug(dat, ticksize = 0.01, quiet = TRUE)
     }
+}
+
+histplot.norm=function(object,...){
+    histplot(object@data, main=paste("Histogram of", object@data.name,sep=" "),xlab=object@data.name,... )
+    
 }
 
