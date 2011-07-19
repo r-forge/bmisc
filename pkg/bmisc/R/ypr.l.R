@@ -232,8 +232,8 @@ ypr.l <-
     
     ref.line.sel=data.frame(c(sel2,sel4, sel3))
     rownames(ref.line.sel)=r.names[c(4,2,3)]
-
-    res=list(base=YPR,
+    
+    res=new("ypr",base=YPR,
             ref=ref.table,
             YPR.short=YPR.table.short,
             YPR=YPR.table,
@@ -241,8 +241,6 @@ ypr.l <-
             VonB.parms=vonB,
             LW.parms=LW,
             title=title)
-
-    class(res) = "ypr"
     
     
     res
@@ -274,33 +272,42 @@ logistic.sel <- function(alpha,beta, L) {
     return(F.sel)
 }
 
+setClass("ypr",
+        representation(
+                base="data.frame",
+                ref="data.frame",
+                YPR.short="data.frame",
+                YPR="data.frame",
+                ref.line.sel="data.frame",
+                title = "character",
+                VonB.parms="numeric",
+                LW.parms="numeric")
+)
 
 
-print.ypr=function(object){
-    n.ref=rownames(object$ref)
-    val=t(object$ref[,1])
-    colnames(val)=n.ref
-    print(val)
-}
+setMethod("show", "ypr",
+        function(object){
+            ref.names=rownames(object@ref)
+            dat=object@ref[,1]
+            names(dat)=ref.names
+            print(dat)
+        }
+)
 
-summary.ypr= function(object){
-        obj.sel=object[c(6,7,8,2)]
-        class(obj.sel)="summary.ypr"
-        obj.sel
-}
-print.summary.ypr=function(object){
+
+summary.ypr=function(object){
     
     # Title:
-    cat("\nTitle:\n ",object$title, "\n", sep = "")
+    cat("\nTitle:\n ",object@title, "\n", sep = "")
     
     #VonB parameters:
-    cat("\nvon Bartalanffy growth parameters:\n Linf=", object$VonB.parms[[1]], "  K=",object$VonB.parms[[2]] , sep = "")
+    cat("\nvon Bartalanffy growth parameters:\n Linf=", object@VonB.parms[[1]], "  K=",object@VonB.parms[[2]] , sep = "")
     
     #LW parameters:
-    cat("\nLength-Weight curve parameters:\n log(alpha)=", log(object$LW.parms[[1]]), "  beta=",object$LW.parms[[2]] , sep = "")
+    cat("\nLength-Weight curve parameters:\n log(alpha)=", log(object@LW.parms[[1]]), "  beta=",object@LW.parms[[2]] , sep = "")
     
     # Test Results:
-    results = object$ref
+    results = object@ref
     cat("\n\nResults:\n", sep = "")
     print(results)
 }
