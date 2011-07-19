@@ -1,6 +1,6 @@
 ypr.l <- 
         function(fsel.type,last.age, l.start, age.step=1, LW, vonB, F.max=2, 
-                F.incr.YPR=0.0001, M=0.2, mat, f.MSP=0.4, riv.calc=TRUE) {
+                F.incr.YPR=0.0001, M=0.2, mat, f.MSP=0.4, riv.calc=TRUE, F.part=0, M.part=0.5) {
   
     age=seq(0,last.age,by=age.step)
     age=as.integer(age*1000000)
@@ -96,8 +96,8 @@ ypr.l <-
     if(riv.calc){
         title= "Length based Yield per Recruit\nRivard weights calculations"
 
-        F.ts=sweep(F.,MARGIN=2,0.5,`*`)
-        M.ts=M*0.5
+        F.ts=sweep(F.,MARGIN=2,F.part,`*`)
+        M.ts=M*M.part
         Z.ts=F.ts+M.ts
         
         n.stock.ts=n.stock*exp(-Z.ts)
