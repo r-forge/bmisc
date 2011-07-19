@@ -1,5 +1,3 @@
-plot <- function (object,...) UseMethod("plot")
-
 plot.ypr <- 
         function(object, 
                 main='Yield per Recruit &\n SSB per Recruit', 
@@ -12,8 +10,8 @@ plot.ypr <-
                 legend=TRUE ){
     
     
-    YPR=object@YPR
-    ref.line.sel=object@ref.line.sel
+    YPR=object$YPR
+    ref.line.sel=object$ref.line.sel
     
     par(mar=c(5,4,4,4.1))
     ylim1=c(0,max(YPR$ypr)*1.1)

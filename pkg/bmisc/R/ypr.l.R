@@ -94,7 +94,7 @@ ypr.l <-
     ##            recalcul en fonction du premier janvier avec Rivard           ##
     ##############################################################################
     if(riv.calc){
-        title= "Length based Yield per Recruit\nRivard weights calculations"
+        title= "Length based Yield per Recruit\n   Rivard weights calculations"
 
         F.ts=sweep(F.,MARGIN=2,F.part,`*`)
         M.ts=M*M.part
@@ -232,20 +232,22 @@ ypr.l <-
     
     ref.line.sel=data.frame(c(sel2,sel4, sel3))
     rownames(ref.line.sel)=r.names[c(4,2,3)]
-    res=new("ypr",base=YPR,
+
+    res=list(base=YPR,
             ref=ref.table,
             YPR.short=YPR.table.short,
             YPR=YPR.table,
             ref.line.sel=ref.line.sel,
-            title="Length based Yield per Recruit"  ,
             VonB.parms=vonB,
-            LW.parms=LW)
+            LW.parms=LW,
+            title=title)
+
+    class(res) = "ypr"
     
     
     res
     
 }
-
 
 
 full.sel <- function(sel.full, L) {
@@ -267,7 +269,6 @@ ramp.sel <- function(sel.zero, sel.full, L) {
     F.sel[full]=1
     return(F.sel)
 }
-
 logistic.sel <- function(alpha,beta, L) {
     Fsel=1/(1+exp(-(alpha+beta*(L))))
     return(F.sel)
@@ -275,44 +276,32 @@ logistic.sel <- function(alpha,beta, L) {
 
 
 
+print.ypr=function(object){
+    n.ref=rownames(object$ref)
+    val=t(object$ref[,1])
+    colnames(val)=n.ref
+    print(val)
+}
 
-
-setClass("ypr",
-        representation(
-                base="data.frame",
-                ref="data.frame",
-                YPR.short="data.frame",
-                YPR="data.frame",
-                ref.line.sel="data.frame",
-                title = "character",
-                VonB.parms="numeric",
-                LW.parms="numeric")
-)
-
-
-setMethod("show", "ypr",
-        function(object){
-            # Source:
-            #   This function copies code from base:print.htest
-            
-            # FUNCTION:
-            
-            # Unlike print the argument for show is 'object'.
-            object
-            
-            # Title:
-            cat("\nTitle:\n ",object@title, "\n", sep = "")
-            
-            #VonB parameters:
-            cat("\nvon Bartalanffy growth parameters:\n Linf=", object@VonB.parms[[1]], "  K=",object@VonB.parms[[2]] , sep = "")
-            
-            #LW parameters:
-            cat("\nLength-Weight curve parameters:\n log(alpha)=", log(object@LW.parms[[1]]), "  beta=",object@LW.parms[[2]] , sep = "")
-            
-            # Test Results:
-            results = object@ref
-            cat("\n\nResults:\n", sep = "")
-            print(results)
-        }
-)
+summary.ypr= function(object){
+        obj.sel=object[c(6,7,8,2)]
+        class(obj.sel)="summary.ypr"
+        obj.sel
+}
+print.summary.ypr=function(object){
+    
+    # Title:
+    cat("\nTitle:\n ",object$title, "\n", sep = "")
+    
+    #VonB parameters:
+    cat("\nvon Bartalanffy growth parameters:\n Linf=", object$VonB.parms[[1]], "  K=",object$VonB.parms[[2]] , sep = "")
+    
+    #LW parameters:
+    cat("\nLength-Weight curve parameters:\n log(alpha)=", log(object$LW.parms[[1]]), "  beta=",object$LW.parms[[2]] , sep = "")
+    
+    # Test Results:
+    results = object$ref
+    cat("\n\nResults:\n", sep = "")
+    print(results)
+}
 
