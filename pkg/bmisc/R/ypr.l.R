@@ -1,19 +1,60 @@
 ypr.l <- 
         function(fsel.type,last.age, l.start, age.step=1, LW, vonB, F.max=2, 
-                F.incr.YPR=0.0001, M=0.2, mat, f.MSP=0.4, riv.calc=TRUE, F.f=0, M.f=0.5) {
-  
+                F.incr.YPR=0.0001, M=0.2, mat, f.MSP=0.4, riv.calc=FALSE, F.f=0, M.f=0.5) {
+    
+    parms=list(fsel.type=fsel.type,last.age=last.age, l.start=l.start,
+            age.step=age.step, LW=LW, vonB=vonB, F.max=F.max, F.incr.YPR=F.incr.YPR,
+            M=M, mat=mat, f.MSP=f.MSP, riv.calc=riv.calc, F.f=F.f, M.f=M.f)
+    #parms=list(fsel.type,last.age,l.start,age.step, LW, vonB, F.max, F.incr.YPR,
+    #        M, mat, f.MSP, riv.calc,F.f, M.f)
+    #parms=list(1,2)
+    cl.vb=class(vonB)
+    cl.LW=class(LW)
+    
     age=seq(0,last.age,by=age.step)
     age=as.integer(age*1000000)
     age=age/1000000
     
-    l.age=vonB[1]*(1-exp(-vonB[2]*age)) + l.start*exp(-vonB[2]*age)
+    switch(cl.vb,
+            numeric= {
+                names(vonB)=c("Linf","K")
+                l.age<-vonB[1]*(1-exp(-vonB[2]*age)) + l.start*exp(-vonB[2]*age)
+            },
+            nls={
+                coeffs<-coef(vonB)
+                Linf=coeffs[names(coeffs)=="Linf"]
+                K=coeffs[names(coeffs)=="K"]
+                vonB=c(Linf, K)
+                l.age<-Linf*(1-exp(-K*age)) + l.start*exp(-K*age)
+            }
+    )
+    
+    switch(cl.LW,
+            numeric= {
+                names(LW)=c("alpha","beta")
+                p.age=LW[1]*l.age^LW[2]
+            },
+            nls={
+                coeffs<-coef(LW)
+                alpha=coeffs[names(coeffs)=="alpha"]
+                beta=coeffs[names(coeffs)=="beta"]
+                LW=c(alpha,beta)
+                p.age=alpha*l.age^beta
+            },
+            lm={
+                coeffs<-coef(LW)
+                alpha=exp(coeffs[1])
+                beta=coeffs[2]
+                LW=c(alpha,beta)
+                p.age=alpha*l.age^beta
+            }
+    )
+    
 
     if(riv.calc){
-        p.age=LW[1]*l.age^LW[2]
         p.age.riv=rivard(data.frame(p.age,p.age),pred=FALSE,plus.gr=FALSE)[,2]
         YPR=data.frame(age,l.age, p.age, p.age.riv)
     }else{
-        p.age=LW[1]*l.age^LW[2]
         YPR=data.frame(age,l.age, p.age)
     }
     
@@ -233,16 +274,16 @@ ypr.l <-
     ref.line.sel=data.frame(c(sel2,sel4, sel3))
     rownames(ref.line.sel)=r.names[c(4,2,3)]
     
-    res=new("ypr",base=YPR,
+    res=new("ypr",
+            parms=parms,
+            base=YPR,
             ref=ref.table,
             YPR.short=YPR.table.short,
             YPR=YPR.table,
             ref.line.sel=ref.line.sel,
-            VonB.parms=vonB,
-            LW.parms=LW,
             title=title)
     
-    
+    class(parms)
     res
     
 }
@@ -274,15 +315,13 @@ logistic.sel <- function(alpha,beta, L) {
 
 setClass("ypr",
         representation(
+                parms="list",
                 base="data.frame",
                 ref="data.frame",
                 YPR.short="data.frame",
                 YPR="data.frame",
                 ref.line.sel="data.frame",
-                title = "character",
-                VonB.parms="numeric",
-                LW.parms="numeric"),
-sealed=TRUE
+                title = "character"),
 )
 
 
@@ -314,4 +353,51 @@ setMethod("summary", "ypr",
         }
 )
 
+
+plot.ypr<-
+        function(object, 
+                main='Yield per Recruit &\n SSB per Recruit', 
+                ylab.ypr='Yield per Recruit (YPR)',
+                ylab.ssb='Spawning Stock Biomass per Recruit (SSB/R)',
+                xlab='Fishing Mortality (F)',
+                col.ypr='blue',
+                col.ssb='red', 
+                ref=TRUE,
+                legend=TRUE){
+            
+            
+            YPR=object@YPR
+            ref.line.sel=object@ref.line.sel
+            
+            par(mar=c(5,4,4,4.1))
+            ylim1=c(0,max(YPR$ypr)*1.1)
+            ylim2=c(0,max(YPR$ssb)*1.1)
+            plot(YPR$ypr~YPR$F  ,main=main,ylim=ylim1, 
+                    ylab=ylab.ypr,xlab=xlab,type='l', lwd=3, col=col.ypr, las=1)
+            sels=ref.line.sel
+            if(ref){
+                for(i in 1:dim(sels)[1]){
+                    lines(c(-1,ypr)~c(F,F),data=YPR[sels[i,],], lty=2)
+                }
+                
+                points(ypr~F,data=YPR[sels[,1],], pch=21, col='black', bg='white',cex=1.2)
+                y.coord=par('usr')[2]*0.01
+                r.names=rownames(sels)
+                text(x=YPR$F[sels[1,]], y=y.coord, labels=r.names[1], srt=90,adj=c(0.2,1.2) , cex=0.8, font=2)
+                text(x=YPR$F[sels[2,]], y=y.coord, labels=r.names[2], srt=90,adj=c(0.2,-0.4), cex=0.8, font=2)
+                text(x=YPR$F[sels[3,]], y=y.coord, labels=r.names[3], srt=90,adj=c(0.2,1.2) , cex=0.8, font=2)
+            }
+            
+            par(new=TRUE)
+            plot(YPR$ssb~YPR$F,type='l',xaxt="n",yaxt="n",xlab="",ylab="", lwd=3, col=col.ssb, ylim=ylim2)
+            
+            if(ref)points(ssb~F,data=YPR[sels[,1],], pch=21, col='black', bg='white',cex=1.2)
+            
+            axis(4, las=1)
+            mtext(ylab.ssb,side=4,line=2.9)
+            if(legend){
+                legend("topright",col=c("blue","red"),lty=1, lwd=3,legend=c("YPR","SSB/R"),
+                        horiz=TRUE, bty='o', bg='white')
+            }
+        }
 
