@@ -67,3 +67,7 @@ histplot.norm=function(object,...){
     
 }
 
+histplot.lm=function(object,...){
+    histplot(residuals(object), main="Histogram of Residuals",xlab="Residuals",... )
+    
+}
