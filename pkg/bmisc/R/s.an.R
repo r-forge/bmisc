@@ -55,7 +55,10 @@ s.an=function(object,mat=c(800,1100,50), fisher.sel=NA ,fsel=NA, fsel.min=NA, M=
         parms.seq.n=seq(n(parm.seq))
         
         diff.parm=parm.seq-object@parms$fsel.type[3]
+        parm.seq2=object@parms$fsel.type[3]+diff.parm
         
+        parms.seq=data.frame(parm.seq,parm.seq2)
+    ############################################################    
         refs=list(NULL)
         ref.line.sels=list(NULL)
         for(i in parms.seq.n){

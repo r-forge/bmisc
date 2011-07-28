@@ -5,9 +5,7 @@ ypr.l <-
     parms=list(fsel.type=fsel.type,last.age=last.age, l.start=l.start,
             age.step=age.step, LW=LW, vonB=vonB, F.max=F.max, F.incr.YPR=F.incr.YPR,
             M=M, mat=mat, f.MSP=f.MSP, riv.calc=riv.calc, F.f=F.f, M.f=M.f)
-    #parms=list(fsel.type,last.age,l.start,age.step, LW, vonB, F.max, F.incr.YPR,
-    #        M, mat, f.MSP, riv.calc,F.f, M.f)
-    #parms=list(1,2)
+
     cl.vb=class(vonB)
     cl.LW=class(LW)
     
