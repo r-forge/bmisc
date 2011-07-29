@@ -46,36 +46,36 @@ s.an=function(object,mat=c(800,1100,50), fisher.sel=NA ,fsel=NA, fsel.min=NA, M=
         }
     }
     
-    if(names(parm)=='fsel') {
-        cat(paste("The '", names(parm),"' parameter in the ypr object is of type '",
-                        object@parms$mat[[1]],"'. Read help('ypr.i')\n", sep=""))
-        
-        parm.vals=parm[[1]]
-        parm.seq=seq(parm.vals[1],parm.vals[2],by=parm.vals[3])
-        parms.seq.n=seq(n(parm.seq))
-        
-        diff.parm=parm.seq-object@parms$fsel.type[3]
-        parm.seq2=object@parms$fsel.type[3]+diff.parm
-        
-        parms.seq=data.frame(parm.seq,parm.seq2)
+#    if(names(parm)=='fsel') {
+#        cat(paste("The '", names(parm),"' parameter in the ypr object is of type '",
+#                        object@parms$mat[[1]],"'. Read help('ypr.i')\n", sep=""))
+#        
+#        parm.vals=parm[[1]]
+#        parm.seq=seq(parm.vals[1],parm.vals[2],by=parm.vals[3])
+#        parms.seq.n=seq(n(parm.seq))
+#        
+#        diff.parm=parm.seq-object@parms$fsel.type[3]
+#        parm.seq2=object@parms$fsel.type[3]+diff.parm
+#        
+#        parms.seq=data.frame(parm.seq,parm.seq2)
     ############################################################    
-        refs=list(NULL)
-        ref.line.sels=list(NULL)
-        for(i in parms.seq.n){
-            k=parm.seq[i]
-            name=paste("ypr.mat",k, sep=".")
-            assign(name,ypr.l(fsel.type=object@parms$fsel.type, vonB=object@parms$vonB,  LW=object@parms$LW,
-                            l.start=object@parms$l.start,last.age=object@parms$last.age,age.step=object@parms$age.step,
-                            F.max=object@parms$F.max, F.incr.YPR=object@parms$F.incr.YPR, M=object@parms$M,
-                            f.MSP=object@parms$f.MSP, riv.calc=object@parms$riv.calc, F.f=object@parms$F.f, M.f=object@parms$M.f,
-                            mat=list(object@parms$mat[[1]],k))
-            
-            )
-            refs[[i]]=get(name)@ref
-            names(refs)[[i]]=name
-            #ref.line.sels[[i]]=get(name)@ref.line.sel
-            #names(ref.line.sels)[[i]]=name
-            cat(paste(n(parm.seq)-i,"left\n"))
+#        refs=list(NULL)
+#        ref.line.sels=list(NULL)
+#        for(i in parms.seq.n){
+#            k=parm.seq[i]
+#            name=paste("ypr.mat",k, sep=".")
+#            assign(name,ypr.l(fsel.type=object@parms$fsel.type, vonB=object@parms$vonB,  LW=object@parms$LW,
+#                            l.start=object@parms$l.start,last.age=object@parms$last.age,age.step=object@parms$age.step,
+#                            F.max=object@parms$F.max, F.incr.YPR=object@parms$F.incr.YPR, M=object@parms$M,
+#                            f.MSP=object@parms$f.MSP, riv.calc=object@parms$riv.calc, F.f=object@parms$F.f, M.f=object@parms$M.f,
+#                            mat=list(object@parms$mat[[1]],k))
+#            
+#            )
+#            refs[[i]]=get(name)@ref
+#            names(refs)[[i]]=name
+#            #ref.line.sels[[i]]=get(name)@ref.line.sel
+#            #names(ref.line.sels)[[i]]=name
+#            cat(paste(n(parm.seq)-i,"left\n"))
             
     title=paste(object@title,"\n   sensitivity analysis for '", names(parm),"' in ",
             parm.vals[1]," to ",parm.vals[2], " by ",parm.vals[3],sep="")

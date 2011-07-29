@@ -10,6 +10,7 @@
 ##                                                                             ##
 ##-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-##
 #################################################################################
+resid.ortho <- function (x,...) UseMethod("resid.ortho")
 
 resid.ortho.default <- function(b, c, value)
 {
@@ -35,8 +36,10 @@ resid.ortho.default <- function(b, c, value)
 }
 
 resid.ortho.lmodel2= function(object,type="SMA"){
-    c=object$regression.results[object$regression.results==type][2,]
-    b=object$regression.results[object$regression.results==type][3,]
+    sel=which(object$regression.results==type)
+   
+    c=object$regression.results[sel,][,2]
+    b=object$regression.results[sel,][,3]
     value=as.data.frame(object[2:1])
     
     resid.ortho.default(b=b,c=c,value=value)

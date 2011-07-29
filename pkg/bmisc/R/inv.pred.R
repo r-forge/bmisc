@@ -12,7 +12,7 @@
 #################################################################################
 
 
-inv.pred=function (obj, cf = 1:2, p = 0.5) 
+inv.pred=function (obj, cf = 1:2, p = 0.5)
 {
     eta <- family(obj)$linkfun(p)
     b <- coef(obj)[cf]
@@ -21,7 +21,6 @@ inv.pred=function (obj, cf = 1:2, p = 0.5)
     pd <- -cbind(1, x.p)/b[2L]
     SE <- sqrt(((pd %*% vcov(obj)[cf, cf]) * pd) %*% c(1, 1))
     res <- data.frame(prob=p, est=x.p, se= SE)
-    
+
     res
 }
-
