@@ -17,7 +17,7 @@ QQplot.norm=function(object,...){
 }
 
 QQplot.lm=function(object,...){
-    QQplot(dat=residuals(object), main="Normal Q-QPlot of Residuals"),... )
+    QQplot(dat=residuals(object), main="Normal Q-QPlot of Residuals",... )
     
 }
 

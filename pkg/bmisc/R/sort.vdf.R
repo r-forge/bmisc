@@ -1,11 +1,13 @@
-sort.vdf <- function (x,by,...) UseMethod("sort.vdf")
-
-
-sort.vdf.default <- function (x, by, increasing = TRUE){
+sort.vdf<- function (x, by, increasing = TRUE){
     
     if (is.data.frame(x)) {
         if (by[[1]] != "~")
+#        {
+#            x[order(x[,by]),]
+#        }
             stop("Argument 'by' must be a one-sided formula.")
+        
+        
         formc <- as.character(by[2])
         formc <- gsub(" ", "", formc)
         if (!is.element(substring(formc, 1, 1), c("+", "-")))
