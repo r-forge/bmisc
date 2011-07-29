@@ -7,4 +7,4 @@ Maintainer: Benoit Bruneau <benoit.bruneau1@gmail.com>
 Description: This package has different functions that I have accumulated with time. This is the Alpha version.
 Depends: car, lattice, zoo, robustbase, methods
 License: LGPL >= 3.0
-Packaged: 07-07-2011;
+Packaged: 29-07-2011;
