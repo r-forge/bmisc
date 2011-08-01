@@ -12,7 +12,7 @@
 #################################################################################
 resid.ortho <- function (x,...) UseMethod("resid.ortho")
 
-resid.ortho.default <- function(b, c, value)
+resid.ortho.default <- function(b, c, value, type=type)
 {
     b2=-1*(1/b)
     c2=value[,2]-(b2*value[,1])
@@ -35,7 +35,7 @@ resid.ortho.default <- function(b, c, value)
     res
 }
 
-resid.ortho.lmodel2= function(object,type="SMA"){
+resid.ortho.lmodel2= function(object,type="RMA"){
     sel=which(object$regression.results==type)
    
     c=object$regression.results[sel,][,2]
