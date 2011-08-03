@@ -21,4 +21,13 @@ QQplot.lm=function(object,...){
     
 }
 
+QQplot.glm=function(object,type="deviance",...){
+    QQplot(residuals(object, type=type), main=paste("Normal Q-QPlot of", type,"residuals.",sep=" "),... )
+}
+
+QQplot.gam=function(object,type="deviance",...){
+    QQplot(residuals(object, type=type), main=paste("Normal Q-QPlot of", type,"residuals.",sep=" "),... )
+}
+
+
 
