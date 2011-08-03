@@ -63,11 +63,17 @@ function(dat, breaks="Sturges", barc="steelblue", borc="white", fit.norm=TRUE, l
 }
 
 histplot.norm=function(object,...){
-    histplot(object@data, main=paste("Histogram of", object@data.name,sep=" "),xlab=object@data.name,... )
-    
+    histplot(object@data, main=paste("Histogram of", object@data.name,sep=" "),xlab=object@data.name,... )   
 }
 
-histplot.lm=function(object,...){
-    histplot(residuals(object), main="Histogram of Residuals",xlab="Residuals",... )
-    
+histplot.lm=function(object,type="response",...){
+    histplot(residuals(object), main="Histogram of Residuals",xlab=paste("Residuals (",type,")",sep=""),... )   
+}
+
+histplot.glm=function(object,type="deviance",...){
+    histplot(residuals(object, type=type), main="Histogram of Residuals",xlab=paste("Residuals (",type,")",sep=""),... )
+}
+
+histplot.gam=function(object,type="deviance",...){
+    histplot(residuals(object, type=type), main="Histogram of Residuals",xlab=paste("Residuals (",type,")",sep=""),... )
 }
