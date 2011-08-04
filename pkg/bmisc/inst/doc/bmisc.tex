@@ -1,34 +1,30 @@
-%\VignetteIndexEntry{bmisc's miscellaneous functions}
-\documentclass[letterpaper,12pt]{book}
+\documentclass[a4paper]{book}
 \usepackage[times,hyper]{Rd}
 \usepackage{makeidx}
-\usepackage[utf8,latin1]{inputenc} 
+\usepackage[utf8,latin1]{inputenc}
 \makeindex{}
 \usepackage{Sweave}
 \begin{document}
 \chapter*{}
 \begin{center}
 {\textbf{\huge Package `bmisc'}}
-\par\bigskip{\large 13-06-2011}
+\par\bigskip{\large \today}
 \end{center}
-\vspace{1 in}
 \begin{description}
 \raggedright{}
 \item[Type]\AsIs{Package}
 \item[Title]\AsIs{Miscellaneous functions}
-\item[Version]\AsIs{0.2-11}
+\item[Version]\AsIs{0.2-12}
 \item[Author]\AsIs{Benoit Bruneau}
 \item[Maintainer]\AsIs{Benoit Bruneau }\email{benoit.bruneau1@gmail.com}\AsIs{}
 \item[Description]\AsIs{This package has different functions that I have accumulated with time. This is the Alpha version.}
-\item[Depends]\AsIs{car, lattice, zoo, gdata, robustbase, methods}
-\item[License]\AsIs{LGPL >= 2.0}
+\item[Depends]\AsIs{car, lattice, zoo, robustbase, methods}
+\item[License]\AsIs{LGPL >= 3.0}
 \end{description}
-\newpage
 \Rdcontents{\R{} topics documented:}
 \newpage
 \inputencoding{utf8}
-\newpage
-\HeaderA{att.strp}{Attibutes stripper}{att.strp}
+\HeaderA{att.strp}{Attibute stripper}{att.strp}
 %
 \begin{Description}\relax
 Strips an object of its attributes
@@ -36,27 +32,27 @@ Strips an object of its attributes
 %
 \begin{Usage}
 \begin{verbatim}
-att.strp(data)
+att.strp(x)
 \end{verbatim}
 \end{Usage}
 %
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{data}] the name of an object (\code{vector, matrix or data.frame})
+\item[\code{x}] the name of an object (\code{vector, matrix, data.frame, array or list})
 \end{ldescription}
 \end{Arguments}
 %
 \begin{Details}\relax
-This function strips a object of its attributes. In the case of a \code{vector}, all attributes are removed. 
-For a \code{matrix}, only \code{c('dim','dimnames')} are kept. When \code{att.strp} is used on a \code{data.frame}, 
-all attributes of the variables are striped and only\\* \code{c('names','row.names','na.action', 'class')} are kept for the
+This function strips an object of its attributes. In the case of a \code{vector}, all attributes are removed. 
+For a \code{matrix} or an \code{array}, only \code{c('dim','dimnames')} are kept. When \code{att.strp} is used on a \code{data.frame}, 
+all attributes of the variables are striped and only \code{c('names','row.names','na.action', 'class')} are kept for the
 \code{data.frame} object.  
 
 
 \end{Details}
 %
 \begin{Value}
-returns an object of the same \code{class} as the original one
+returns an object of the same \code{class} as the original one.
 \end{Value}
 %
 \begin{Author}\relax
@@ -65,16 +61,115 @@ Benoit Bruneau
 %
 \begin{Examples}
 \begin{ExampleCode}
+
+######################################
+#   Creating different objects       #
+#    with added attributes (label)   #
+######################################
+
+### numerical vector ###
 x <- 1:10
-attr(x,"label") <- "test"
+attr(x,"label") <- "test1"
 attributes(x)
 
+### data frame ###
+z=data.frame(x,x)
+attr(z,"labels") <- "test2"
+attributes(z)
+attributes(z[,1])
+attributes(z[,2])
+
+### array ###
+y=array(x,c(2,2,2))
+attr(y,"labels") <- "test3"
+attributes(y)
+attributes(y[,,1])
+attributes(y[,,2])
+
+### list containing the vector, ###
+### data frame and array        ###
+u=list(x,z,y)
+attr(u,"labels") <- "test4"
+attributes(u)
+attributes(u[[1]])
+attributes(u[[2]])
+attributes(u[[3]])
+
+######################################
+#        attribute stripping         #
+######################################
 x2=att.strp(x)
+z2=att.strp(z)
+y2=att.strp(y)
+u2=att.strp(u)
+
+######################################
+#   verification of the attributes   #
+#    for all stripped objects        #
+######################################
+
+### numerical vector ###
 attributes(x2)
+
+### data frame ###
+attributes(z2)
+attributes(z2[,1])
+attributes(z2[,2])
+
+### array ###
+attributes(y2)
+attributes(y2[,,1])
+attributes(y2[,,2])
+
+### list containing the vector, ###
+### data frame and array        ###
+attributes(u2)
+attributes(u2[[1]])       # vector in the list
+
+attributes(u2[[2]])       # data frame in the list
+attributes(u2[[2]][,1])   # data frame in the list
+attributes(u2[[2]][,2])   # data frame in the list
+
+attributes(u2[[3]]        # array in the list
+attributes(u2[[3]][,,1])  # array in the list
+attributes(u2[[3]][,,2])  # array in the list
+
+
+
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
+\HeaderA{bmisc}{Miscellaneous functions}{bmisc}
+%
+\begin{Description}\relax
+This package has different functions that I have accumulated with time. I am not the author of all of them even though I have modified most of them. This is the Alpha version.
+\end{Description}
+%
+\begin{Format}
+
+\Tabular{ll}{
+Package: & bmisc\\{}
+Type: & Package\\{}
+Version: & 0.2-12\\{}
+Date: & 29-07-2011\\{}
+License: & LGPL >= 3.0\\{}
+
+}      
+\end{Format}
+%
+\begin{Details}\relax
+For pdf version of the help, write \code{vignette("bmisc")}.
+\end{Details}
+%
+\begin{Author}\relax
+Benoit Bruneau
+
+Maintainer: Benoit Bruneau <benoit.bruneau1@gmail.com>
+
+\end{Author}
+\newpage
+\inputencoding{utf8}
 \HeaderA{ceiling.lg}{ceiling largest}{ceiling.lg}
 %
 \begin{Description}\relax
@@ -104,8 +199,8 @@ ceiling.lg(250)
 ceiling.lg(25000000)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{clean}{Clean a Data Frame}{clean}
 %
 \begin{Description}\relax
@@ -151,11 +246,10 @@ pp=data.frame(aa=x,  bb=y, cc=v,  dd=z,  ee=t)
 summary(pp)
 
 pp1 = clean(pp, min.val=0.06)
-summary(pp1)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{corr.perm}{Pearson Correlation by Permutation}{corr.perm}
 %
 \begin{Description}\relax
@@ -195,8 +289,8 @@ y <- runif(50,0,1)*x
 toto = corr.perm(x, y)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{cv}{Coefficient of Variation (CV)}{cv}
 %
 \begin{Usage}
@@ -225,8 +319,8 @@ x=rnorm(50)
 cv(x)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{day}{day}{day}
 %
 \begin{Description}\relax
@@ -252,8 +346,8 @@ day(x)
 # will soon be available
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{Errbar}{error bars}{Errbar}
 %
 \begin{Description}\relax
@@ -320,8 +414,8 @@ Errbar( x, y, yCI=yci, xCI=xci )
 
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{fct}{Print bmisc functions}{fct}
 %
 \begin{Description}\relax
@@ -333,8 +427,8 @@ Print all functions of bmisc package
 fct()
 \end{verbatim}
 \end{Usage}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{format.hms}{Format seconds into hours}{format.hms}
 %
 \begin{Description}\relax
@@ -363,8 +457,8 @@ returns hrs:min:sec
 format.hms(20000)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{gam.Check}{Some diagnostics for a fitted gam model}{gam.Check}
 %
 \begin{Description}\relax
@@ -437,8 +531,8 @@ gam.check(b, main=c("A","B","C","D"))
 
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{get.partial.etas}{get partial etas}{get.partial.etas}
 %
 \begin{Usage}
@@ -460,15 +554,15 @@ get.partial.etas(model)
 # will soon be available
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{histplot}{histplot}{histplot}
 %
 \begin{Usage}
 \begin{verbatim}
 histplot(dat, breaks="Sturges", barc="steelblue", borc="white",
          fit.norm=TRUE, lcol="brown", stat=NULL, 
-         stat.lab=c("Mean","Median"), box=TRUE,rug=TRUE, 
+         stat.lab=c("Mean","Median"), box=TRUE, rug=TRUE, 
          main,...)
 
 
@@ -477,7 +571,15 @@ histplot(dat, breaks="Sturges", barc="steelblue", borc="white",
 %
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{dat}] numeric vector
+\item[\code{dat}] one of:
+\begin{itemize}
+
+\item a numeric vector,
+\item an object of class \code{"norm"} resulting from a
+call to \code{\LinkA{norm.test}{norm.test}}
+\end{itemize}
+
+
 \item[\code{breaks}] one of:
 \begin{itemize}
 
@@ -524,10 +626,36 @@ will compute the intended number of breaks as a function of \code{x}.
 \begin{ExampleCode}
 x=rnorm(50)
 histplot(x)
+
+norm.x=norm.test(x)
+histplot(norm.x)  
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
+\HeaderA{inv.pred}{Inverse Predictions with SE}{inv.pred}
+\keyword{\textbackslash{}textasciitilde{}kwd1}{inv.pred}
+\keyword{\textbackslash{}textasciitilde{}kwd2}{inv.pred}
+%
+\begin{Usage}
+\begin{verbatim}
+xxx( data ,  ,  ,  )
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{data}] 
+
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
+\newpage
+\inputencoding{utf8}
 \HeaderA{is.even}{is even}{is.even}
 %
 \begin{Description}\relax
@@ -564,8 +692,8 @@ is.even(5)
 is.even(6)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{is.odd}{is odd}{is.odd}
 %
 \begin{Description}\relax
@@ -602,8 +730,8 @@ is.odd(5)
 is.odd(6)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{last}{last}{last}
 %
 \begin{Usage}
@@ -625,8 +753,8 @@ last(x)
 # will soon be available
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{lev}{Levene type tests}{lev}
 %
 \begin{Description}\relax
@@ -666,7 +794,7 @@ When using the \code{lm} method, \code{data} doesn't need to be defined. When us
 \code{formula} or \code{default} methods, \code{data} can be defined if the data used
 is in a \code{\LinkA{data.frame}{data.frame}}.
 
-When group is manually defined in the default method, use \code{paste(x,y,z)} or \\*
+When group is manually defined in the default method, use \code{paste(x,y,z)} or\bsl{}*
 \code{interaction(x,y,z)}form where\code{"x"}, \code{"y"} and \code{"z"}
 are the factors. There is no restrictions on the number of factors.
 
@@ -716,9 +844,9 @@ lev(mod)
 
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
-\HeaderA{lib.code}{Retreives the code for 'lib()'.}{lib.code}
+\inputencoding{utf8}
+\HeaderA{lib.code}{Retreives the code for \code{lib()}.}{lib.code}
 %
 \begin{Description}\relax
 Will print in the R windows the code for \code{lib()} \bold{(READ DETAILS)}. 
@@ -764,8 +892,8 @@ lib.code()
 
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{lsmean}{Least Squares Means}{lsmean}
 \methaliasA{lsmean.default}{lsmean}{lsmean.default}
 \methaliasA{lsmean.listof}{lsmean}{lsmean.listof}
@@ -864,8 +992,8 @@ lsmean(fit,data,factors=c("x1","x2")
 ## End(Not run)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{make.z}{make z}{make.z}
 %
 \begin{Usage}
@@ -890,8 +1018,8 @@ make.z(x, index = NULL)
 # will soon be available
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{mc.long}{Pairwise t tests in long format}{mc.long}
 %
 \begin{Description}\relax
@@ -973,8 +1101,8 @@ res <- mc.long(mod)   #### results are put in "res" object.
 
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{mse}{Mean square error}{mse}
 \aliasA{mes}{mse}{mes}
 %
@@ -1013,8 +1141,8 @@ mse(mod)
 
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{n}{Sample size (n)}{n}
 %
 \begin{Description}\relax
@@ -1041,8 +1169,8 @@ x= rep(c(rnorm(30,20,5),NA),3)
 n(x)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{norm.test}{Normality tests}{norm.test}
 %
 \begin{Description}\relax
@@ -1053,7 +1181,7 @@ D'Agostino Skewness, Anscombe-Glynn Kurtosis and D'Agostino-Pearson normality te
 \begin{Usage}
 \begin{verbatim}
 ## Default S3 method:
- norm.test(x, title=NULL, sk=c("G1","b1","mc"), type)
+ norm.test(norm.test(x, title=NULL, sk=c("G1","b1","mc"), type))
 \end{verbatim}
 \end{Usage}
 %
@@ -1061,7 +1189,7 @@ D'Agostino Skewness, Anscombe-Glynn Kurtosis and D'Agostino-Pearson normality te
 \begin{ldescription}
 \item[\code{x }] numeric vector or an object of class \code{"lm"} (i.e. lm, aov, glm, gam, ...).
 \item[\code{title }] the title at the top of the results. Default is "Normality Tests".
-\item[\code{sk }] type of skewness used in D'Agostino skewness test. Can be \code{"G1"},\code{"b1"} or \code{"mc"} (default). Read details.
+\item[\code{sk }] type of skewness used in D'Agostino skewness test. Can be \code{"G1"},\code{"b1"} or \code{"mc"}. Read details.
 \item[\code{type }] type of residuals which should be used. See details.
 \end{ldescription}
 \end{Arguments}
@@ -1072,41 +1200,42 @@ For example, \code{class(}aov.model\code{)} gives \code{"aov" "lm"} and \code{cl
 gives \code{"glm" "lm"}. The \code{type} of residuals can be defined. It generally includes 
 \code{c("working", "response", "deviance", "pearson", "partial")}.
 
+
 D'Agostino-Pearson's test is more appropriate for analysing a vector with
 duplicate values in it. The more duplicate values in a vector, the more
-Shapiro-Wilk will be far from correctly testing the \eqn{H{_0}}{} hypothesis.
+Shapiro-Wilk will be far from correctly testing the \eqn{H0}{} hypothesis.
 
-Given samples from a population, the equation for the sample skewness \eqn{g{_1}}{}
-is a biased estimator of the population skewness. The use of \eqn{G{_1}}{} or \eqn{b{_1}}{} is advisable.
+Given samples from a population, the equation for the sample skewness \eqn{g1}{}
+is a biased estimator of the population skewness. The use of \eqn{G1}{} or \eqn{b1}{} is advisable.
 For large samples, the various skewness estimates yield similar results. For small
-normal distributed samples, \eqn{b{_1}}{} is less biased than \eqn{G{_1}}{}.
-However, for small non-normal distributed samples, \eqn{G{_1}}{} is less biased than \eqn{b{_1}}{}.
+normal distributed samples, \eqn{b1}{} is less biased than \eqn{G1}{}.
+However, for small non-normal distributed samples, \eqn{G1}{} is less biased than \eqn{b1}{}.
 These two skewness estimate can be sensitive to outliers in the data (contaminated data).
 Therefore, the medcouple \code{\LinkA{mc}{mc}} is also an option in \code{type}. It has a good
 performance on uncontaminated data and is robust on contaminated data.
 For more information on medcouple, please read references and/or type \code{\LinkA{mc}{mc}} (\code{robustbase::mc}).
 
-Here, d'Agostino skewness test is based on \code{mc} by default:
+Here, d'Agostino skewness test is based on \code{mc} with default settings:
 
 \begin{description}
 
-\item[\eqn{g{_1}=}{}] 
-\eqn{m{_3} / m{_2}^{(3/2)}}{}.
+\item[\eqn{g1=}{}] 
+\eqn{m3 / m2^(3/2)}{}.
 
-where \eqn{m{_3}}{} is the sample third central moment, and \eqn{m{_2}}{} is the sample variance.
+where \eqn{m3}{} is the sample third central moment, and \eqn{m2}{} is the sample variance.
 
 This is the typical definition used in many older textbooks.
 
-\item[\eqn{G{_1}=}{}] 
-\eqn{g{_1} * [k{_3}/(k{_2}^{(3/2)})] = g{_1} * [sqrt{n(n-1)} / (n-2)]}{}.
+\item[\eqn{G1=}{}] 
+\eqn{g1 * [k3/(k2^(3/2))] = g1 * [sqrt{n(n-1)} / (n-2)]}{}.
 
-where \eqn{k{_3}}{} is the unique symmetric unbiased estimator of the third
-cumulant and \eqn{k{_2}}{} is the symmetric unbiased estimator of the second cumulant.
+where \eqn{k3}{} is the unique symmetric unbiased estimator of the third
+cumulant and \eqn{k2}{} is the symmetric unbiased estimator of the second cumulant.
 
 Used in SAS and SPSS.
 
-\item[\eqn{b{_1}=}{}] 
-\eqn{m{_3} / s^3 = g_1 ((n-1)/n)^{(3/2)}}{}.
+\item[\eqn{b1=}{}] 
+\eqn{m3 / s^3 = g1 ((n-1)/n)^(3/2)}{}.
 
 Used in MINITAB and BMDP.
 
@@ -1123,14 +1252,18 @@ A list is returned with the following two components
 
 \begin{ldescription}
 \item[\code{D }] Lilliefor results
-\item[\code{W }] Shapiro-Francia results
+\item[\code{W'}] Shapiro-Francia results
 \item[\code{W }] Shapiro-Wilk results
-\item[\code{Zb\eqn{_1}{} }] D'Agostino Skewness results
-\item[\code{Zb\eqn{_2}{} }] Anscombe-Glynn Kurtosis results
-\item[\code{Chi\eqn{^2}{} }] D'Agostino Pearson results
+\item[\code{Zb1 }] D'Agostino Skewness results
+\item[\code{Zb2 }] Anscombe-Glynn Kurtosis results
+\item[\code{Chi\textasciicircum{}2 }] D'Agostino Pearson results
 
 \end{ldescription}
 \end{Value}
+%
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
 %
 \begin{References}\relax
 D. N. Joanes and C. A. Gill (1998),
@@ -1150,7 +1283,7 @@ A Robust Measure of Skewness;
 \end{References}
 %
 \begin{SeeAlso}\relax
-\code{residuals}, \code{residuals.lm}, \code{residuals.glm}, and \code{residuals.gam}
+\code{\LinkA{residuals}{residuals}}, \code{\LinkA{residuals.lm}{residuals.lm}}, \code{\LinkA{residuals.glm}{residuals.glm}}, and \code{\LinkA{residuals.gam}{residuals.gam}}
 \end{SeeAlso}
 %
 \begin{Examples}
@@ -1158,7 +1291,6 @@ A Robust Measure of Skewness;
 x <- rnorm(300, 50, 10)
 y  <- 5*(x +10*(rnorm(300,1,2)))
 
-histplot(x)
 norm.test(x)            ## mc skewness
 norm.test(x, type="G1") ## G1 skewness
 norm.test(x, type="b1") ## b1 skewness
@@ -1168,8 +1300,8 @@ norm.test(mod)
 
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{P.adjust}{Adjust P-values for Multiple Comparisons}{P.adjust}
 \methaliasA{P.adjust.methods}{P.adjust}{P.adjust.methods}
 %
@@ -1295,7 +1427,7 @@ Adjusted P-values for simultaneous inference.
 \end{References}
 %
 \begin{SeeAlso}\relax
-\code{pairwise.t.test}, \code{mc.long}, \code{DTK.test}, \code{TukeyHSD}, and \code{glht}
+\code{\LinkA{pairwise.t.test}{pairwise.t.test}}, \code{\LinkA{mc.long}{mc.long}}, \code{\LinkA{DTK.test}{DTK.test}}, \code{\LinkA{TukeyHSD}{TukeyHSD}} and \code{\LinkA{glht}{glht}}
 \end{SeeAlso}
 %
 \begin{Examples}
@@ -1329,8 +1461,40 @@ pN.a <- sapply(P.adjust.M, function(meth) P.adjust(pN, meth))
 round((pN.a / p.adj)[1:20, ] , 4)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
+\HeaderA{pack.list}{List of installed packages}{pack.list}
+%
+\begin{Description}\relax
+Create a text file containing the list of the packages currently installed in R.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+pack.list(n.names=7)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{n.names}] 
+Number of package names to put per line of the output text file.
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
+%
+\begin{Examples}
+\begin{ExampleCode}
+pack.list()
+pack.list(5)
+\end{ExampleCode}
+\end{Examples}
+\newpage
+\inputencoding{utf8}
 \HeaderA{pair.diff}{Mean differences matrix and their associated standard Errors}{pair.diff}
 %
 \begin{Description}\relax
@@ -1398,8 +1562,8 @@ pair.diff(y=y, data=z)
 pair.diff(mod)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{performance}{performance}{performance}
 %
 \begin{Usage}
@@ -1427,8 +1591,88 @@ performance(expr, samples = 1, gcFirst = TRUE)
 # will soon be available
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
+\HeaderA{plot.mat}{Standard plot for maturity ogive}{plot.mat}
+\keyword{\textbackslash{}textasciitilde{}kwd1}{plot.mat}
+\keyword{\textbackslash{}textasciitilde{}kwd2}{plot.mat}
+%
+\begin{Usage}
+\begin{verbatim}
+xxx( data ,  ,  ,  )
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{data}] 
+
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
+\newpage
+\inputencoding{utf8}
+\HeaderA{plot.ypr}{Standard Yield per Recruit plot.}{plot.ypr}
+%
+\begin{Description}\relax
+Yield per Recruit and Spawning Stock Biomass per Recruit are plotted with standard reference points. 
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+ ## S3 method for class 'ypr'
+plot.ypr(object, main, ylab.ypr, ylab.ssb, xlab, col.ypr, col.ssb, ref, legend)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{object}] an object of class \code{"ypr"} resulting from a
+call to \code{\LinkA{ypr.l}{ypr.l}}
+
+\item[\code{main}] main title for the graph
+
+\item[\code{ylab.ypr}] a label for the YPR \code{y} axis
+
+\item[\code{ylab.ssb}] a label for the SSB/R \code{y} axis
+
+\item[\code{xlab}] a label for the YPR \code{x} axis.
+
+\item[\code{col.ypr}] the color of the the color of the YPR line.
+
+\item[\code{col.ssb}] the color of the the color of the SSB/R line.
+
+\item[\code{ref}] logical; if \code{TRUE}, standard reference points are added to the plot.
+
+\item[\code{legend}] logical; if \code{TRUE}, a legend is added in the \code{'topright'} corner of the plot.
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+More to come.
+\end{Details}
+%
+\begin{SeeAlso}\relax
+\code{\LinkA{ypr.l}{ypr.l}}
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+ypr.mod = ypr.l(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), 
+                l.start=72.53,last.age=25,LW=c(exp( -18.47894),3.043), F.max=2,
+                F.incr.YPR=0.01, M=0.2, mat=list('full',900), f.MSP=0.4, riv.calc=F)  
+
+plot(ypr.mod)
+
+\end{ExampleCode}
+\end{Examples}
+\newpage
+\inputencoding{utf8}
 \HeaderA{QQplot}{QQplot}{QQplot}
 %
 \begin{Usage}
@@ -1439,11 +1683,19 @@ QQplot(dat, quant=TRUE,cex.q=2,norm=T, ...)
 %
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{dat}] numeric vector
+\item[\code{dat}] one of:
+\begin{itemize}
+
+\item a numeric vector,
+\item an object of class \code{"norm"} resulting from a
+call to \code{\LinkA{norm.test}{norm.test}}
+\end{itemize}
+
+
 \item[\code{quant}] logical; T for adding quantiles 75, 50 (median) and 25.
 \item[\code{cex.q}] numeric vector giving the amount by which plotting symbols should be magnified relative to the default
 \item[\code{norm}] logical; T adds a line to a normal quantile-quantile plot.
-\item[\code{...}] additional arguments to be passed (see \code{\LinkA{par}{par}}, \code{\LinkA{qqnorm}{qqnorm}}
+\item[\code{...}] additional arguments to be passed (see \code{\LinkA{par}{par}}, \code{\LinkA{qqnorm}{qqnorm}})
 \end{ldescription}
 \end{Arguments}
 %
@@ -1451,10 +1703,13 @@ QQplot(dat, quant=TRUE,cex.q=2,norm=T, ...)
 \begin{ExampleCode}
 x=rnorm(50)
 QQplot(x)
+
+norm.x=norm.test(x)
+QQplot(norm.x)  
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{r.colors}{Pie charts of all R character colors}{r.colors}
 %
 \begin{Description}\relax
@@ -1490,8 +1745,8 @@ None
 r.colors()
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{reject.z}{reject z}{reject.z}
 %
 \begin{Usage}
@@ -1519,8 +1774,8 @@ reject.z(x, index = NULL, threshold = 2)
 # will soon be available
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{replace.z}{replace z}{replace.z}
 %
 \begin{Usage}
@@ -1548,8 +1803,65 @@ replace.z(x, index = NULL, threshold = 2)
 # will soon be available
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
+\HeaderA{resid.ortho}{Orthogonal residuals}{resid.ortho}
+\keyword{\textbackslash{}textasciitilde{}kwd1}{resid.ortho}
+\keyword{\textbackslash{}textasciitilde{}kwd2}{resid.ortho}
+%
+\begin{Usage}
+\begin{verbatim}
+xxx( data ,  ,  ,  )
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{data}] 
+
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
+\newpage
+\inputencoding{utf8}
+\HeaderA{rivard}{Rivard Weights Calculation}{rivard}
+%
+\begin{Description}\relax
+This function applies Rivard equations to mid-year weight at age data to adjust values to Jan-1 basis. 
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+rivard(pds, pred=FALSE, K=2, plus.gr=FALSE)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{data}] 
+
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+More to come.  Will be adding interpolation for spawning season.
+\end{Details}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+x=rnorm(30,800,10)
+rivard(data.frame("2000"=x,"2001"=x*1.2, "2002"=x*0.8,"2003"=x*0.5))
+
+\end{ExampleCode}
+\end{Examples}
+\newpage
+\inputencoding{utf8}
 \HeaderA{rm.levels}{rm factor levels}{rm.levels}
 %
 \begin{Usage}
@@ -1571,8 +1883,8 @@ rm.levels(factor)
 # will soon be available
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{rollmin}{rollmin}{rollmin}
 %
 \begin{Usage}
@@ -1607,8 +1919,8 @@ rollmin(x, k, na.pad = FALSE, align = c("center", "left", "right"),
 # will soon be available
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{roundup}{roundup}{roundup}
 %
 \begin{Description}\relax
@@ -1651,8 +1963,8 @@ round(2.5)
 roundup(2.5)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{runmax}{runmax}{runmax}
 %
 \begin{Usage}
@@ -1677,8 +1989,8 @@ runmax(x, window)
 # will soon be available
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{runmean}{runmean}{runmean}
 %
 \begin{Usage}
@@ -1703,8 +2015,8 @@ runmean(x, window)
 # will soon be available
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{runmin}{runmin}{runmin}
 %
 \begin{Usage}
@@ -1729,8 +2041,31 @@ runmin(x, window)
 # will soon be available
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
+\HeaderA{s.an}{Simulations for YPR model}{s.an}
+\keyword{\textbackslash{}textasciitilde{}kwd1}{s.an}
+\keyword{\textbackslash{}textasciitilde{}kwd2}{s.an}
+%
+\begin{Usage}
+\begin{verbatim}
+xxx( data ,  ,  ,  )
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{data}] 
+
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
+\newpage
+\inputencoding{utf8}
 \HeaderA{se}{Standard Error}{se}
 %
 \begin{Usage}
@@ -1759,8 +2094,8 @@ x=rnorm(50)
 se(x)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{show.North}{North arrow for a map}{show.North}
 %
 \begin{Description}\relax
@@ -1811,8 +2146,8 @@ show.North(c(0.8,0.9))
 show.North(c(1.01,0.9))  ### gives a warning
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{sort.vdf}{Sort Data Frames and Vectors}{sort.vdf}
 %
 \begin{Description}\relax
@@ -1855,8 +2190,42 @@ sort.vdf(z,by= ~ +x +y)     ### Sort (z) by two column (+x and then +y)
 sort.vdf(z,by= ~ +x -y)     ### Sort (z) by two column (+x and then -y)
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
+\HeaderA{summary.ypr}{Summarizing the results of YPR models.}{summary.ypr}
+\keyword{\textbackslash{}textasciitilde{}kwd1}{summary.ypr}
+\keyword{\textbackslash{}textasciitilde{}kwd2}{summary.ypr}
+%
+\begin{Description}\relax
+\code{summary} method for class \code{"ypr"}.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+## S3 method for class 'ypr'
+summary(object)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{object}] an object of class \code{"ypr"} resulting from a
+call to \code{\LinkA{ypr.l}{ypr.l}}.
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+ypr.mod = ypr.l(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), 
+                l.start=72.53,last.age=25,LW=c(exp( -18.47894),3.043), F.max=2,
+                F.incr.YPR=0.01, M=0.2, mat=list('full',900), f.MSP=0.4, riv.calc=F)  
+
+summary(ypr.mod)
+\end{ExampleCode}
+\end{Examples}
+\newpage
+\inputencoding{utf8}
 \HeaderA{ttest.perm}{Student's t-tests by Permutation}{ttest.perm}
 \keyword{ttest}{ttest.perm}
 %
@@ -1945,8 +2314,8 @@ y <- runif(50,0,1)*x
 toto = ttest.perm(x, y)  ##independant samples ttest
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{unload}{Unload packages}{unload}
 %
 \begin{Description}\relax
@@ -1978,8 +2347,8 @@ unload(mgcv)
 search()
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{week.1}{week.1}{week.1}
 %
 \begin{Description}\relax
@@ -2009,8 +2378,8 @@ Denis Chabot
 # will soon be available
 \end{ExampleCode}
 \end{Examples}
-\inputencoding{utf8}
 \newpage
+\inputencoding{utf8}
 \HeaderA{week.num}{week.num}{week.num}
 %
 \begin{Description}\relax
@@ -2049,10 +2418,9 @@ week.num(dated, "monday")
 week.num(dated)
 \end{ExampleCode}
 \end{Examples}
-
-\inputencoding{utf8}
 \newpage
-\HeaderA{YPR.l}{Length Based Yield Per Recruit}{YPR.l}
+\inputencoding{utf8}
+\HeaderA{ypr.l}{Length Based Yield Per Recruit }{ypr.l}
 %
 \begin{Description}\relax
 Length based Yield Per Recruit model is define by fishery selectivity and life history parameters related to length. 
@@ -2062,16 +2430,18 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 %
 \begin{Usage}
 \begin{verbatim}
-YPR.l(fsel.type, last.age, vonB, l.start, LW, F.max, F.incr.YPR, 
-      M, full.mat, f.MSP)
+ ypr.l(fsel.type, last.age, age.step, vonB, l.start, LW, F.max, F.incr.YPR, mat, 
+         M, f.MSP, riv.calc=FALSE, F.f=0, M.f=0.5)
 \end{verbatim}
 \end{Usage}
 %
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{fsel.type}] a list containing the type of fishery selectivity and the values needed for the function related to the type. See Details. 
+\item[\code{fsel.type}] a list containing the type of fishery selectivity and the values needed for the function related to the type. See 'Details'. 
 
 \item[\code{last.age}] last age to be considered in the model
+
+\item[\code{age.step}] steps used to generate ages (\code{0:last.age}). Default is \code{1}.
 
 \item[\code{vonB}] a vector containing \code{c(Linf,K)} from von Bertalanffy grotwh curve. 
 
@@ -2079,16 +2449,21 @@ YPR.l(fsel.type, last.age, vonB, l.start, LW, F.max, F.incr.YPR,
 
 \item[\code{LW}] a vector containing \code{c(alpha,beta)} from length-weight curve.
 
-\item[\code{F.max}] maximum value of instantaneous rate of fishing mortality (\code{F})
+\item[\code{F.max}] maximum value of instantaneous rate of fishing mortality (\code{F}). Default is \code{2}.
 
-\item[\code{F.incr.YPR}] increment value to be used for YPR calculation
+\item[\code{F.incr.YPR}] increment for generating the \code{F} values to be used for YPR calculation. Default is \code{0.0001}.
 
-\item[\code{M}] instantaneous rate of natural mortality (\code{M})
+\item[\code{M}] instantaneous rate of natural mortality (\code{M}). Default is \code{0.2}.
 
-\item[\code{full.mat}] fully mature length value
+\item[\code{mat}] a list containing the type of maturity definition and the values needed for the function related to the type. See 'Details'.
 
-\item[\code{f.MSP}] reference point defined as the fraction of maximum spawning potential
+\item[\code{f.MSP}] reference point defined as the fraction of maximum spawning potential. Default is \code{0.4}.
 
+\item[\code{riv.calc}] a logical value indicating whether to use Rivard weights calculation (\code{TRUE}) or not. Default is \code{FALSE}.
+
+\item[\code{F.f}] fraction of instantaneous rate of fishing mortality (\code{F}) before spawning.
+
+\item[\code{M.f}] fraction of instantaneous rate of natural mortality (\code{M}) before spawning.
 
 \end{ldescription}
 \end{Arguments}
@@ -2097,12 +2472,16 @@ YPR.l(fsel.type, last.age, vonB, l.start, LW, F.max, F.incr.YPR,
 More to come.
 \end{Details}
 %
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
+%
 \begin{Examples}
 \begin{ExampleCode}
 
-YPR.l(fsel.type=list("ramp",650,900), vonB=c(coeffs3[1],coeffs3[2]), 
-      l.start=72.53,last.age=25, LW=c(coeffs2[2],coeffs2[1]),F.max=2, 
-      F.incr.YPR=0.01, M=0.2, full.mat=900, f.MSP=0.4) 
+ypr.l(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), 
+      l.start=72.53,last.age=25,LW=c(exp( -18.47894),3.043), F.max=2,
+      F.incr.YPR=0.01, M=0.2, mat=list('full',900), f.MSP=0.4, riv.calc=F) 
 
 \end{ExampleCode}
 \end{Examples}
