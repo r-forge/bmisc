@@ -1180,13 +1180,13 @@ D'Agostino Skewness, Anscombe-Glynn Kurtosis and D'Agostino-Pearson normality te
 \begin{Usage}
 \begin{verbatim}
 ## Default S3 method:
- norm.test(norm.test(x, title=NULL, sk=c("G1","b1","mc"), type))
+ plot(norm.test(x, title=NULL, type=c("G1","b1","mc")))
 \end{verbatim}
 \end{Usage}
 %
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{x }] numeric vector or an object of class \code{"lm"} (i.e. lm, aov, glm, gam, ...).
+\item[\code{x }] numeric vector or an object resulting from a model. Read details. 
 \item[\code{title }] the title at the top of the results. Default is "Normality Tests".
 \item[\code{sk }] type of skewness used in D'Agostino skewness test. Can be \code{"G1"},\code{"b1"} or \code{"mc"}. Read details.
 \item[\code{type }] type of residuals which should be used. See details.
@@ -1194,20 +1194,19 @@ D'Agostino Skewness, Anscombe-Glynn Kurtosis and D'Agostino-Pearson normality te
 \end{Arguments}
 %
 \begin{Details}\relax
-This function can be used on objects having \code{"lm"} in their \code{class} description. 
+This function can be used on objects belonging to \code{c('lm', 'aov', 'glm', 'gam')} classes. 
 For example, \code{class(}aov.model\code{)} gives \code{"aov" "lm"} and \code{class(}glm.model\code{)} 
 gives \code{"glm" "lm"}. The \code{type} of residuals can be defined. It generally includes 
 \code{c("working", "response", "deviance", "pearson", "partial")}.
-
 
 D'Agostino-Pearson's test is more appropriate for analysing a vector with
 duplicate values in it. The more duplicate values in a vector, the more
 Shapiro-Wilk will be far from correctly testing the \eqn{H0}{} hypothesis.
 
 Given samples from a population, the equation for the sample skewness \eqn{g1}{}
-is a biased estimator of the population skewness. The use of \eqn{G1}{} or \eqn{b1}{} is advisable.
+is a biased estimator of the population skewness. The use of \eqn{G{_1}}{} or \eqn{b1}{} is advisable.
 For large samples, the various skewness estimates yield similar results. For small
-normal distributed samples, \eqn{b1}{} is less biased than \eqn{G1}{}.
+normal distributed samples, \eqn{b{_1}}{} is less biased than \eqn{G1}{}.
 However, for small non-normal distributed samples, \eqn{G1}{} is less biased than \eqn{b1}{}.
 These two skewness estimate can be sensitive to outliers in the data (contaminated data).
 Therefore, the medcouple \code{\LinkA{mc}{mc}} is also an option in \code{type}. It has a good
@@ -1260,10 +1259,6 @@ A list is returned with the following two components
 \end{ldescription}
 \end{Value}
 %
-\begin{Author}\relax
-Benoit Bruneau
-\end{Author}
-%
 \begin{References}\relax
 D. N. Joanes and C. A. Gill (1998),
 Comparing measures of sample skewness and kurtosis.
@@ -1280,10 +1275,6 @@ A Robust Measure of Skewness;
 \emph{JCGS} \bold{13} (4), 996--1017.
 
 \end{References}
-%
-\begin{SeeAlso}\relax
-\code{\LinkA{residuals}{residuals}}, \code{\LinkA{residuals.lm}{residuals.lm}}, \code{\LinkA{residuals.glm}{residuals.glm}}, and \code{\LinkA{residuals.gam}{residuals.gam}}
-\end{SeeAlso}
 %
 \begin{Examples}
 \begin{ExampleCode}

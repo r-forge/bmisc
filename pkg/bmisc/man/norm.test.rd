@@ -15,17 +15,16 @@ D'Agostino Skewness, Anscombe-Glynn Kurtosis and D'Agostino-Pearson normality te
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x }{numeric vector or an object of class \code{"lm"} (i.e. lm, aov, glm, gam, ...).}
+  \item{x }{numeric vector or an object resulting from a model. Read details. }
   \item{title }{the title at the top of the results. Default is "Normality Tests".}
   \item{sk }{type of skewness used in D'Agostino skewness test. Can be \code{"G1"},\code{"b1"} or \code{"mc"}. Read details.}
   \item{type }{type of residuals which should be used. See details.}
 }
 \details{
-This function can be used on objects having \code{"lm"} in their \code{class} description. 
+This function can be used on objects belonging to \code{c('lm', 'aov', 'glm', 'gam')} classes. 
 For example, \code{class(}aov.model\code{)} gives \code{"aov" "lm"} and \code{class(}glm.model\code{)} 
 gives \code{"glm" "lm"}. The \code{type} of residuals can be defined. It generally includes 
 \code{c("working", "response", "deviance", "pearson", "partial")}.
-
 
 D'Agostino-Pearson's test is more appropriate for analysing a vector with
 duplicate values in it. The more duplicate values in a vector, the more
