@@ -20,9 +20,10 @@ histplot(dat, breaks="Sturges", barc="steelblue", borc="white",
 \arguments{
   \item{dat}{one of:
    		\itemize{
-      		\item a numeric vector,
-      		\item an object of class \code{"norm"} resulting from a
-    			call to \code{\link{norm.test}}}
+      		\item a numeric vector
+      		\item an object of class \code{c('norm','lm','aov','glm','gam')} resulting from a
+    			calls to \code{c(\link{norm.test},\link{lm},\link{aov},\link{glm},\link{gam})}
+    	}
   }
   \item{breaks}{one of:
     \itemize{

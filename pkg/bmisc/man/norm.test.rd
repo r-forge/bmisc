@@ -15,7 +15,13 @@ D'Agostino Skewness, Anscombe-Glynn Kurtosis and D'Agostino-Pearson normality te
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x }{numeric vector or an object resulting from a model. Read details. }
+  \item{x}{one of:
+        \itemize{
+            \item a numeric vector
+            \item an object of class \code{c('lm','aov','glm','gam')} resulting from a
+                calls to \code{c(\link{lm},\link{aov},\link{glm},\link{gam})}
+        }
+  }
   \item{title }{the title at the top of the results. Default is "Normality Tests".}
   \item{sk }{type of skewness used in D'Agostino skewness test. Can be \code{"G1"},\code{"b1"} or \code{"mc"}. Read details.}
   \item{type }{type of residuals which should be used. See details.}
@@ -68,15 +74,13 @@ Here, d'Agostino skewness test is based on \code{mc} with default settings:
 
 More will be added to this section especially for Anscombe-Glynn Kurtosis test.
 }
-\value{A list is returned with the following two components
+\value{An S4 object of class 'norm' containig the following components:
 
-  \item{D }{Lilliefor results}
-  \item{W'}{Shapiro-Francia results}
-  \item{W }{Shapiro-Wilk results}
-  \item{Zb1 }{D'Agostino Skewness results}
-  \item{Zb2 }{Anscombe-Glynn Kurtosis results}
-  \item{Chi^2 }{D'Agostino Pearson results}
-
+  \item{statistics}{the statistics for each analysis}
+  \item{p.value}{estimated p-values based on the statistics}
+  \item{data}{original data (\code{data.frame})}
+  \item{data.name }{names of the object called}
+  \item{title}{title for the result}
 }
 \references{
   D. N. Joanes and C. A. Gill (1998),

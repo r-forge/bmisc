@@ -574,9 +574,10 @@ histplot(dat, breaks="Sturges", barc="steelblue", borc="white",
 \item[\code{dat}] one of:
 \begin{itemize}
 
-\item a numeric vector,
-\item an object of class \code{"norm"} resulting from a
-call to \code{\LinkA{norm.test}{norm.test}}
+\item a numeric vector
+\item an object of class \code{c('norm','lm','aov','glm','gam')} resulting from a
+calls to \code{c(\LinkA{norm.test}{norm.test},\LinkA{lm}{lm},\LinkA{aov}{aov},\LinkA{glm}{glm},\LinkA{gam}{gam})}
+
 \end{itemize}
 
 
@@ -1187,7 +1188,16 @@ D'Agostino Skewness, Anscombe-Glynn Kurtosis and D'Agostino-Pearson normality te
 %
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{x }] numeric vector or an object resulting from a model. Read details. 
+\item[\code{x}] one of:
+\begin{itemize}
+
+\item a numeric vector
+\item an object of class \code{c('lm','aov','glm','gam')} resulting from a
+calls to \code{c(\LinkA{lm}{lm},\LinkA{aov}{aov},\LinkA{glm}{glm},\LinkA{gam}{gam})}
+
+\end{itemize}
+
+
 \item[\code{title }] the title at the top of the results. Default is "Normality Tests".
 \item[\code{sk }] type of skewness used in D'Agostino skewness test. Can be \code{"G1"},\code{"b1"} or \code{"mc"}. Read details.
 \item[\code{type }] type of residuals which should be used. See details.
@@ -1247,16 +1257,14 @@ More will be added to this section especially for Anscombe-Glynn Kurtosis test.
 \end{Details}
 %
 \begin{Value}
-A list is returned with the following two components
+An S4 object of class 'norm' containig the following components:
 
 \begin{ldescription}
-\item[\code{D }] Lilliefor results
-\item[\code{W'}] Shapiro-Francia results
-\item[\code{W }] Shapiro-Wilk results
-\item[\code{Zb1 }] D'Agostino Skewness results
-\item[\code{Zb2 }] Anscombe-Glynn Kurtosis results
-\item[\code{Chi\textasciicircum{}2 }] D'Agostino Pearson results
-
+\item[\code{statistics}] the statistics for each analysis
+\item[\code{p.value}] estimated p-values based on the statistics
+\item[\code{data}] original data (\code{data.frame})
+\item[\code{data.name }] names of the object called
+\item[\code{title}] title for the result
 \end{ldescription}
 \end{Value}
 %
@@ -1677,9 +1685,10 @@ QQplot(dat, quant=TRUE,cex.q=2,norm=T, ...)
 \item[\code{dat}] one of:
 \begin{itemize}
 
-\item a numeric vector,
-\item an object of class \code{"norm"} resulting from a
-call to \code{\LinkA{norm.test}{norm.test}}
+\item a numeric vector
+\item an object of class \code{c('norm','lm','aov','glm','gam')} resulting from a
+calls to \code{c(\LinkA{norm.test}{norm.test},\LinkA{lm}{lm},\LinkA{aov}{aov},\LinkA{glm}{glm},\LinkA{gam}{gam})}
+
 \end{itemize}
 
 
