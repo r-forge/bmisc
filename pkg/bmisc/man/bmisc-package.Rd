@@ -16,7 +16,7 @@ For pdf version of the help, write \code{vignette("bmisc")}.
 Package: \tab bmisc\cr
 Type: \tab Package\cr
 Version: \tab 0.2-12\cr
-Date: \tab 29-07-2011\cr
+Date: \tab 04-08-2011\cr
 License: \tab LGPL >= 3.0\cr
 
 }      }

@@ -151,7 +151,7 @@ This package has different functions that I have accumulated with time. I am not
 Package: & bmisc\\{}
 Type: & Package\\{}
 Version: & 0.2-12\\{}
-Date: & 29-07-2011\\{}
+Date: & 04-08-2011\\{}
 License: & LGPL >= 3.0\\{}
 
 }      
@@ -639,17 +639,25 @@ histplot(norm.x)
 %
 \begin{Usage}
 \begin{verbatim}
-xxx( data ,  ,  ,  )
+inv.pred( object, cf=1:2, y )
 \end{verbatim}
 \end{Usage}
 %
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{data}] 
+\item[\code{object}] an object of class \code{c('lm','glm')} resulting from a
+calls to \code{c(\LinkA{lm}{lm},\LinkA{glm}{glm})}
 
+\item[\code{cf}] the linear coefficients (\code{'intercept','slope')} to be used. 
+
+\item[\code{y}] the \code{y} value for which \code{x} will be estimated with it's standard error.
 
 \end{ldescription}
 \end{Arguments}
+%
+\begin{Details}\relax
+More to come. 
+\end{Details}
 %
 \begin{Author}\relax
 Benoit Bruneau
@@ -1104,7 +1112,6 @@ res <- mc.long(mod)   #### results are put in "res" object.
 \newpage
 \inputencoding{utf8}
 \HeaderA{mse}{Mean square error}{mse}
-\aliasA{mes}{mse}{mes}
 %
 \begin{Description}\relax
 Estimates the mean square error (mse)
@@ -1597,17 +1604,29 @@ performance(expr, samples = 1, gcFirst = TRUE)
 %
 \begin{Usage}
 \begin{verbatim}
-xxx( data ,  ,  ,  )
+plot.mat(object, se.pred=TRUE, leg=TRUE, ref=TRUE, range.x=c("data","full"), 
+         warn.val=TRUE, ylab="Probabiliti",xlab="Longueur ` la fourche (mm)")
 \end{verbatim}
 \end{Usage}
 %
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{data}] 
+\item[\code{object}] an object of class \code{'glm'} resulting from a call to \code{\LinkA{glm}{glm}}.
 
+\item[\code{se.pred}] logical; if TRUE, SE is plotted.
+
+\item[\code{leg}] logical; if TRUE, a legend containing logistic equation and estimated values for the variables is plotted.
+
+\item[\code{ref}] logical; if TRUE, reference lines for \code{L90, L50 and L10} are plotted.
+
+\item[\code{range.x}] the range used to define \code{xlim} in the plot. Read 'details'.
 
 \end{ldescription}
 \end{Arguments}
+%
+\begin{Details}\relax
+More to come.
+\end{Details}
 %
 \begin{Author}\relax
 Benoit Bruneau
@@ -2045,6 +2064,10 @@ runmin(x, window)
 \HeaderA{s.an}{Simulations for YPR model}{s.an}
 \keyword{\textbackslash{}textasciitilde{}kwd1}{s.an}
 \keyword{\textbackslash{}textasciitilde{}kwd2}{s.an}
+%
+\begin{Description}\relax
+Not ready yet. Use \code{\LinkA{for}{for}} loops for now.
+\end{Description}
 %
 \begin{Usage}
 \begin{verbatim}

@@ -8,16 +8,20 @@ Inverse Predictions with SE
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-xxx( data ,  ,  ,  )
+inv.pred( object, cf=1:2, y )
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{
-%%     ~~Describe \code{fsel.type} here~~
+  \item{object}{an object of class \code{c('lm','glm')} resulting from a
+                calls to \code{c(\link{lm},\link{glm})}
+}
+  \item{cf}{the linear coefficients (\code{'intercept','slope')} to be used. 
+}
+  \item{y}{the \code{y} value for which \code{x} will be estimated with it's standard error.
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+More to come. 
 }
 \value{
 %%  ~Describe the value returned

@@ -8,16 +8,24 @@ Standard plot for maturity ogive
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-xxx( data ,  ,  ,  )
+plot.mat(object, se.pred=TRUE, leg=TRUE, ref=TRUE, range.x=c("data","full"), 
+         warn.val=TRUE, ylab="Probabilité",xlab="Longueur à la fourche (mm)")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{
-%%     ~~Describe \code{fsel.type} here~~
+  \item{object}{an object of class \code{'glm'} resulting from a call to \code{\link{glm}}.
+}
+  \item{se.pred}{logical; if TRUE, SE is plotted.
+}
+  \item{leg}{logical; if TRUE, a legend containing logistic equation and estimated values for the variables is plotted.
+}
+  \item{ref}{logical; if TRUE, reference lines for \code{L90, L50 and L10} are plotted.
+}
+  \item{range.x}{the range used to define \code{xlim} in the plot. Read 'details'.
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+More to come.
 }
 \value{
 %%  ~Describe the value returned

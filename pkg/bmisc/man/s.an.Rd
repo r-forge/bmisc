@@ -5,7 +5,7 @@
 Simulations for YPR model
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Not ready yet. Use \code{\link{for}} loops for now.
 }
 \usage{
 xxx( data ,  ,  ,  )

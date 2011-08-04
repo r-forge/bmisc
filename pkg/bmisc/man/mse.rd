@@ -1,6 +1,6 @@
 \name{mse}
 
-\alias{mes}
+\alias{mse}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Mean square error
