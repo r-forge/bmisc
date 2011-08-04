@@ -58,7 +58,7 @@ More to come.
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Benoit Bruneau
 }
 \note{
 %%  ~~further notes~~
