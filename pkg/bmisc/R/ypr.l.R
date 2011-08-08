@@ -339,10 +339,10 @@ setMethod("summary", "ypr",
             cat("\nTitle:\n ",object@title, "\n", sep = "")
             
             #VonB parameters:
-            cat("\nvon Bartalanffy growth parameters:\n Linf=", object@VonB.parms[[1]], "  K=",object@VonB.parms[[2]] , sep = "")
+            cat("\nvon Bartalanffy growth parameters:\n Linf=", coef(object@parms$vonB)[[1]], "  K=",coef(object@parms$vonB)[[2]] , sep = "")
             
             #LW parameters:
-            cat("\nLength-Weight curve parameters:\n log(alpha)=", log(object@LW.parms[[1]]), "  beta=",object@LW.parms[[2]] , sep = "")
+            cat("\nLength-Weight curve parameters:\n log(alpha)=", log(coef(object@parms$LW)[[2]]), "  beta=",coef(object@parms$LW)[[1]] , sep = "")
             
             # Test Results:
             results = object@ref
