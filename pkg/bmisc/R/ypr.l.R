@@ -377,7 +377,6 @@ plot.ypr<-
                 for(i in 1:dim(sels)[1]){
                     lines(c(-1,ypr)~c(F,F),data=YPR[sels[i,],], lty=2)
                 }
-                
                 points(ypr~F,data=YPR[sels[,1],], pch=21, col='black', bg='white',cex=1.2)
                 y.coord=par('usr')[2]*0.01
                 r.names=rownames(sels)
@@ -395,7 +394,7 @@ plot.ypr<-
             mtext(ylab.ssb,side=4,line=2.9)
             if(legend){
                 legend("topright",col=c("blue","red"),lty=1, lwd=3,legend=c("YPR","SSB/R"),
-                        horiz=TRUE, bty='o', bg='white')
+                        horiz=TRUE, bty='n', bg='white', seg.len=1)
             }
         }
 
