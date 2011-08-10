@@ -48,11 +48,25 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 More to come.
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+  \code{ypr.l} returns an object of \code{\link{class}(S4)} \code{"ypr"}. The functions \code{summary} and \code{plot} are used to respectively
+  obtain a summary and a standard plot of the results.  
+  
+  An object of class \code{"ypr"} has the the following slots:
+
+
+  \item{parms}{the list of parameters used in the model.}
+  \item{base}{a \code{\link{data.frame}} containing the starting values:
+        \itemize{
+            \item relative age classes
+            \item length at age
+            \item weight at age
+        }
+  }
+  \item{refs}{a \code{\link{data.frame}} containing values predicted by the model for the four reference points. See details. }
+  \item{YPR}{a \code{\link{data.frame}} containing the results for all partial Fs.}
+  
+
+  Note that to have access to each slot of an \code{"ypr"} object, one must use \code{"@"} instead of \code{"$"}.
 }
 \references{
 %% ~put references to the literature/web site here ~

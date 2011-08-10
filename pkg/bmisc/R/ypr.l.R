@@ -133,7 +133,6 @@ ypr.l <-
     ##            recalcul en fonction du premier janvier avec Rivard           ##
     ##############################################################################
     if(riv.calc){
-        title= "Length based Yield per Recruit\n   Rivard weights calculations"
 
         F.ts=sweep(F.,MARGIN=2,F.f,`*`)
         M.ts=M*M.f
@@ -213,8 +212,6 @@ ypr.l <-
         
     }else{
         
-        title="Length based Yield per Recruit"
-        
         ##############################################################################
         ##                          Tableau de YPR vs F.i                           ##
         ##############################################################################
@@ -224,16 +221,16 @@ ypr.l <-
         
         
         
-        ##############################################################################
-        ##                       Tableau de YPR vs F.i Resume                       ##
-        ##############################################################################
-        
-        F.i2=seq(0,F.max, by=0.01)
-        F.i2=as.integer( F.i2*1000000)
-        F.i2=F.i2/1000000
-        
-        sel.Fi=which(YPR.table$F %in% F.i2)
-        YPR.table.short=YPR.table[sel.Fi,]
+#        ##############################################################################
+#        ##                       Tableau de YPR vs F.i Resume                       ##
+#        ##############################################################################
+#        
+#        F.i2=seq(0,F.max, by=0.01)
+#        F.i2=as.integer( F.i2*1000000)
+#        F.i2=F.i2/1000000
+#        
+#        sel.Fi=which(YPR.table$F %in% F.i2)
+#        YPR.table.short=YPR.table[sel.Fi,]
         
         
         ##############################################################################
@@ -269,17 +266,14 @@ ypr.l <-
     r.names=c("F.zero","F.01","F.max",f.MSP.name)
     row.names(ref.table)=r.names
     
-    ref.line.sel=data.frame(c(sel2,sel4, sel3))
-    rownames(ref.line.sel)=r.names[c(4,2,3)]
+    ref.line.sel=data.frame(line.sel=c(sel2,sel4, sel3))
+    rownames(ref.line.sel)=r.names[c(2,4,3)]
     
     res=new("ypr",
             parms=parms,
             base=YPR,
-            ref=ref.table,
-            YPR.short=YPR.table.short,
-            YPR=YPR.table,
-            ref.line.sel=ref.line.sel,
-            title=title)
+            refs=ref.table,
+            YPR=YPR.table)
     
     class(parms)
     res
@@ -315,18 +309,15 @@ setClass("ypr",
         representation(
                 parms="list",
                 base="data.frame",
-                ref="data.frame",
-                YPR.short="data.frame",
-                YPR="data.frame",
-                ref.line.sel="data.frame",
-                title = "character"),
+                refs="data.frame",
+                YPR="data.frame")
 )
 
 
 setMethod("show", "ypr",
         function(object){
-            ref.names=rownames(object@ref)
-            dat=object@ref[,1]
+            ref.names=rownames(object@refs)
+            dat=object@refs[,1]
             names(dat)=ref.names
             print(dat)
         }
@@ -334,9 +325,14 @@ setMethod("show", "ypr",
 
 setMethod("summary", "ypr",
         function(object){
+            if(object@parms$riv.calc){
+                title= "Length based Yield per Recruit\n   Rivard weights calculations"                
+            }else{
+                title= "Length based Yield per Recruit"                
+            }
             
             # Title:
-            cat("\nTitle:\n ",object@title, "\n", sep = "")
+            cat("\nTitle:\n ",title, "\n", sep = "")
             
             #VonB parameters:
             cat("\nvon Bartalanffy growth parameters:\n Linf=", coef(object@parms$vonB)[[1]], "  K=",coef(object@parms$vonB)[[2]] , sep = "")
@@ -345,7 +341,7 @@ setMethod("summary", "ypr",
             cat("\nLength-Weight curve parameters:\n log(alpha)=", log(coef(object@parms$LW)[[2]]), "  beta=",coef(object@parms$LW)[[1]] , sep = "")
             
             # Test Results:
-            results = object@ref
+            results = object@refs
             cat("\n\nResults:\n", sep = "")
             print(results)
         }
@@ -365,30 +361,30 @@ plot.ypr<-
             
             
             YPR=object@YPR
-            ref.line.sel=object@ref.line.sel
+            refs=object@refs
             
             par(mar=c(5,4,4,4.1))
             ylim1=c(0,max(YPR$ypr)*1.1)
             ylim2=c(0,max(YPR$ssb)*1.1)
             plot(YPR$ypr~YPR$F  ,main=main,ylim=ylim1, 
                     ylab=ylab.ypr,xlab=xlab,type='l', lwd=3, col=col.ypr, las=1)
-            sels=ref.line.sel
             if(ref){
-                for(i in 1:dim(sels)[1]){
-                    lines(c(-1,ypr)~c(F,F),data=YPR[sels[i,],], lty=2)
+                for(i in 2:dim(refs)[1]){
+                    lines(c(-1,YPR)~c(F,F),data=refs[i,], lty=2)
                 }
-                points(ypr~F,data=YPR[sels[,1],], pch=21, col='black', bg='white',cex=1.2)
+                points(YPR~F,data=refs[2:dim(refs)[1],], pch=21, col='black', bg='white',cex=1.2)
                 y.coord=par('usr')[2]*0.01
-                r.names=rownames(sels)
-                text(x=YPR$F[sels[1,]], y=y.coord, labels=r.names[1], srt=90,adj=c(0.2,1.2) , cex=0.8, font=2)
-                text(x=YPR$F[sels[2,]], y=y.coord, labels=r.names[2], srt=90,adj=c(0.2,-0.4), cex=0.8, font=2)
-                text(x=YPR$F[sels[3,]], y=y.coord, labels=r.names[3], srt=90,adj=c(0.2,1.2) , cex=0.8, font=2)
+                r.names=rownames(refs)
+
+                text(x=refs[2,1], y=y.coord, labels=r.names[2], srt=90,adj=c(0.2,1.2) , cex=0.8, font=2)
+                text(x=refs[3,1], y=y.coord, labels=r.names[3], srt=90,adj=c(0.13,1.2), cex=0.8, font=2)
+                text(x=refs[4,1], y=y.coord, labels=r.names[4], srt=90,adj=c(0.2,-0.4) , cex=0.8, font=2)
             }
             
             par(new=TRUE)
             plot(YPR$ssb~YPR$F,type='l',xaxt="n",yaxt="n",xlab="",ylab="", lwd=3, col=col.ssb, ylim=ylim2)
             
-            if(ref)points(ssb~F,data=YPR[sels[,1],], pch=21, col='black', bg='white',cex=1.2)
+            if(ref)points(SSB.R~F,data=refs[2:dim(refs)[1],], pch=21, col='black', bg='white',cex=1.2)
             
             axis(4, las=1)
             mtext(ylab.ssb,side=4,line=2.9)
