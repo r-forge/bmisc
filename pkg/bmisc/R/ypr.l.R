@@ -74,6 +74,7 @@ ypr.l <-
     ##                             F selectivity                                ##
     ##############################################################################
     switch(fsel.type[[1]],
+            full= F.sel <- full.sel(sel.full=fsel.type[[2]], L = YPR$l.age),
             ramp= F.sel <- ramp.sel(sel.zero =fsel.type[[2]], sel.full = fsel.type[[3]], L = YPR$l.age),
             logistic= F.sel <- logistic.sel(alpha=fsel.type[[2]], beta=fsel.type[[3]], L=YPR$l.age)
     )

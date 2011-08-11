@@ -414,7 +414,7 @@ Errbar( x, y, yCI=yci, xCI=xci )
 \end{ExampleCode}
 \end{Examples}
 \newpage
-\inputencoding{utf8}
+\inputencoding{utf8}1
 \HeaderA{fct}{Print bmisc functions}{fct}
 %
 \begin{Description}\relax
@@ -1188,7 +1188,7 @@ D'Agostino Skewness, Anscombe-Glynn Kurtosis and D'Agostino-Pearson normality te
 \begin{Usage}
 \begin{verbatim}
 ## Default S3 method:
- plot(norm.test(x, title=NULL, type=c("G1","b1","mc")))
+ norm.test(norm.test(x, title=NULL, sk=c("G1","b1","mc"), type))
 \end{verbatim}
 \end{Usage}
 %
@@ -1221,9 +1221,9 @@ duplicate values in it. The more duplicate values in a vector, the more
 Shapiro-Wilk will be far from correctly testing the \eqn{H0}{} hypothesis.
 
 Given samples from a population, the equation for the sample skewness \eqn{g1}{}
-is a biased estimator of the population skewness. The use of \eqn{G{_1}}{} or \eqn{b1}{} is advisable.
+is a biased estimator of the population skewness. The use of \eqn{G1}{} or \eqn{b1}{} is advisable.
 For large samples, the various skewness estimates yield similar results. For small
-normal distributed samples, \eqn{b{_1}}{} is less biased than \eqn{G1}{}.
+normal distributed samples, \eqn{b1}{} is less biased than \eqn{G1}{}.
 However, for small non-normal distributed samples, \eqn{G1}{} is less biased than \eqn{b1}{}.
 These two skewness estimate can be sensitive to outliers in the data (contaminated data).
 Therefore, the medcouple \code{\LinkA{mc}{mc}} is also an option in \code{type}. It has a good
@@ -1274,6 +1274,10 @@ An S4 object of class 'norm' containig the following components:
 \end{ldescription}
 \end{Value}
 %
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
+%
 \begin{References}\relax
 D. N. Joanes and C. A. Gill (1998),
 Comparing measures of sample skewness and kurtosis.
@@ -1290,6 +1294,10 @@ A Robust Measure of Skewness;
 \emph{JCGS} \bold{13} (4), 996--1017.
 
 \end{References}
+%
+\begin{SeeAlso}\relax
+\code{\LinkA{residuals}{residuals}}, \code{\LinkA{residuals.lm}{residuals.lm}}, \code{\LinkA{residuals.glm}{residuals.glm}}, and \code{\LinkA{residuals.gam}{residuals.gam}}
+\end{SeeAlso}
 %
 \begin{Examples}
 \begin{ExampleCode}
@@ -2471,15 +2479,15 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 
 \item[\code{LW}] a vector containing \code{c(alpha,beta)} from length-weight curve.
 
-\item[\code{F.max}] maximum value of instantaneous rate of fishing mortality (\code{F}). Default is \code{2}.
+\item[\code{F.max}] maximum value of instantaneous rate of fishing mortality (\code{F}). Default is 2.
 
-\item[\code{F.incr.YPR}] increment for generating the \code{F} values to be used for YPR calculation. Default is \code{0.0001}.
+\item[\code{F.incr.YPR}] increment for generating the \code{F} values to be used for YPR calculation. Default is 0.0001.
 
-\item[\code{M}] instantaneous rate of natural mortality (\code{M}). Default is \code{0.2}.
+\item[\code{M}] instantaneous rate of natural mortality (\code{M}). Default is 0.2.
 
 \item[\code{mat}] a list containing the type of maturity definition and the values needed for the function related to the type. See 'Details'.
 
-\item[\code{f.MSP}] reference point defined as the fraction of maximum spawning potential. Default is \code{0.4}.
+\item[\code{f.MSP}] reference point defined as the fraction of maximum spawning potential. Default is 0.4.
 
 \item[\code{riv.calc}] a logical value indicating whether to use Rivard weights calculation (\code{TRUE}) or not. Default is \code{FALSE}.
 
@@ -2491,8 +2499,69 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 \end{Arguments}
 %
 \begin{Details}\relax
+The \bold{fishery selectivity} and \bold{maturity by length} components of the model can be defined 
+as one of \code{c("full", "ramp", "logistic")} equations. The proper way to specify which equation to use is by 
+the construct of a \code{\LinkA{list}{list}} where the first element is the name one of the three types of equation. 
+The following elements of the \code{\LinkA{list}{list}} are specific to the type of equation:
+\begin{itemize}
+
+\item \bold{full:}  element \code{[[2]]} is the length at which full maturity is achieved.
+
+\item \bold{ramp:}  element \code{[[2]]} is the maximum length at which maturity is null and 
+element \code{[[3]]} is the minimum length at which maturity is fully achieved.
+
+\item \bold{logistic}  elements \code{[[2]]} and \code{[[3]]} are respectively the \eqn{\alpha}{} and \eqn{\beta}{} components 
+of a logistic curve.
+
+\end{itemize}
+
+\begin{description}
+
+\item[Logistic curve equation:] \eqn{Mat_{est}=\frac{1}{1+e^{-(\alpha+\beta*L)})}}{}
+
+\end{description}
+
+
+\bold{Reference points} used for result output are defined as follow:
+\begin{itemize}
+
+\item \bold{F.zero:}  F level when there is no fishing (F=0).
+\item \bold{F.01}  F level where the slope of yield curve is 10\% of the slope at \code{F.zero}. 
+\item \bold{F.xx}  F level where the MSP is at the level defined by \code{f.MSP} option. Default is 40\% (0.4).
+\item \bold{F.max}  F level where yield is maximum.
+
+\end{itemize}
+
+
 More to come.
 \end{Details}
+%
+\begin{Value}
+\code{ypr.l} returns an object of \code{\LinkA{class}{class}(S4)} \code{"ypr"}. The functions \code{summary} and \code{plot} are used to respectively
+obtain a summary and a standard plot of the results.  
+
+An object of class \code{"ypr"} has the the following slots:
+
+
+\begin{ldescription}
+\item[\code{parms}] the list of parameters used in the model.
+\item[\code{base}] a \code{\LinkA{data.frame}{data.frame}} containing the starting values:
+\begin{itemize}
+
+\item relative age classes
+\item length at age
+\item weight at age
+
+\end{itemize}
+
+
+\item[\code{refs}] a \code{\LinkA{data.frame}{data.frame}} containing values predicted by the model for the four reference points. See details. 
+\item[\code{YPR}] a \code{\LinkA{data.frame}{data.frame}} containing the results for all partial Fs.
+
+
+\end{ldescription}
+Note that to have access to each slot of an \code{"ypr"} object, one must use \code{"@"} instead of \code{"\$"}.
+\end{Value}
 %
 \begin{Author}\relax
 Benoit Bruneau

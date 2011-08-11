@@ -59,7 +59,7 @@ The following elements of the \code{\link{list}} are specific to the type of equ
     of a logistic curve.
 }
 \describe{
-\item{Logistic curve equation:}{\eqn{Mat=1/[1+e^-(\alpha+\beta*L)]  }}
+\item{Logistic curve equation:}{\eqn{Mat_{est}=\frac{1}{1+e^{-(\alpha+\beta*L)})}}}
 }
 
 \bold{Reference points} used for result output are defined as follow:
