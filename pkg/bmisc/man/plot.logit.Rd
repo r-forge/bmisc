@@ -1,5 +1,5 @@
-\name{plot.mat}
-\alias{plot.mat}
+\name{plot.logit}
+\alias{plot.logit}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Standard plot for maturity ogive
@@ -8,7 +8,7 @@ Standard plot for maturity ogive
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-plot.mat(object, se.pred=TRUE, leg=TRUE, ref=TRUE, range.x=c("data","full"), 
+plot.logit(object, se.pred=TRUE, leg=TRUE, ref=TRUE, range.x=c("data","full"), 
          warn.val=TRUE, ylab="Probabilité",xlab="Longueur à la fourche (mm)")
 }
 %- maybe also 'usage' for other objects documented here.

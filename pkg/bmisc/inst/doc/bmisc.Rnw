@@ -22,6 +22,7 @@
 \end{description}
 \Rdcontents{\R{} topics documented:}
 \newpage
+\newpage
 \inputencoding{utf8}
 \HeaderA{att.strp}{Attibute stripper}{att.strp}
 %
@@ -414,7 +415,7 @@ Errbar( x, y, yCI=yci, xCI=xci )
 \end{ExampleCode}
 \end{Examples}
 \newpage
-\inputencoding{utf8}1
+\inputencoding{utf8}
 \HeaderA{fct}{Print bmisc functions}{fct}
 %
 \begin{Description}\relax
@@ -1606,13 +1607,13 @@ performance(expr, samples = 1, gcFirst = TRUE)
 \end{Examples}
 \newpage
 \inputencoding{utf8}
-\HeaderA{plot.mat}{Standard plot for maturity ogive}{plot.mat}
-\keyword{\textbackslash{}textasciitilde{}kwd1}{plot.mat}
-\keyword{\textbackslash{}textasciitilde{}kwd2}{plot.mat}
+\HeaderA{plot.logit}{Standard plot for maturity ogive}{plot.logit}
+\keyword{\textbackslash{}textasciitilde{}kwd1}{plot.logit}
+\keyword{\textbackslash{}textasciitilde{}kwd2}{plot.logit}
 %
 \begin{Usage}
 \begin{verbatim}
-plot.mat(object, se.pred=TRUE, leg=TRUE, ref=TRUE, range.x=c("data","full"), 
+plot.logit(object, se.pred=TRUE, leg=TRUE, ref=TRUE, range.x=c("data","full"), 
          warn.val=TRUE, ylab="Probabiliti",xlab="Longueur ` la fourche (mm)")
 \end{verbatim}
 \end{Usage}
@@ -2460,49 +2461,114 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 %
 \begin{Usage}
 \begin{verbatim}
- ypr.l(fsel.type, last.age, age.step, vonB, l.start, LW, F.max, F.incr.YPR, mat, 
-         M, f.MSP, riv.calc=FALSE, F.f=0, M.f=0.5)
+ ypr.l(LW, vonB, l.start, last.age, age.step=1, Fsel.type, 
+       F.max=2,F.incr.YPR=0.0001, M.l,  M=0.2, f.MSP=0.4, 
+       F.f=0, M.f=0.5, riv.calc=FALSE)
+
 \end{verbatim}
 \end{Usage}
 %
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{fsel.type}] a list containing the type of fishery selectivity and the values needed for the function related to the type. See 'Details'. 
+\item[\code{LW}] one of:
+\begin{itemize}
 
-\item[\code{last.age}] last age to be considered in the model
+\item a vector containing \code{c(\eqn{\alpha}{},\eqn{\beta}{})} from length-weight curve. See 'Details'. 
+\item an object of class \code{'nls'} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated. See 'Details'.        
 
-\item[\code{age.step}] steps used to generate ages (\code{0:last.age}). Default is \code{1}.
+\end{itemize}
 
-\item[\code{vonB}] a vector containing \code{c(Linf,K)} from von Bertalanffy grotwh curve. 
+
+\item[\code{vonB}] one of:
+\begin{itemize}
+
+\item a vector containing \code{c(Linf,K)} from von Bertalanffy grotwh curve. See 'Details'. 
+\item an object of class \code{'glm'} in which eqnLinf and eqnK were estimated. See 'Details'.        
+
+\end{itemize}
+
 
 \item[\code{l.start}] length at the starting age
 
-\item[\code{LW}] a vector containing \code{c(alpha,beta)} from length-weight curve.
+\item[\code{last.age}] last age to be considered in the model
+
+\item[\code{age.step}] steps used to generate ages. Default is \code{1}.
+
+\item[\code{Fsel.type}] one of:
+\begin{itemize}
+
+\item a list containing the type of fishery selectivity and the values needed for the function related to the type. See 'Details'. 
+\item an object of class \code{'glm'} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated by a logistic regression. See 'Details'.        
+
+\end{itemize}
+
 
 \item[\code{F.max}] maximum value of instantaneous rate of fishing mortality (\code{F}). Default is 2.
 
 \item[\code{F.incr.YPR}] increment for generating the \code{F} values to be used for YPR calculation. Default is 0.0001.
 
+\item[\code{M.l}] one of:
+\begin{itemize}
+
+\item a list containing the type of maturity at length definition and the values needed for the function related to the type. See 'Details'. 
+\item an object of class \code{'glm'} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated by a logistic regression. See 'Details'.        
+
+\end{itemize}
+
+
 \item[\code{M}] instantaneous rate of natural mortality (\code{M}). Default is 0.2.
 
-\item[\code{mat}] a list containing the type of maturity definition and the values needed for the function related to the type. See 'Details'.
-
 \item[\code{f.MSP}] reference point defined as the fraction of maximum spawning potential. Default is 0.4.
-
-\item[\code{riv.calc}] a logical value indicating whether to use Rivard weights calculation (\code{TRUE}) or not. Default is \code{FALSE}.
 
 \item[\code{F.f}] fraction of instantaneous rate of fishing mortality (\code{F}) before spawning.
 
 \item[\code{M.f}] fraction of instantaneous rate of natural mortality (\code{M}) before spawning.
 
+\item[\code{riv.calc}] a logical value indicating whether to use Rivard weights calculation (\code{TRUE}) or not. Default is \code{FALSE}.
+
 \end{ldescription}
 \end{Arguments}
 %
 \begin{Details}\relax
-The \bold{fishery selectivity} and \bold{maturity by length} components of the model can be defined 
+\bold{Length-Weight relationship} can be provided either by indicating \code{c(\eqn{\alpha}{},\eqn{\beta}{})} values in a vector or by 
+directly using an object of class \code{'nls'} or \code{'lm'}. If \eqn{\alpha}{} and \eqn{\beta}{} are estimated 
+by \code{lm}, \code{log(x, base=exp(1))} transformation should be applied to the data prior to fitting the linear model. 
+If an object resulting from \code{nls} is used, variables should be named \bold{alpha} and \bold{beta} 
+using the following equation:
+
+\Tabular{c}{
+\eqn{W=\alpha L^\beta}{}
+}
+where \eqn{W}{} is weight, \eqn{L}{} is length, \eqn{\alpha}{} is the elevation of the curve, and \eqn{\beta}{} 
+is the steepness of the curve. Both \eqn{\alpha}{} and \eqn{\beta}{} are coefficients estimated by the regression. 
+
+
+\bold{Von Bartalanffy growth equation} parameters can be provided either by indicating \code{c(Linf,K)} values in a vector or by 
+directly using an object of class \code{'nls'}. If an object resulting from \code{\LinkA{nls}{nls}} is used, variables 
+should be named \bold{Linf} and \bold{K}. As for \eqn{t_0}{}, any name may be used since only \eqn{L_{\infty }}{} and \eqn{K}{} are 
+used in this length-based YPR model. The equation used in the \code{\LinkA{nls}{nls}} for estimating \eqn{L_{\infty }}{} 
+and \eqn{K}{} should be the following one:
+
+\Tabular{c}{
+\eqn{ L_t=L_{\infty }\bigg{(} 1-e^{-K (t-t_0)}\bigg{)} }{}
+}
+where \eqn{L_t}{} is length-at-age \eqn{t}{}, \eqn{L_{\infty }}{} is the asymptotic average maximum length, 
+\eqn{K}{} is a growth rate coefficient determinant of how quick the maximum is attained, and \eqn{t_0}{} 
+is the hypothetical age at length zero.
+
+As stated above, since this length-based YPR model uses relative age, \eqn{t-t_0}{} becomes a relative age (\eqn{a}{}). 
+The Von Bartalanffy growth equation used in this length-based YPR model is defined as:
+
+\Tabular{c}{
+\eqn{ L_a=L_{\infty }\bigg{(} 1-e^{-Ka}\bigg{)}+ L_s e^{-Ka} }{}
+}
+where \eqn{L_a}{} is length at a relative age \eqn{a}{} and \eqn{L_s}{} is length at relative age zero.
+
+
+The \bold{fishery selectivity} and \bold{maturity at length} components of the model can be defined 
 as one of \code{c("full", "ramp", "logistic")} equations. The proper way to specify which equation to use is by 
-the construct of a \code{\LinkA{list}{list}} where the first element is the name one of the three types of equation. 
-The following elements of the \code{\LinkA{list}{list}} are specific to the type of equation:
+the construct of a \code{list} where the first element is the name of one of the three types of equation. 
+The following elements of the \code{list} are specific to the type of equation:
 \begin{itemize}
 
 \item \bold{full:}  element \code{[[2]]} is the length at which full maturity is achieved.
@@ -2510,19 +2576,22 @@ The following elements of the \code{\LinkA{list}{list}} are specific to the type
 \item \bold{ramp:}  element \code{[[2]]} is the maximum length at which maturity is null and 
 element \code{[[3]]} is the minimum length at which maturity is fully achieved.
 
-\item \bold{logistic}  elements \code{[[2]]} and \code{[[3]]} are respectively the \eqn{\alpha}{} and \eqn{\beta}{} components 
-of a logistic curve.
+\item \bold{logistic}  elements \code{[[2]]} and \code{[[3]]} are respectively \eqn{\alpha}{} and \eqn{\beta}{} 
+components of a logistic curve.
 
 \end{itemize}
 
-\begin{description}
+Alternatively, an object of class \code{'glm'} can directly be used for the \bold{fishery selectivity} and \bold{maturity at length} components. 
+The Generalized Linear Model should have  the option \code{family} set to either \code{binomial} or \code{quasibinomial} keeping link function to the 
+default (\eqn{i.e.}{} \code{"logit"}).
+Estimated coefficients are use as follow: 
 
-\item[Logistic curve equation:] \eqn{Mat_{est}=\frac{1}{1+e^{-(\alpha+\beta*L)})}}{}
+\Tabular{c}{
+\eqn{y=\frac{1}{1+e^{-(\alpha+\beta x)}}}{} 
+}
 
-\end{description}
 
-
-\bold{Reference points} used for result output are defined as follow:
+\bold{Reference points} used for result output are defined as:
 \begin{itemize}
 
 \item \bold{F.zero:}  F level when there is no fishing (F=0).
@@ -2566,6 +2635,10 @@ Note that to have access to each slot of an \code{"ypr"} object, one must use \c
 \begin{Author}\relax
 Benoit Bruneau
 \end{Author}
+%
+\begin{SeeAlso}\relax
+\code{\LinkA{plot.logit}{plot.logit}}
+\end{SeeAlso}
 %
 \begin{Examples}
 \begin{ExampleCode}

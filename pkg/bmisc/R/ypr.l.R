@@ -1,11 +1,10 @@
-ypr.l <- 
-        function(fsel.type,last.age, l.start, age.step=1, LW, vonB, F.max=2, 
-                F.incr.YPR=0.0001, M=0.2, mat, f.MSP=0.4, riv.calc=FALSE, F.f=0, M.f=0.5) {
+ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, Fsel.type, F.max=2, F.incr.YPR=0.0001, 
+                    M.l,  M=0.2, f.MSP=0.4, F.f=0, M.f=0.5, riv.calc=FALSE){
     
-    parms=list(fsel.type=fsel.type,last.age=last.age, l.start=l.start,
+    parms=list(Fsel.type=Fsel.type,last.age=last.age, l.start=l.start,
             age.step=age.step, LW=LW, vonB=vonB, F.max=F.max, F.incr.YPR=F.incr.YPR,
-            M=M, mat=mat, f.MSP=f.MSP, riv.calc=riv.calc, F.f=F.f, M.f=M.f)
-
+            M=M, M.l=M.l, f.MSP=f.MSP, riv.calc=riv.calc, F.f=F.f, M.f=M.f)
+    
     cl.vb=class(vonB)
     cl.LW=class(LW)
     
@@ -48,7 +47,7 @@ ypr.l <-
             }
     )
     
-
+    
     if(riv.calc){
         p.age.riv=rivard(data.frame(p.age,p.age),pred=FALSE,plus.gr=FALSE)[,2]
         YPR=data.frame(age,l.age, p.age, p.age.riv)
@@ -64,20 +63,37 @@ ypr.l <-
     ##############################################################################
     ##                               Maturity                                   ##
     ##############################################################################
-    switch(mat[[1]],
-            full= mat.sel <- full.sel(sel.full=mat[[2]], L = YPR$l.age),
-            ramp= mat.sel <- ramp.sel(sel.zero =mat[[2]], sel.full = mat[[3]], L = YPR$l.age),
-            logistic= mat.sel <- logistic.sel(alpha=mat[[2]], beta=mat[[3]], L=YPR$l.age)
-    )    
+    if(class(M.l)[1] %nin$% c("list","glm")) stop("M.l has to be either a list or a glm (logit) object.")
+    if(class(M.l)[1]=="list"){
+        switch(M.l[[1]],
+                full= mat.sel <- full.sel(sel.full=M.l[[2]], L = YPR$l.age),
+                ramp= mat.sel <- ramp.sel(sel.zero =M.l[[2]], sel.full = M.l[[3]], L = YPR$l.age),
+                logistic= mat.sel <- logistic.sel(alpha=M.l[[2]], beta=M.l[[3]], L=YPR$l.age)
+        )   
+    }
     
+    if(class(M.l)[1]=="glm"){
+        coeffs=coef(M.l)
+        mat.sel <- 1/(1+exp(-(coeffs[[1]]+coeffs[[2]]*YPR$l.age)))
+    }
+
     ##############################################################################
     ##                             F selectivity                                ##
     ##############################################################################
-    switch(fsel.type[[1]],
-            full= F.sel <- full.sel(sel.full=fsel.type[[2]], L = YPR$l.age),
-            ramp= F.sel <- ramp.sel(sel.zero =fsel.type[[2]], sel.full = fsel.type[[3]], L = YPR$l.age),
-            logistic= F.sel <- logistic.sel(alpha=fsel.type[[2]], beta=fsel.type[[3]], L=YPR$l.age)
-    )
+    if(class(Fsel.type)[1] %nin% c("list","glm")) stop("Fsel.type has to be either a list or a glm (logit) object.")
+    if(class(Fsel.type)[1]=="list"){
+        switch(Fsel.type[[1]],
+                full= F.sel <- full.sel(sel.full=Fsel.type[[2]], L = YPR$l.age),
+                ramp= F.sel <- ramp.sel(sel.zero =Fsel.type[[2]], sel.full = Fsel.type[[3]], L = YPR$l.age),
+                logistic= F.sel <- logistic.sel(alpha=Fsel.type[[2]], beta=Fsel.type[[3]], L=YPR$l.age)
+        )
+    }
+    if(class(Fsel.type)[1]=="glm"){
+        coeffs=coef(Fsel.type)
+        F.sel <- 1/(1+exp(-(coeffs[[1]]+coeffs[[2]]*YPR$l.age)))
+    }
+    
+    
     
     
     ##############################################################################
@@ -134,7 +150,7 @@ ypr.l <-
     ##            recalcul en fonction du premier janvier avec Rivard           ##
     ##############################################################################
     if(riv.calc){
-
+        
         F.ts=sweep(F.,MARGIN=2,F.f,`*`)
         M.ts=M*M.f
         Z.ts=F.ts+M.ts
@@ -359,39 +375,39 @@ plot.ypr<-
                 col.ssb='red', 
                 ref=TRUE,
                 legend=TRUE){
-            
-            
-            YPR=object@YPR
-            refs=object@refs
-            
-            par(mar=c(5,4,4,4.1))
-            ylim1=c(0,max(YPR$ypr)*1.1)
-            ylim2=c(0,max(YPR$ssb)*1.1)
-            plot(YPR$ypr~YPR$F  ,main=main,ylim=ylim1, 
-                    ylab=ylab.ypr,xlab=xlab,type='l', lwd=3, col=col.ypr, las=1)
-            if(ref){
-                for(i in 2:dim(refs)[1]){
-                    lines(c(-1,YPR)~c(F,F),data=refs[i,], lty=2)
-                }
-                points(YPR~F,data=refs[2:dim(refs)[1],], pch=21, col='black', bg='white',cex=1.2)
-                y.coord=par('usr')[2]*0.01
-                r.names=rownames(refs)
-
-                text(x=refs[2,1], y=y.coord, labels=r.names[2], srt=90,adj=c(0.2,1.2) , cex=0.8, font=2)
-                text(x=refs[3,1], y=y.coord, labels=r.names[3], srt=90,adj=c(0.13,1.2), cex=0.8, font=2)
-                text(x=refs[4,1], y=y.coord, labels=r.names[4], srt=90,adj=c(0.2,-0.4) , cex=0.8, font=2)
-            }
-            
-            par(new=TRUE)
-            plot(YPR$ssb~YPR$F,type='l',xaxt="n",yaxt="n",xlab="",ylab="", lwd=3, col=col.ssb, ylim=ylim2)
-            
-            if(ref)points(SSB.R~F,data=refs[2:dim(refs)[1],], pch=21, col='black', bg='white',cex=1.2)
-            
-            axis(4, las=1)
-            mtext(ylab.ssb,side=4,line=2.9)
-            if(legend){
-                legend("topright",col=c("blue","red"),lty=1, lwd=3,legend=c("YPR","SSB/R"),
-                        horiz=TRUE, bty='n', bg='white', seg.len=1)
-            }
+    
+    
+    YPR=object@YPR
+    refs=object@refs
+    
+    par(mar=c(5,4,4,4.1))
+    ylim1=c(0,max(YPR$ypr)*1.1)
+    ylim2=c(0,max(YPR$ssb)*1.1)
+    plot(YPR$ypr~YPR$F  ,main=main,ylim=ylim1, 
+            ylab=ylab.ypr,xlab=xlab,type='l', lwd=3, col=col.ypr, las=1)
+    if(ref){
+        for(i in 2:dim(refs)[1]){
+            lines(c(-1,YPR)~c(F,F),data=refs[i,], lty=2)
         }
+        points(YPR~F,data=refs[2:dim(refs)[1],], pch=21, col='black', bg='white',cex=1.2)
+        y.coord=par('usr')[2]*0.01
+        r.names=rownames(refs)
+        
+        text(x=refs[2,1], y=y.coord, labels=r.names[2], srt=90,adj=c(0.2,1.2) , cex=0.8, font=2)
+        text(x=refs[3,1], y=y.coord, labels=r.names[3], srt=90,adj=c(0.13,1.2), cex=0.8, font=2)
+        text(x=refs[4,1], y=y.coord, labels=r.names[4], srt=90,adj=c(0.2,-0.4) , cex=0.8, font=2)
+    }
+    
+    par(new=TRUE)
+    plot(YPR$ssb~YPR$F,type='l',xaxt="n",yaxt="n",xlab="",ylab="", lwd=3, col=col.ssb, ylim=ylim2)
+    
+    if(ref)points(SSB.R~F,data=refs[2:dim(refs)[1],], pch=21, col='black', bg='white',cex=1.2)
+    
+    axis(4, las=1)
+    mtext(ylab.ssb,side=4,line=2.9)
+    if(legend){
+        legend("topright",col=c("blue","red"),lty=1, lwd=3,legend=c("YPR","SSB/R"),
+                horiz=TRUE, bty='n', bg='white', seg.len=1)
+    }
+}
 
