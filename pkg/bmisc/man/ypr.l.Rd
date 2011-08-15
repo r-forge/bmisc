@@ -19,14 +19,14 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 \arguments{
   \item{LW}{one of:
         \itemize{
-            \item a vector containing \code{c(\eqn{\alpha},\eqn{\beta})} from length-weight curve. See 'Details'. 
-            \item an object of class \code{'\link{nls}'} in which \eqn{\alpha} and \eqn{\beta} were estimated. See 'Details'.        
+            \item a vector containing \code{c(\eqn{\alpha},\eqn{\beta})} from length-weight curve. See \sQuote{Details}. 
+            \item an object of class \code{"\link{nls}"} in which \eqn{\alpha} and \eqn{\beta} were estimated. See \sQuote{Details}.        
         }
 }
   \item{vonB}{one of:
         \itemize{
-            \item a vector containing \code{c(Linf,K)} from von Bertalanffy grotwh curve. See 'Details'. 
-            \item an object of class \code{'\link{glm}'} in which eqn{Linf} and eqn{K} were estimated. See 'Details'.        
+            \item a vector containing \code{c(Linf,K)} from von Bertalanffy grotwh curve. See \sQuote{Details}. 
+            \item an object of class \code{"\link{glm}"} in which eqn{Linf} and eqn{K} were estimated. See \sQuote{Details}.        
         }
 }
   \item{l.start}{length at the starting age
@@ -37,8 +37,8 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 }
   \item{Fsel.type}{one of:
         \itemize{
-            \item a list containing the type of fishery selectivity and the values needed for the function related to the type. See 'Details'. 
-            \item an object of class \code{'\link{glm}'} in which \eqn{\alpha} and \eqn{\beta} were estimated by a logistic regression. See 'Details'.        
+            \item a list containing the type of fishery selectivity and the values needed for the function related to the type. See \sQuote{Details}. 
+            \item an object of class \code{"\link{glm}"} in which \eqn{\alpha} and \eqn{\beta} were estimated by a logistic regression. See \sQuote{Details}.        
         }
 }
   \item{F.max}{maximum value of instantaneous rate of fishing mortality (\code{F}). Default is 2.
@@ -47,8 +47,8 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 }
   \item{M.l}{one of:
         \itemize{
-            \item a list containing the type of maturity at length definition and the values needed for the function related to the type. See 'Details'. 
-            \item an object of class \code{'\link{glm}'} in which \eqn{\alpha} and \eqn{\beta} were estimated by a logistic regression. See 'Details'.        
+            \item a list containing the type of maturity at length definition and the values needed for the function related to the type. See \sQuote{Details}. 
+            \item an object of class \code{"\link{glm}"} in which \eqn{\alpha} and \eqn{\beta} were estimated by a logistic regression. See \sQuote{Details}.        
         }
 }
   \item{M}{instantaneous rate of natural mortality (\code{M}). Default is 0.2.
@@ -64,9 +64,9 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 }
 \details{
 \bold{Length-Weight relationship} can be provided either by indicating \code{c(\eqn{\alpha},\eqn{\beta})} values in a vector or by 
-directly using an object of class \code{'\link{nls}'} or \code{'\link{lm}'}. If \eqn{\alpha} and \eqn{\beta} are estimated 
+directly using an object of class \code{"\link{nls}"} or \code{"\link{lm}"}. If \eqn{\alpha} and \eqn{\beta} are estimated 
 by \code{\link{lm}}, \code{\link{log}(x, base=exp(1))} transformation should be applied to the data prior to fitting the linear model. 
-If an object resulting from \code{\link{nls}} is used, variables should be named \bold{alpha} and \bold{beta} 
+When creating \code{\link{nls}} object,If an object resulting from \code{\link{nls}} is used, variables should be named \bold{alpha} and \bold{beta} 
 using the following equation:
 \tabular{c}{
 \eqn{W=\alpha L^\beta}
@@ -75,7 +75,7 @@ where \eqn{W} is weight, \eqn{L} is length, \eqn{\alpha} is the elevation of the
 is the steepness of the curve. Both \eqn{\alpha} and \eqn{\beta} are coefficients estimated by the regression. 
 
 \bold{Von Bartalanffy growth equation} parameters can be provided either by indicating \code{c(Linf,K)} values in a vector or by 
-directly using an object of class \code{'\link{nls}'}. If an object resulting from \code{\link{nls}} is used, variables 
+directly using an object of class \code{"\link{nls}"}. If an object resulting from \code{\link{nls}} is used, variables 
 should be named \bold{Linf} and \bold{K}. As for \bold{\eqn{t0}}, any name may be used since only \eqn{L\infty } and \eqn{K} are 
 used in this length-based YPR model. The equation used in the \code{\link{nls}} for estimating \eqn{L\infty } 
 and \eqn{K} should be the following one:
@@ -107,42 +107,44 @@ The following elements of the \code{\link{list}} are specific to the type of equ
     \item \bold{logistic}  elements \code{[[2]]} and \code{[[3]]} are respectively \eqn{\alpha} and \eqn{\beta} 
     components of a logistic curve.
 }
-Alternatively, an object of class \code{'glm'} can directly be used for the \bold{fishery selectivity} and \bold{maturity at length} components. 
+Alternatively, an object of class \code{"glm"} can directly be used for the \bold{fishery selectivity} and \bold{maturity at length} components. 
 The Generalized Linear Model should have  the option \code{family} set to either \code{binomial} or \code{quasibinomial} keeping link function to the 
 default (\eqn{i.e.} \code{"logit"}).
 Estimated coefficients are use as follow: 
 \tabular{c}{
-\eqn{Mat=1/[1+e^-(\alpha+\beta L)]}
+\eqn{Mat=1/(1+e^-(\alpha+\beta L))}
 }
 
 \bold{Reference points} used for result output are defined as follow:
 \itemize{
     \item \bold{F.zero:}  F level when there is no fishing (F=0).
-    \item \bold{F.01}  F level where the slope of yield curve is 10\% of the slope at \code{F.zero}. 
-    \item \bold{F.xx}  F level where the MSP is at the level defined by \code{f.MSP} option. Default is 40\% (0.4).
-    \item \bold{F.max}  F level where yield is maximum.
+    \item \bold{F.01:}    F level where the slope of yield curve is 10\% of the slope at \code{F.zero}. 
+    \item \bold{F.xx:}    F level where the MSP is at the level defined by \code{f.MSP} option. Default is 40\% (0.4).
+    \item \bold{F.max:}   F level where yield is maximum.
 }
 
-Use \code{vignette("bmisc")} for a better presentation of the equations.    
+
+Use \code{vignette("bmisc")} for a better presentation of the equations.  
+  
 More to come.
 }
 \value{
-  \code{ypr.l} returns an object of \code{\link{class}(S4)} \code{"ypr"}. The functions \code{summary} and \code{plot} are used to respectively
+  \code{ypr.l} returns an object of \code{class(S4)} \code{"ypr"}. The functions \code{summary} and \code{plot} are used to respectively
   obtain a summary and a standard plot of the results.  
   
   An object of class \code{"ypr"} has the the following slots:
 
 
   \item{parms}{the list of parameters used in the model.}
-  \item{base}{a \code{\link{data.frame}} containing the starting values:
+  \item{base}{a \code{data.frame} containing the starting values:
         \itemize{
             \item relative age classes
             \item length at age
             \item weight at age
         }
   }
-  \item{refs}{a \code{\link{data.frame}} containing values predicted by the model for the four reference points. See details. }
-  \item{YPR}{a \code{\link{data.frame}} containing the results for all partial Fs.}
+  \item{refs}{a \code{data.frame} containing values predicted by the model for the four reference points. See details. }
+  \item{YPR}{a \code{data.frame} containing the results for all partial Fs.}
   
 
   Note that to have access to each slot of an \code{"ypr"} object, one must use \code{"@"} instead of \code{"$"}.

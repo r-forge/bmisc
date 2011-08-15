@@ -44,31 +44,34 @@ However, for small non-normal distributed samples, \eqn{G1} is less biased than 
 These two skewness estimate can be sensitive to outliers in the data (contaminated data).
 Therefore, the medcouple \code{\link{mc}} is also an option in \code{type}. It has a good
 performance on uncontaminated data and is robust on contaminated data.
-For more information on medcouple, please read references and/or type \code{\link{mc}} (\code{robustbase::mc}).
+For more information on medcouple, please read references in \code{\link{mc}}\{\pkg{\link{robustbase}}\}.
 
-Here, d'Agostino skewness test is based on \code{mc} with default settings:
+\itemize{
+    \item Typical definition used in many older textbooks:
 
-  \describe{
-    \item{\eqn{g1=}}{
-      \eqn{m3 / m2^(3/2)}.
+  \tabular{c}{
+  \eqn{g1=m3 / m2^(3/2)}
+  }
 
-      where \eqn{m3} is the sample third central moment, and \eqn{m2} is the sample variance.
+where \eqn{m3} is the sample third central moment, and \eqn{m2} is the sample variance.\cr
+}
 
-      This is the typical definition used in many older textbooks.}
+\itemize{
+    \item Definition used in SAS and SPSS:
 
-    \item{\eqn{G1=}}{
-      \eqn{g1 * [k3/(k2^(3/2))] = g1 * [sqrt{n(n-1)} / (n-2)]}.
+   \tabular{c}{
+   \eqn{G1=g1 * [k3/(k2^(3/2))] = g1 * [sqrt{n(n-1)} / (n-2)]}
+   }
 
-      where \eqn{k3} is the unique symmetric unbiased estimator of the third
-      cumulant and \eqn{k2} is the symmetric unbiased estimator of the second cumulant.
+where \eqn{k3} is the unique symmetric unbiased estimator of the third
+cumulant and \eqn{k2} is the symmetric unbiased estimator of the second cumulant.\cr
+}
 
-      Used in SAS and SPSS.}
-
-      \item{\eqn{b1=}}{
-      \eqn{m3 / s^3 = g1 ((n-1)/n)^(3/2)}.
-
-      Used in MINITAB and BMDP.}
-
+\itemize{
+    \item Definition used in MINITAB and BMDP:
+    \tabular{c}{
+    \eqn{b1=m3 / s^3 = g1 ((n-1)/n)^(3/2)}
+    }
   }
 
 

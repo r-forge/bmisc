@@ -4,10 +4,10 @@
 \title{Summarizing the results of YPR models.
 }
 \description{
-\code{summary} method for class \code{"ypr"}.
+Summary for an object of class \code{"ypr"}.
 }
 \usage{
-\method{summary}{ypr}(object)
+\S4method{summary}{ypr}(object)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -49,5 +49,4 @@ summary(ypr.mod)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+

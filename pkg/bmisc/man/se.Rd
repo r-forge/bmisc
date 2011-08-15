@@ -19,8 +19,13 @@ se(x, na.rm=T)
 }
 }
 \details{
-The standard error of the mean is usually estimated by the sample standard deviation 
-divided by the square root of the sample size.
+The standard error of the mean is defined as:
+
+    \tabular{c}{
+    \eqn{SE=\frac{sd}{\sqrt{n}}}
+    }
+where \eqn{sd} is the standard deviation of the sample and \eqn{n} is the sample size.
+
 }
 \value{
 %%  ~Describe the value returned

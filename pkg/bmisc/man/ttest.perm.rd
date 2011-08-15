@@ -57,11 +57,7 @@ It is not implemented yet in the paired t-test.
       \code{\link{factorial}(\link{n}(vec1))} and \eqn{n{_2}!} is
        \code{\link{factorial}(\link{n}(vec2))}.}}
 
-There is more to come in this section. plot(x)
-
-5 [ sup ] 7
-
-
+There is more to come in this section.
 
 }
 \value{

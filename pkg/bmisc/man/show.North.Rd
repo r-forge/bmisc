@@ -31,11 +31,14 @@ show.North(pos, arrow.col="black", arrow.fill="black", arrow.lwd=1,
 \details{
 The position of the north arrow is defined by \code{pos} and can either be numeric or character.
 
-If \code{pos} is numeric, it is a vector of the form \code{c(x,y)} where \code{x} and \code{y} are fractions of the plotting region.
-If \code{x} and \code{y} are not in the range of \code{c(0,1)}, then the north arrow is drawn ouside the bounds of the plotting region 
-and a warning message is given.
+If \code{pos} is a numeric vector, it is a vector of the form \code{c(x,y)} where \code{x} and \code{y} are fractions of the plotting region. 
+If \code{x} and \code{y} are not in \eqn{[0, 1]}, then the north arrow is drawn outside the bounds of the plotting region 
+and a warning message is given.\cr
 
-If \code{pos} is character, it is one of \code{c('topright','topleft','bottomright','bottomleft')}.
+If \code{pos} is a character vector, it should be a single keyword from:
+\itemize{
+    \item \code{c('topright','topleft','bottomright','bottomleft')}
+} 
 
 }
 \value{

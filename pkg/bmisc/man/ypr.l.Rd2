@@ -6,8 +6,6 @@ Length Based Yield Per Recruit
 }
 \description{
 Length based Yield Per Recruit model is define by fishery selectivity and life history parameters related to length. 
-
-
 }
 \usage{
  ypr.l(LW, vonB, l.start, last.age, age.step=1, Fsel.type, 
@@ -71,7 +69,7 @@ using the following equation:
 \eqn{W=\alpha L^\beta}
 }
 where \eqn{W} is weight, \eqn{L} is length, \eqn{\alpha} is the elevation of the curve, and \eqn{\beta} 
-is the steepness of the curve. Both \eqn{\alpha} and \eqn{\beta} are coefficients estimated by the regression. 
+is the steepness of the curve. Both \eqn{\alpha} and \eqn{\beta} are coefficients estimated by the regression.\cr\cr
 
 
 \bold{Von Bartalanffy growth equation} parameters can be provided either by indicating \code{c(Linf,K)} values in a vector or by 
@@ -91,7 +89,7 @@ The Von Bartalanffy growth equation used in this length-based YPR model is defin
 \tabular{c}{
 \eqn{ L_a=L_{\infty }\bigg{(} 1-e^{-Ka}\bigg{)}+ L_s e^{-Ka} }
 }
-where \eqn{L_a} is length at a relative age \eqn{a} and \eqn{L_s} is length at relative age zero.
+where \eqn{L_a} is length at a relative age \eqn{a} and \eqn{L_s} is length at relative age zero.\cr\cr
 
 
 The \bold{fishery selectivity} and \bold{maturity at length} components of the model can be defined 
@@ -112,37 +110,37 @@ The Generalized Linear Model should have  the option \code{family} set to either
 default (\eqn{i.e.} \code{"logit"}).
 Estimated coefficients are use as follow: 
 \tabular{c}{
-\eqn{y=\frac{1}{1+e^{-(\alpha+\beta x)}}} 
+\eqn{y=\frac{1}{1+e^{-(\alpha+\beta x)}}}\cr 
 }
 
 
 \bold{Reference points} used for result output are defined as:
 \itemize{
     \item \bold{F.zero:}  F level when there is no fishing (F=0).
-    \item \bold{F.01}  F level where the slope of yield curve is 10\% of the slope at \code{F.zero}. 
-    \item \bold{F.xx}  F level where the MSP is at the level defined by \code{f.MSP} option. Default is 40\% (0.4).
-    \item \bold{F.max}  F level where yield is maximum.
+    \item \bold{F.01:}    F level where the slope of yield curve is 10\% of the slope at \code{F.zero}. 
+    \item \bold{F.xx:}    F level where the MSP is at the level defined by \code{f.MSP} option. Default is 40\% (0.4).
+    \item \bold{F.max:}   F level where yield is maximum.
 }
     
 More to come.
 }
 \value{
-  \code{ypr.l} returns an object of \code{\link{class}(S4)} \code{"ypr"}. The functions \code{summary} and \code{plot} are used to respectively
+  \code{ypr.l} returns an object of \code{class(S4)} \code{"ypr"}. The functions \code{summary} and \code{plot} are used to respectively
   obtain a summary and a standard plot of the results.  
   
   An object of class \code{"ypr"} has the the following slots:
 
 
   \item{parms}{the list of parameters used in the model.}
-  \item{base}{a \code{\link{data.frame}} containing the starting values:
+  \item{base}{a \code{data.frame} containing the starting values:
         \itemize{
             \item relative age classes
             \item length at age
             \item weight at age
         }
   }
-  \item{refs}{a \code{\link{data.frame}} containing values predicted by the model for the four reference points. See details. }
-  \item{YPR}{a \code{\link{data.frame}} containing the results for all partial Fs.}
+  \item{refs}{a \code{data.frame} containing values predicted by the model for the four reference points. See details. }
+  \item{YPR}{a \code{data.frame} containing the results for all partial Fs.}
   
 
   Note that to have access to each slot of an \code{"ypr"} object, one must use \code{"@"} instead of \code{"$"}.

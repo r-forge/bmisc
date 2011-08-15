@@ -8,7 +8,8 @@ Standard Yield per Recruit plot.
 Yield per Recruit and Spawning Stock Biomass per Recruit are plotted with standard reference points. 
 }
 \usage{
- \method{plot.ypr}{ypr}(object, main, ylab.ypr, ylab.ssb, xlab, col.ypr, col.ssb, ref, legend)
+\S4method{plot}{ypr}(object, main, ylab.ypr, ylab.ssb, xlab, 
+                     col.ypr, col.ssb, ref, legend)
 }
 
 \arguments{
