@@ -1,3 +1,18 @@
+#################################################################################
+##-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-##
+##                                                                             ##
+##     Descriptive Statistics for all DATA                                     ##
+##                                                                             ##
+##                                                                             ##
+##                                                                             ##
+## Author: Benoit Bruneau                                                      ##
+## Date: 2011-06-18                                                            ##
+##                                                                             ##
+## FIXME LA FONCTION PLANTE                                                    ##
+##                                                                             ##
+##-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-##
+#################################################################################
+
 ttest.perm <- function (vec1,vec2,...) UseMethod("ttest.perm")
 
 ttest.perm.default <- function(vec1, vec2, nperm=999, alternative = "two.sided", var.equal = T,  silent=FALSE, type="i", exact=FALSE){
