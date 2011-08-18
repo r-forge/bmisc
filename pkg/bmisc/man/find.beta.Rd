@@ -25,7 +25,7 @@ A logistic curve is defined by:
 \tabular{c}{
 \eqn{y=1/(1+e^(-(\alpha+\beta x))) < == > 1/(1+e^(-\beta(x-x50)))}
 }
-Depending on the sign of \eqn{\beta}, the curve will be negative or positive.\cr
+Depending on the sign of \eqn{\beta}, the curve will be negative or positive.\cr\cr
 Use \code{vignette("bmisc")} for a better presentation of the equations.  
 }
 \value{
