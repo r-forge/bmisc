@@ -80,7 +80,9 @@ ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, Fsel.type, F.max=2, F
     if(class(M.l)[1]=="list"){
         switch(M.l[[1]],
                 full= mat.sel <- full.sel(sel.full=M.l[[2]], L = YPR$l.age),
-                ramp= mat.sel <- ramp.sel(sel.zero =M.l[[2]], sel.full = M.l[[3]], L = YPR$l.age),
+                sqrf= mat.sel <- sqrf.sel(min=M.l[[2]], max=M.l[[3]], L = YPR$l.age),
+                aramp= mat.sel <- ramp.sel(sel.zero =M.l[[2]], sel.full = M.l[[3]], L = YPR$l.age),
+                dramp= mat.sel <- ramp.sel(sel.zero =M.l[[2]], sel.full = M.l[[3]], L = YPR$l.age, x=c(1,0)),
                 logistic= mat.sel <- logistic.sel(alpha=M.l[[2]], beta=M.l[[3]], L=YPR$l.age)
         )   
     }
@@ -97,7 +99,8 @@ ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, Fsel.type, F.max=2, F
     if(class(Fsel.type)[1]=="list"){
         switch(Fsel.type[[1]],
                 full= F.sel <- full.sel(sel.full=Fsel.type[[2]], L = YPR$l.age),
-                ramp= F.sel <- ramp.sel(sel.zero =Fsel.type[[2]], sel.full = Fsel.type[[3]], L = YPR$l.age),
+                aramp= F.sel <- ramp.sel(sel.zero =Fsel.type[[2]], sel.full = Fsel.type[[3]], L = YPR$l.age),
+                dramp= F.sel <- ramp.sel(sel.zero =Fsel.type[[2]], sel.full = Fsel.type[[3]], L = YPR$l.age, x=c(1,0)),
                 logistic= F.sel <- logistic.sel(alpha=Fsel.type[[2]], beta=Fsel.type[[3]], L=YPR$l.age)
         )
     }
@@ -321,7 +324,7 @@ full.sel <- function(sel.full, L) {
     mat.sel=as.integer(mat.sel)
     return(mat.sel)
 }
-ramp.sel <- function(sel.zero, sel.full, L) {
+ramp.sel <- function(sel.zero, sel.full, L, x=c(0,1)) {
     mod.ramp=coef(lm(c(0,1)~c(sel.zero,sel.full)))
     ramp=which(L >= sel.zero & L <= sel.full)
     zero=which(L < sel.zero)
@@ -333,10 +336,27 @@ ramp.sel <- function(sel.zero, sel.full, L) {
     F.sel[full]=1
     return(F.sel)
 }
+
+sqrf.sel <- function(min, max, L) {
+        full=which(L >= min | L <= max)
+        mat.sel=L*0
+        mat.sel[full]=1
+        mat.sel=as.integer(mat.sel)
+        return(mat.sel)
+}
+
 logistic.sel <- function(alpha,beta, L) {
     Fsel=1/(1+exp(-(alpha+beta*(L))))
     return(F.sel)
 }
+dlogistic.sel <- function(alpha1,beta1, alpha2,beta2, L) {
+        Fsel=1-(1/(1+exp(-(alpha1+beta1*(L)))))*(1-(1/(1+exp(-(alpha2+beta2*(L))))))
+        return(F.sel)
+}
+
+
+
+
 
 setClass("ypr",
         representation(

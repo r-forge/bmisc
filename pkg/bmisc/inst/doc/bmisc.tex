@@ -429,6 +429,82 @@ fct()
 \end{Usage}
 \newpage
 \inputencoding{utf8}
+\HeaderA{find.beta}{Logistic curve parameter estimates}{find.beta}
+%
+\begin{Description}\relax
+Finds the parameters of a logistic curve for given inflection points.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+find.beta(beta=0.5, minv, maxv, prop=0.01)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{beta}] stating value of beta. Default is \code{0.5}.
+\item[\code{minv}] the minimum value on the abscissa is the first inflection point.
+\item[\code{maxv}] the maximum value on the abscissa is the second inflection point.
+\item[\code{prop}] the proportion of the instantaneous slope at 50\% probability that should be used to define the position of the inflection points of the curve. Default is \code{0.01}.
+
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+A logistic curve is defined by:
+
+
+\Tabular{c}{
+\eqn{y=1/(1+e^{-(\alpha+\beta x)}) < == > 1/(1+e^{-\beta(x-x_{50})})}{}
+}
+Depending on the sign of \eqn{\beta}{}, the curve will be negative or positive.
+\end{Details}
+%
+\begin{Value}
+\code{find.beta()} returns a \code{\LinkA{data.frame}{data.frame}} with the following columns:
+
+\begin{ldescription}
+\item[\code{beta}] the estimated \eqn{\beta}{} for the given inflection points.
+\item[\code{alpha}] the estimated \eqn{\alpha}{} for the given inflection points.
+\item[\code{x50}] the value of \code{x} when \code{y} is \code{0.5} (\eqn{x_{50}}{}).
+\item[\code{angle.x50}] the angle of the instantaneous slope at \eqn{x_{50}}{}.
+\item[\code{min}] the value of the first inflection point.
+\item[\code{max}] the value of the second inflection point.
+\item[\code{angle.infl}] the angle of the instantaneous slope at the inflection points.
+\end{ldescription}
+\end{Value}
+%
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
+%
+\begin{SeeAlso}\relax
+\code{\LinkA{deriv}{deriv}}
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+res1=find.beta(beta=0.1,minv=1000,maxv=1700, prop=0.01)
+res2=find.beta(beta=0.1,minv=500,maxv=1700, prop=0.01)
+par(mfrow=c(2,1))
+
+xlim=c(0,res1$max+((res1$max-0)*0.2))
+
+curve(1/(1+exp(-res1$beta*(x-res1$L50))), xlim=xlim, ylab="Probability")
+abline(v=c(res1$max,res1$min,res1$L50), col=c("red","red","blue"))
+lines(x=c(-500,res1$L50),y=c(0.5,0.5), lty=2, col=gray(0.4))
+text(x=0,y=0.5,labels="L50", pos=3, col=gray(0.4))
+
+curve(1/(1+exp(-res2$beta*(x-res2$L50))), xlim=xlim,ylab="Probability")
+abline(v=c(res2$max,res2$min,res2$L50),, col=c("red","red","blue"))
+lines(x=c(-500,res2$L50),y=c(0.5,0.5), lty=2, col=gray(0.4))
+text(x=0,y=0.5,labels="L50", pos=3, col=gray(0.4))
+\end{ExampleCode}
+\end{Examples}
+\newpage
+\inputencoding{utf8}
 \HeaderA{format.hms}{Format seconds into hours}{format.hms}
 %
 \begin{Description}\relax
@@ -1615,7 +1691,7 @@ performance(expr, samples = 1, gcFirst = TRUE)
 \begin{Usage}
 \begin{verbatim}
 plot.logit(object, se.pred=TRUE, leg=TRUE, ref=TRUE, range.x=c("data","full"), 
-         warn.val=TRUE, ylab="Probabiliti",xlab="Longueur ` la fourche (mm)")
+         warn.val=TRUE, ylab="ProbabilitC)",xlab="Longueur C  la fourche (mm)")
 \end{verbatim}
 \end{Usage}
 %

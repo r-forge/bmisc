@@ -1,8 +1,9 @@
 histplot <- function (dat,...) UseMethod("histplot")
 
 histplot.default <-
-function(dat, breaks="Sturges", barc="steelblue", borc="white", fit.norm=TRUE, lcol="brown", stat=NULL, stat.lab=c("Mean","Median"),
-  box=TRUE, rug=TRUE , main=paste("Histogram of" , DNAME),xlab=DNAME,...)
+        function(dat, breaks="Sturges", barc="steelblue", borc="white", fit.norm=TRUE, lcol="brown", 
+        stat=NULL, stat.lab=c("Mean","Median"), box=TRUE, rug=TRUE , 
+        main=paste("Histogram of" , DNAME),xlab=DNAME,...)
 {
 
     DNAME <- paste(deparse(substitute(dat), 500), collapse="\n")
@@ -60,6 +61,9 @@ function(dat, breaks="Sturges", barc="steelblue", borc="white", fit.norm=TRUE, l
                 
         if (rug) {rug(dat, ticksize = 0.01, quiet = TRUE)
     }
+    invisible(hdat)
+
+
 }
 
 histplot.norm=function(object,...){
