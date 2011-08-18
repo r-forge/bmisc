@@ -23,9 +23,10 @@ find.beta(beta=0.5, minv, maxv, prop=0.01)
 A logistic curve is defined by:
 
 \tabular{c}{
-\eqn{y=1/(1+e^{-(\alpha+\beta x)}) < == > 1/(1+e^{-\beta(x-x_{50})})}
+\eqn{y=1/(1+e^(-(\alpha+\beta x))) < == > 1/(1+e^(-\beta(x-x50)))}
 }
-Depending on the sign of \eqn{\beta}, the curve will be negative or positive.
+Depending on the sign of \eqn{\beta}, the curve will be negative or positive.\cr
+Use \code{vignette("bmisc")} for a better presentation of the equations.  
 }
 \value{
   \code{find.beta()} returns a \code{\link{data.frame}} with the following columns:
