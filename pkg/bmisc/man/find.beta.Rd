@@ -61,15 +61,15 @@ par(mfrow=c(2,1))
 
 xlim=c(0,res1$max+((res1$max-0)*0.2))
 
-curve(1/(1+exp(-res1$beta*(x-res1$L50))), xlim=xlim, ylab="Probability")
-abline(v=c(res1$max,res1$min,res1$L50), col=c("red","red","blue"))
-lines(x=c(-500,res1$L50),y=c(0.5,0.5), lty=2, col=gray(0.4))
-text(x=0,y=0.5,labels="L50", pos=3, col=gray(0.4))
+curve(1/(1+exp(-res1$beta*(x-res1$x50))), xlim=xlim, ylab="Probability",lwd=2)
+abline(v=c(res1$max,res1$min,res1$x50), col=c("red","red","blue"))
+lines(x=c(-500,res1$x50),y=c(0.5,0.5), lty=2, col=gray(0.4))
+text(x=0,y=0.5,labels="x50", pos=3, col=gray(0.4))
 
-curve(1/(1+exp(-res2$beta*(x-res2$L50))), xlim=xlim,ylab="Probability")
-abline(v=c(res2$max,res2$min,res2$L50),, col=c("red","red","blue"))
-lines(x=c(-500,res2$L50),y=c(0.5,0.5), lty=2, col=gray(0.4))
-text(x=0,y=0.5,labels="L50", pos=3, col=gray(0.4))
+curve(1/(1+exp(-res2$beta*(x-res2$x50))), xlim=xlim,ylab="Probability",lwd=2)
+abline(v=c(res2$max,res2$min,res2$x50),, col=c("red","red","blue"))
+lines(x=c(-500,res2$x50),y=c(0.5,0.5), lty=2, col=gray(0.4))
+text(x=0,y=0.5,labels="x50", pos=3, col=gray(0.4))
 }
 
 
