@@ -8,8 +8,8 @@ lev <- function (y,data=NULL,...) {
 
 lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", form=NULL, ...)
 {
-    #try(if(!is.null(data)) {detach(data)}, silent=TRUE)
-    #try(if(!is.null(data)) {attach(data)}, silent=TRUE)
+    try(if(!is.null(data)) {detach(data)}, silent=TRUE)
+    try(if(!is.null(data)) {attach(data)}, silent=TRUE)
     if (!is.numeric(y))
         stop(deparse(substitute(y)), " is not a numeric variable")
     call=match.call()
@@ -29,8 +29,6 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
     
     mod=paste("\nModel: ",deparse(form),"\n", sep="")
     dmod=paste("\nModel: ",deparse(substitute(y))," ~ ", deparse(substitute(group)), sep="")
-    
-    
     
     group <- as.factor(group)
     
@@ -118,15 +116,26 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
             "Fligner-Killeen         ")
     
     datall=data.frame(lev=res.mean, lev.tr=res.trim.mean, bf=res.med, ob=r, group=group)
-    
-    
-    RVAL = new('lev',
-            formula=form,
-            statistics = STATISTIC,
-            title = "Levene-type tests",
-            p.value = PVAL,
-            data.name = DNAME,
-            residuals=datall)
+	
+    if(is.null(form)){
+		form=formula(DNAME)
+		RVAL = new('lev',
+				formula=form,
+				statistics = STATISTIC,
+				title = "Levene-type tests",
+				p.value = PVAL,
+				data.name = DNAME,
+				residuals=datall)
+	}else{
+		RVAL = new('lev',
+				formula=form,
+				statistics = STATISTIC,
+				title = "Levene-type tests",
+				p.value = PVAL,
+				data.name = DNAME,
+				residuals=datall)
+	}
+   
     
 #if(!is.null(form)) cat(mod)
 #if(is.null(form)) cat(dmod)
