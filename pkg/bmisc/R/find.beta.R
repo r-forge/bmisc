@@ -12,8 +12,8 @@
 #################################################################################
 
 
-find.beta=function(beta=0.5, minv, maxv,prop=0.1){
-
+find.beta=function( minv, maxv,prop=0.1,beta=0.2, fast=TRUE){
+        
         if(minv>maxv){
                 warning(paste("Be sure that 'minv' is a smaller value than 'maxv'.\n  The results are shown for minv=",maxv," and maxv=", minv,".", sep=""))
                 exc=maxv
@@ -21,29 +21,35 @@ find.beta=function(beta=0.5, minv, maxv,prop=0.1){
                 minv=exc       
         }
         x50=(maxv-minv)/2+minv
-        
-        res=.ess(beta,x50,maxv)
-        test.in=res[1]*prop>=res[2]
-        if (!test.in){
-                for(i in seq(beta,2000*beta, by=beta*0.0001)){
-                        test=.ess(beta=i,x50=x50,maxv=maxv)
-                        if(test[1]*prop<=test[2]){
-                                i
-                                break 
+        nrep=2
+        if(fast)nrep=1
+        for(j in 1:nrep){
+                
+                res=.ess(beta,x50,maxv)
+                test.in=res[1]*prop>=res[2]
+                if (!test.in){
+                        for(i in seq(beta,2000*beta, by=beta*0.0001)){
+                                test=.ess(beta=i,x50=x50,maxv=maxv)
+                                if(test[1]*prop<=test[2]){
+                                        beta=i
+                                        beta
+                                        break 
+                                }
+                        }
+                }
+                
+                if (test.in){
+                        for(i in seq(beta/2000, beta, by=beta*0.0001)){
+                                test=.ess(beta=i,x50=x50,maxv=maxv)
+                                if(test[1]*prop>=test[2]){
+                                        beta=i
+                                        beta
+                                        break  
+                                }
                         }
                 }
         }
-        
-        if (test.in){
-                for(i in seq(beta/2000, beta, by=beta*0.0001)){
-                        test=.ess(beta=i,x50=x50,maxv=maxv)
-                        if(test[1]*prop>=test[2]){
-                                i
-                                break  
-                        }
-                }
-        }
-        angles=atan(.ess(beta=i,x50=x50,maxv=maxv))*180/pi
+        angles=atan(.ess(beta=beta,x50=x50,maxv=maxv))*180/pi
         out=data.frame(beta=i,alpha=-(i*x50),x50=x50,angle.x50=angles[1], min=minv,max=maxv,angle.infl=angles[2])
         out
 }
