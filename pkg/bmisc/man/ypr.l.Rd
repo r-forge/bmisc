@@ -11,7 +11,7 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 }
 \usage{
  ypr.l(LW, vonB, l.start, last.age, age.step=1, Fsel.type, 
-       F.max=2,F.incr.YPR=0.0001, M.l,  M=0.2, f.MSP=0.4, 
+       F.max=2,F.incr.YPR=0.0001, Mat.l,  M=0.2, f.MSP=0.4, 
        F.f=0, M.f=0.5, riv.calc=FALSE)
 
 }
@@ -45,7 +45,7 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 }
   \item{F.incr.YPR}{increment for generating the \code{F} values to be used for YPR calculation. Default is 0.0001.
 }
-  \item{M.l}{one of:
+  \item{Mat.l}{one of:
         \itemize{
             \item a list containing the type of maturity at length definition and the values needed for the function related to the type. See \sQuote{Details}. 
             \item an object of class \code{"\link{glm}"} in which \eqn{\alpha} and \eqn{\beta} were estimated by a logistic regression. See \sQuote{Details}.        

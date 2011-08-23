@@ -12,7 +12,7 @@
 #################################################################################
 
 
-find.beta=function( minv, maxv,prop=0.1,beta=0.2, fast=TRUE){
+find.beta=function( minv, maxv,prob=NULL, prop=0.1,beta=0.2, fast=TRUE){
         
         if(minv>maxv){
                 warning(paste("Be sure that 'minv' is a smaller value than 'maxv'.\n  The results are shown for minv=",maxv," and maxv=", minv,".", sep=""))
@@ -23,32 +23,81 @@ find.beta=function( minv, maxv,prop=0.1,beta=0.2, fast=TRUE){
         x50=(maxv-minv)/2+minv
         nrep=2
         if(fast)nrep=1
-        for(j in 1:nrep){
+        if(is.null(prob)){
                 
-                res=.ess(beta,x50,maxv)
-                test.in=res[1]*prop>=res[2]
-                if (!test.in){
-                        for(i in seq(beta,2000*beta, by=beta*0.0001)){
-                                test=.ess(beta=i,x50=x50,maxv=maxv)
-                                if(test[1]*prop<=test[2]){
-                                        beta=i
-                                        beta
-                                        break 
+                for(j in 1:nrep){
+                        
+                        res=.ess(beta,x50,maxv)
+                        test.in=res[1]*prop>=res[2]
+                        if (!test.in){
+                                for(i in seq(beta,2000*beta, by=beta*0.0001)){
+                                        test=.ess(beta=i,x50=x50,maxv=maxv)
+                                        if(test[1]*prop<=test[2]){
+                                                beta=i
+                                                beta
+                                                break 
+                                        }
+                                }
+                        }
+                        
+                        if (test.in){
+                                for(i in seq(beta, beta/2000,by=beta*-0.0001)){
+                                        test=.ess(beta=i,x50=x50,maxv=maxv)
+                                        if(test[1]*prop>=test[2]){
+                                                beta=i
+                                                beta
+                                                break  
+                                        }
                                 }
                         }
                 }
-                
-                if (test.in){
-                        for(i in seq(beta/2000, beta, by=beta*0.0001)){
-                                test=.ess(beta=i,x50=x50,maxv=maxv)
-                                if(test[1]*prop>=test[2]){
-                                        beta=i
-                                        beta
-                                        break  
+        }else{
+                for(j in 1:nrep){
+                        
+                        res=.esp(beta,x50,maxv)
+                        if(prob<0 & abs(prob)>1){
+                                warning("You have specified 'prob' to be ", prob,".\n  It should be in [0,1]. The value used is ", abs(prob)/100,".", sep="")
+                                prob=abs(prob)/100                        
+                        }
+                        if(prob<0 & abs(prob)<1){
+                                warning("You have specified 'prob' to be ", prob,".\n  It should be in [0,1]. The value used is ", abs(prob),".", sep="")
+                                prob=abs(prob)                        
+                        }
+                        if(prob>1){
+                                warning("You have specified 'prob' to be ", prob,".\n  It should be in [0,1]. The value used is ", prob/100,".", sep="")
+                                prob=prob/100                        
+                        }
+                        
+                        test.in=  res <= prob
+                        if (test.in){
+                                for(i in seq(beta,2000*beta, by=beta*0.0001)){
+                                        test=.esp(beta=i,x50=x50,maxv=maxv)
+                                        if(test>=prob){
+                                                beta=i
+                                                beta
+                                                break 
+                                        }
+                                }
+                        }
+                        
+                        if (!test.in){
+                                for(i in seq( beta,beta/2000, by=beta*-0.0001)){
+
+                                        test=.esp(beta=i,x50=x50,maxv=maxv)
+                                        if(test<=prob){
+                                                beta=i
+                                                beta
+                                                break  
+                                        }
                                 }
                         }
                 }
         }
+        
+        
+        
+        
+        
         angles=atan(.ess(beta=beta,x50=x50,maxv=maxv))*180/pi
         out=data.frame(beta=i,alpha=-(i*x50),x50=x50,angle.x50=angles[1], min=minv,max=maxv,angle.infl=angles[2])
         out
@@ -65,6 +114,11 @@ find.beta=function( minv, maxv,prop=0.1,beta=0.2, fast=TRUE){
         xx2=attr(res2, "gradient") 
         res= c(xx1,xx2)
         res        
+}
+
+.esp=function(beta,x50,maxv){
+        px1=1/(1+exp(-beta*(maxv-x50)))
+        px1        
 }
 
 

@@ -12,11 +12,11 @@
 #################################################################################
 
 ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, Fsel.type, F.max=2, F.incr.YPR=0.0001, 
-        M.l,  M=0.2, f.MSP=0.4, F.f=0, M.f=0.5, riv.calc=FALSE){
+        Mat.l,  M=0.2, f.MSP=0.4, F.f=0, M.f=0.5, riv.calc=FALSE){
         
         parms=list(Fsel.type=Fsel.type,last.age=last.age, l.start=l.start,
                 age.step=age.step, LW=LW, vonB=vonB, F.max=F.max, F.incr.YPR=F.incr.YPR,
-                M=M, M.l=M.l, f.MSP=f.MSP, riv.calc=riv.calc, F.f=F.f, M.f=M.f)
+                M=M, Mat.l=Mat.l, f.MSP=f.MSP, riv.calc=riv.calc, F.f=F.f, M.f=M.f)
         
         cl.vb=class(vonB)
         cl.LW=class(LW)
@@ -76,187 +76,226 @@ ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, Fsel.type, F.max=2, F
         ##############################################################################
         ##                               Maturity                                   ##
         ##############################################################################
-        if(class(M.l)[1] %nin$% c("list","glm")) stop("M.l has to be either a list or a glm (logit) object.")
-        if(class(M.l)[1]=="list"){
-                switch(M.l[[1]],
-                        full= mat.sel <- full.sel(infl=M.l[[2]], L = YPR$l.age),
-                        ramp= mat.sel <- ramp.sel(infl1 =M.l[[2]], infl2 = M.l[[3]], L = YPR$l.age),
-                        logit= mat.sel <- logit.sel(infl1=M.l[[2]], infl2=M.l[[3]], L=YPR$l.age,
-                        mod.logit= mat.sel <- mod.logit.sel(alpha=M.l[[2]], beta=M.l[[3]], L=YPR$l.age)
+        if(class(Mat.l)[1] %nin$% c("list","glm")) stop("Mat.l should either be a list or a glm (logit) object.")
+        if(class(Mat.l)[1]=="list"){
+                switch(Mat.l[[1]],
+                        full= {if(!is.null(Mat.l[[3]]) & is.logical(Mat.l[[3]])){
+                                        pvt=Mat.l[[3]]
+                                }else{ptv=TRUE}
+                                mat.sel <- full.sel(infl1=Mat.l[[2]], x = YPR$l.age, ptv=ptv)
+                        },
+                        ramp= {if(!is.null(Mat.l[[4]]) & is.logical(Mat.l[[4]])){
+                                        pvt=Mat.l[[4]]
+                                }else{ptv=TRUE}
+                                mat.sel <- ramp.sel(infl1 =Mat.l[[2]], infl2 = Mat.l[[3]], x = YPR$l.age, ptv=ptv)
+                        },
+                        logit= {if(!is.null(Mat.l[[4]]) & is.logical(Mat.l[[4]])){
+                                        pvt=Mat.l[[4]]
+                                }else{ptv=TRUE}
+                                mat.sel <- logit.sel(infl1=Mat.l[[2]], infl2=Mat.l[[3]], x=YPR$l.age, ptv=ptv)
+                        },
+                        mod.logit= mat.sel <- mod.logit.sel(alpha=Mat.l[[2]], beta=Mat.l[[3]], x=YPR$l.age)
                 )   
         }
         
-        if(class(M.l)[1]=="glm"){
-                coeffs=coef(M.l)
-                mat.sel <- 1/(1+exp(-(coeffs[[1]]+coeffs[[2]]*YPR$l.age)))
-        }
+        if(class(Mat.l)[1]=="glm"){
+                coeffs=coef(Mat.l)
+                mat.sel <- mod.logit.sel(alpha=coeffs[[1]], beta=coeffs[[2]], x=YPR$l.age)))
+}
+
+##############################################################################
+##                             F selectivity                                ##
+##############################################################################
+
+if(class(Fsel.type)[1] %nin% c("list","glm")) stop("Fsel.type should either be a list or a glm (logit) object.")
+if(class(Fsel.type)[1]=="list"){
+        switch(Fsel.type[[1]],
+                full= {if(!is.null(Fsel.type[[3]]) & is.logical(Fsel.type[[3]])){
+                                pvt=Fsel.type[[3]]
+                        }else{ptv=TRUE}
+                        mat.sel <- full.sel(infl1=Fsel.type[[2]], x = YPR$l.age, ptv=ptv)
+                },
+                plat.full= {if(!is.null(Fsel.type[[4]]) & is.logical(Fsel.type[[4]])){
+                                pvt=Fsel.type[[4]]
+                        }else{ptv=TRUE}
+                        mat.sel <- plat.full.sel(infl1=Fsel.type[[2]],infl2=Fsel.type[[3]], x = YPR$l.age, ptv=ptv)
+                },
+                ramp= {if(!is.null(Fsel.type[[4]]) & is.logical(Fsel.type[[4]])){
+                                pvt=Fsel.type[[4]]
+                        }else{ptv=TRUE}
+                        mat.sel <- ramp.sel(infl1 =Fsel.type[[2]], infl2 = Fsel.type[[3]], x = YPR$l.age, ptv=ptv)
+                },
+                plat.ramp= {if(!is.null(Fsel.type[[6]]) & is.logical(Fsel.type[[6]])){
+                                pvt=Fsel.type[[6]]
+                        }else{ptv=TRUE}
+                        mat.sel <- ramp.sel(infl1 =Fsel.type[[2]], infl2 = Fsel.type[[3]],infl3 = Fsel.type[[4]],infl4 = Fsel.type[[5]], x = YPR$l.age, ptv=ptv)
+                },
+                logit= {if(!is.null(Fsel.type[[4]]) & is.logical(Fsel.type[[4]])){
+                                pvt=Fsel.type[[4]]
+                        }else{ptv=TRUE}
+                        mat.sel <- logit.sel(infl1=Fsel.type[[2]], infl2=Fsel.type[[3]], x=YPR$l.age, ptv=ptv)
+                },
+                plat.logit= {if(!is.null(Fsel.type[[6]]) & is.logical(Fsel.type[[6]])){
+                                pvt=Fsel.type[[6]]
+                        }else{ptv=TRUE}
+                        mat.sel <- plat.logit.sel(infl1=Fsel.type[[2]], infl2=Fsel.type[[3]], infl3=Fsel.type[[4]],infl4=Fsel.type[[5]], x=YPR$l.age, ptv=ptv)
+                },
+                mod.logit= mat.sel <- mod.logit.sel(alpha=Fsel.type[[2]], beta=Fsel.type[[3]], x=YPR$l.age)
+        )   
+}
+
+if(class(Fsel.type)[1]=="glm"){
+        coeffs=coef(Fsel.type)
+        mat.sel <- mod.logit.sel(alpha=coeffs[[1]], beta=coeffs[[2]], x=YPR$l.age)
+}        
+##############################################################################
+##                             FISHERMEN selectivity                        ##
+##############################################################################
+## TODO ADD FISHERMEN SELECTIVITY CORRECTION ON F.SEL
+
+
+##############################################################################
+##                          Matrices des calculs                            ##
+##############################################################################
+
+mat.frame=matrix(ncol=n.F, nrow=n(F.sel))
+
+F.=matrix(rep(F.sel,n.F),ncol=n.F, nrow=n(F.sel))
+F.=sweep(F.,MARGIN=2,F.i,`*`)
+
+Z=F.+M
+Z1=colSums(Z, na.rm=TRUE)
+
+n.stock= mat.frame
+n.stock[1,]=1
+for(i in 1:(n(F.sel)-1)){
+        n.stock[i+1,]=n.stock[i,]*exp(-Z[i,])
+}
+n.stock1=colSums(n.stock, na.rm=TRUE)
+
+pds.stock=sweep(n.stock,MARGIN=1,YPR$p.age,FUN="*")
+pds.stock1=colSums(pds.stock, na.rm=TRUE)
+
+pds.stock.moy=pds.stock1/n.stock1
+
+n.catch=F./(F.+M)* n.stock*(1-exp(-Z))
+n.catch[1,]=NA
+n.catch1=colSums(n.catch, na.rm=TRUE)
+
+pds.catch=n.stock
+pds.catch=sweep(n.catch,MARGIN=1,YPR$p.age,"*")
+pds.catch1=colSums(pds.catch, na.rm=TRUE)
+
+
+ssn=sweep(n.stock,MARGIN=1,mat.sel,FUN="*")
+ssn1=colSums(ssn, na.rm=TRUE)
+
+ssb=sweep(ssn,MARGIN=1,YPR$p.age,"*")
+ssb1=colSums(ssb, na.rm=TRUE)
+
+msp1=ssb1/max(ssb1)*100
+
+l.moy=sweep(n.stock,MARGIN=1,YPR$l.age,"*")
+l.moy1=colSums(l.moy, na.rm=TRUE)/n.stock1
+
+p.moy=sweep(n.stock,MARGIN=1,YPR$p.age,"*")
+p.moy1=colSums(p.moy, na.rm=TRUE)/n.stock1
+
+age.moy=sweep(n.stock,MARGIN=1,YPR$age,"*")
+age.moy1=colSums(age.moy, na.rm=TRUE)/n.stock1
+
+##############################################################################
+##            recalcul en fonction du premier janvier avec Rivard           ##
+##############################################################################
+if(riv.calc){
+        
+        F.ts=sweep(F.,MARGIN=2,F.f,`*`)
+        M.ts=M*M.f
+        Z.ts=F.ts+M.ts
+        
+        n.stock.ts=n.stock*exp(-Z.ts)
+        
+        n.stock.ts1=colSums(n.stock.ts, na.rm=TRUE)
+        
+        pds.stock.ts=sweep(n.stock,MARGIN=1,YPR$p.age.riv,FUN="*")
+        pds.stock.ts1=colSums(pds.stock.ts, na.rm=TRUE)
+        pds.stock.ts1[201]
+        
+        W=n.stock.ts*pds.stock.ts
+        Wts=sweep(W,MARGIN=1,mat.sel,FUN="*")
+        Wts1=colSums(Wts, na.rm=TRUE)
+        Wts1[1]-ssb1[1]
+        
+        
+        ssn.ts=sweep(n.stock.ts,MARGIN=1,mat.sel,FUN="*")
+        ssn.ts1=colSums(ssn.ts, na.rm=TRUE)
+        ssn.ts1[1]
+        
+        ssb.ts=sweep(ssn.ts,MARGIN=1,YPR$p.age.riv,"*")
+        ssb.ts1=colSums(ssb.ts, na.rm=TRUE)
+        ssb.ts1[1]
+        
+        msp.ts1=ssb.ts1/max(ssb.ts1)*100
+        msp.ts1[201]
         
         ##############################################################################
-        ##                             F selectivity                                ##
+        ##                          Tableau de YPR vs F.i                           ##
         ##############################################################################
-        ## TODO modifier pour les nouvelles versions des models
-        if(class(Fsel.type)[1] %nin% c("list","glm")) stop("Fsel.type has to be either a list or a glm (logit) object.")
-        if(class(Fsel.type)[1]=="list"){
-                switch(Fsel.type[[1]],
-                        full= F.sel <- full.sel(sel.full=Fsel.type[[2]], L = YPR$l.age),
-                        aramp= F.sel <- ramp.sel(sel.zero =Fsel.type[[2]], sel.full = Fsel.type[[3]], L = YPR$l.age),
-                        dramp= F.sel <- ramp.sel(sel.zero =Fsel.type[[2]], sel.full = Fsel.type[[3]], L = YPR$l.age, x=c(1,0)),
-                        logistic= F.sel <- logistic.sel(alpha=Fsel.type[[2]], beta=Fsel.type[[3]], L=YPR$l.age)
-                )
-        }
-        if(class(Fsel.type)[1]=="glm"){
-                coeffs=coef(Fsel.type)
-                F.sel <- 1/(1+exp(-(coeffs[[1]]+coeffs[[2]]*YPR$l.age)))
-        }
+        YPR.table=data.frame(F=F.i, catch.num=n.catch1, ypr=pds.catch1, stock.num=n.stock.ts1,stock.w=pds.stock.ts1, 
+                ssn=ssn.ts1,ssb=ssb.ts1,f.MSP=msp.ts1, avr.l=l.moy1, avr.w=p.moy1, avr.age=age.moy1)
         
         ##############################################################################
-        ##                             FISHERMEN selectivity                        ##
+        ##                       Tableau de YPR vs F.i Resume                       ##
         ##############################################################################
-        ## TODO ADD FISHERMEN SELECTIVITY CORRECTION ON F.SEL
+        
+        F.i2=seq(0,F.max, by=0.01)
+        F.i2=as.integer( F.i2*1000000)
+        F.i2=F.i2/1000000
+        
+        sel.Fi=which(YPR.table$F %in% F.i2)
+        YPR.table.short=YPR.table[sel.Fi,]
         
         
         ##############################################################################
-        ##                          Matrices des calculs                            ##
+        ##                     Tableau des points de references                     ##
         ##############################################################################
+        f.MSP.name=paste('F',round(f.MSP*100,digits=0),sep=".")
+        ref.table=data.frame(F=NA,YPR=NA,SSB.R=NA,TBmass.R=NA, avr.L=NA, avr.wgt=NA, avr.age=NA)
         
-        mat.frame=matrix(ncol=n.F, nrow=n(F.sel))
+        ### F0
+        sel1=which(F.i==0)
+        ref.table[1,]=c(F.i[sel1],pds.catch1[sel1], ssb.ts1[sel1],pds.stock.ts1[sel1], l.moy1[sel1],p.moy1[sel1],age.moy1[sel1])
         
-        F.=matrix(rep(F.sel,n.F),ncol=n.F, nrow=n(F.sel))
-        F.=sweep(F.,MARGIN=2,F.i,`*`)
+        ### FMAX
+        sel3=which(pds.catch1==max(pds.catch1))
+        ref.table[3,]=c(F.i[sel3],pds.catch1[sel3], ssb.ts1[sel3],pds.stock.ts1[sel3], l.moy1[sel3],p.moy1[sel3],age.moy1[sel3])
         
-        Z=F.+M
-        Z1=colSums(Z, na.rm=TRUE)
+        ###F01
+        n.lm=length(pds.catch1)
+        lm.mod=vector()
+        for(i in 1:(n.lm-1)) lm.mod[i]=(pds.catch1[i+1]-pds.catch1[i])/(F.i[i+1]-F.i[i])
         
-        n.stock= mat.frame
-        n.stock[1,]=1
-        for(i in 1:(n(F.sel)-1)){
-                n.stock[i+1,]=n.stock[i,]*exp(-Z[i,])
-        }
-        n.stock1=colSums(n.stock, na.rm=TRUE)
+        pentes=abs(lm.mod-(lm.mod[1]*0.1))
+        sel2=which(pentes==min(pentes))+1
         
-        pds.stock=sweep(n.stock,MARGIN=1,YPR$p.age,FUN="*")
-        pds.stock1=colSums(pds.stock, na.rm=TRUE)
+        ref.table[2,]=c(F.i[sel2],pds.catch1[sel2], ssb.ts1[sel2],pds.stock.ts1[sel2], l.moy1[sel2],p.moy1[sel2],age.moy1[sel2])
         
-        pds.stock.moy=pds.stock1/n.stock1
+        ### FMSP
+        sel4=which(abs(msp.ts1-f.MSP*100)==min(abs(msp.ts1-f.MSP*100)))
         
-        n.catch=F./(F.+M)* n.stock*(1-exp(-Z))
-        n.catch[1,]=NA
-        n.catch1=colSums(n.catch, na.rm=TRUE)
+        ref.table[4,]=c(F.i[sel4],pds.catch1[sel4], ssb.ts1[sel4],pds.stock.ts1[sel4], l.moy1[sel4],p.moy1[sel4],age.moy1[sel4])
         
-        pds.catch=n.stock
-        pds.catch=sweep(n.catch,MARGIN=1,YPR$p.age,"*")
-        pds.catch1=colSums(pds.catch, na.rm=TRUE)
-        
-        
-        ssn=sweep(n.stock,MARGIN=1,mat.sel,FUN="*")
-        ssn1=colSums(ssn, na.rm=TRUE)
-        
-        ssb=sweep(ssn,MARGIN=1,YPR$p.age,"*")
-        ssb1=colSums(ssb, na.rm=TRUE)
-        
-        msp1=ssb1/max(ssb1)*100
-        
-        l.moy=sweep(n.stock,MARGIN=1,YPR$l.age,"*")
-        l.moy1=colSums(l.moy, na.rm=TRUE)/n.stock1
-        
-        p.moy=sweep(n.stock,MARGIN=1,YPR$p.age,"*")
-        p.moy1=colSums(p.moy, na.rm=TRUE)/n.stock1
-        
-        age.moy=sweep(n.stock,MARGIN=1,YPR$age,"*")
-        age.moy1=colSums(age.moy, na.rm=TRUE)/n.stock1
+}else{
         
         ##############################################################################
-        ##            recalcul en fonction du premier janvier avec Rivard           ##
+        ##                          Tableau de YPR vs F.i                           ##
         ##############################################################################
-        if(riv.calc){
-                
-                F.ts=sweep(F.,MARGIN=2,F.f,`*`)
-                M.ts=M*M.f
-                Z.ts=F.ts+M.ts
-                
-                n.stock.ts=n.stock*exp(-Z.ts)
-                
-                n.stock.ts1=colSums(n.stock.ts, na.rm=TRUE)
-                
-                pds.stock.ts=sweep(n.stock,MARGIN=1,YPR$p.age.riv,FUN="*")
-                pds.stock.ts1=colSums(pds.stock.ts, na.rm=TRUE)
-                pds.stock.ts1[201]
-                
-                W=n.stock.ts*pds.stock.ts
-                Wts=sweep(W,MARGIN=1,mat.sel,FUN="*")
-                Wts1=colSums(Wts, na.rm=TRUE)
-                Wts1[1]-ssb1[1]
-                
-                
-                ssn.ts=sweep(n.stock.ts,MARGIN=1,mat.sel,FUN="*")
-                ssn.ts1=colSums(ssn.ts, na.rm=TRUE)
-                ssn.ts1[1]
-                
-                ssb.ts=sweep(ssn.ts,MARGIN=1,YPR$p.age.riv,"*")
-                ssb.ts1=colSums(ssb.ts, na.rm=TRUE)
-                ssb.ts1[1]
-                
-                msp.ts1=ssb.ts1/max(ssb.ts1)*100
-                msp.ts1[201]
-                
-                ##############################################################################
-                ##                          Tableau de YPR vs F.i                           ##
-                ##############################################################################
-                YPR.table=data.frame(F=F.i, catch.num=n.catch1, ypr=pds.catch1, stock.num=n.stock.ts1,stock.w=pds.stock.ts1, 
-                        ssn=ssn.ts1,ssb=ssb.ts1,f.MSP=msp.ts1, avr.l=l.moy1, avr.w=p.moy1, avr.age=age.moy1)
-                
-                ##############################################################################
-                ##                       Tableau de YPR vs F.i Resume                       ##
-                ##############################################################################
-                
-                F.i2=seq(0,F.max, by=0.01)
-                F.i2=as.integer( F.i2*1000000)
-                F.i2=F.i2/1000000
-                
-                sel.Fi=which(YPR.table$F %in% F.i2)
-                YPR.table.short=YPR.table[sel.Fi,]
-                
-                
-                ##############################################################################
-                ##                     Tableau des points de references                     ##
-                ##############################################################################
-                f.MSP.name=paste('F',round(f.MSP*100,digits=0),sep=".")
-                ref.table=data.frame(F=NA,YPR=NA,SSB.R=NA,TBmass.R=NA, avr.L=NA, avr.wgt=NA, avr.age=NA)
-                
-                ### F0
-                sel1=which(F.i==0)
-                ref.table[1,]=c(F.i[sel1],pds.catch1[sel1], ssb.ts1[sel1],pds.stock.ts1[sel1], l.moy1[sel1],p.moy1[sel1],age.moy1[sel1])
-                
-                ### FMAX
-                sel3=which(pds.catch1==max(pds.catch1))
-                ref.table[3,]=c(F.i[sel3],pds.catch1[sel3], ssb.ts1[sel3],pds.stock.ts1[sel3], l.moy1[sel3],p.moy1[sel3],age.moy1[sel3])
-                
-                ###F01
-                n.lm=length(pds.catch1)
-                lm.mod=vector()
-                for(i in 1:(n.lm-1)) lm.mod[i]=(pds.catch1[i+1]-pds.catch1[i])/(F.i[i+1]-F.i[i])
-                
-                pentes=abs(lm.mod-(lm.mod[1]*0.1))
-                sel2=which(pentes==min(pentes))+1
-                
-                ref.table[2,]=c(F.i[sel2],pds.catch1[sel2], ssb.ts1[sel2],pds.stock.ts1[sel2], l.moy1[sel2],p.moy1[sel2],age.moy1[sel2])
-                
-                ### FMSP
-                sel4=which(abs(msp.ts1-f.MSP*100)==min(abs(msp.ts1-f.MSP*100)))
-                
-                ref.table[4,]=c(F.i[sel4],pds.catch1[sel4], ssb.ts1[sel4],pds.stock.ts1[sel4], l.moy1[sel4],p.moy1[sel4],age.moy1[sel4])
-                
-        }else{
-                
-                ##############################################################################
-                ##                          Tableau de YPR vs F.i                           ##
-                ##############################################################################
-                
-                YPR.table=data.frame(F=F.i, catch.num=n.catch1, ypr=pds.catch1, stock.num=n.stock1,stock.w=pds.stock1, 
-                        ssn=ssn1,ssb=ssb1,f.MSP=msp1, avr.l=l.moy1, avr.w=p.moy1, avr.age=age.moy1)
-                
-                
-                
+        
+        YPR.table=data.frame(F=F.i, catch.num=n.catch1, ypr=pds.catch1, stock.num=n.stock1,stock.w=pds.stock1, 
+                ssn=ssn1,ssb=ssb1,f.MSP=msp1, avr.l=l.moy1, avr.w=p.moy1, avr.age=age.moy1)
+        
+        
+        
 #        ##############################################################################
 #        ##                       Tableau de YPR vs F.i Resume                       ##
 #        ##############################################################################
@@ -267,64 +306,64 @@ ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, Fsel.type, F.max=2, F
 #        
 #        sel.Fi=which(YPR.table$F %in% F.i2)
 #        YPR.table.short=YPR.table[sel.Fi,]
-                
-                
-                ##############################################################################
-                ##                     Tableau des points de references                     ##
-                ##############################################################################
-                f.MSP.name=paste('F',round(f.MSP*100,digits=0),sep=".")
-                ref.table=data.frame(F=NA,YPR=NA,SSB.R=NA,TBmass.R=NA, avr.L=NA, avr.wgt=NA, avr.age=NA)
-                
-                ### F0
-                sel1=which(F.i==0)
-                ref.table[1,]=c(F.i[sel1],pds.catch1[sel1], ssb1[sel1],pds.stock1[sel1], l.moy1[sel1],p.moy1[sel1],age.moy1[sel1])
-                
-                ### FMAX
-                sel3=which(pds.catch1==max(pds.catch1))
-                ref.table[3,]=c(F.i[sel3],pds.catch1[sel3], ssb1[sel3],pds.stock1[sel3], l.moy1[sel3],p.moy1[sel3],age.moy1[sel3])
-                
-                ###F01
-                n.lm=length(pds.catch1)
-                lm.mod=vector()
-                for(i in 1:(n.lm-1)) lm.mod[i]=(pds.catch1[i+1]-pds.catch1[i])/(F.i[i+1]-F.i[i])
-                
-                pentes=abs(lm.mod-(lm.mod[1]*0.1))
-                sel2=which(pentes==min(pentes))+1
-                
-                ref.table[2,]=c(F.i[sel2],pds.catch1[sel2], ssb1[sel2],pds.stock1[sel2], l.moy1[sel2],p.moy1[sel2],age.moy1[sel2])
-                
-                ### FMSP
-                sel4=which(abs(msp1-f.MSP*100)==min(abs(msp1-f.MSP*100)))
-                
-                ref.table[4,]=c(F.i[sel4],pds.catch1[sel4], ssb1[sel4],pds.stock1[sel4], l.moy1[sel4],p.moy1[sel4],age.moy1[sel4])
-        }
         
-        r.names=c("F.zero","F.01","F.max",f.MSP.name)
-        row.names(ref.table)=r.names
         
-        ref.line.sel=data.frame(line.sel=c(sel2,sel4, sel3))
-        rownames(ref.line.sel)=r.names[c(2,4,3)]
+        ##############################################################################
+        ##                     Tableau des points de references                     ##
+        ##############################################################################
+        f.MSP.name=paste('F',round(f.MSP*100,digits=0),sep=".")
+        ref.table=data.frame(F=NA,YPR=NA,SSB.R=NA,TBmass.R=NA, avr.L=NA, avr.wgt=NA, avr.age=NA)
         
-        res=new("ypr",
-                parms=parms,
-                base=YPR,
-                refs=ref.table,
-                YPR=YPR.table)
+        ### F0
+        sel1=which(F.i==0)
+        ref.table[1,]=c(F.i[sel1],pds.catch1[sel1], ssb1[sel1],pds.stock1[sel1], l.moy1[sel1],p.moy1[sel1],age.moy1[sel1])
         
-        class(parms)
-        res
+        ### FMAX
+        sel3=which(pds.catch1==max(pds.catch1))
+        ref.table[3,]=c(F.i[sel3],pds.catch1[sel3], ssb1[sel3],pds.stock1[sel3], l.moy1[sel3],p.moy1[sel3],age.moy1[sel3])
         
+        ###F01
+        n.lm=length(pds.catch1)
+        lm.mod=vector()
+        for(i in 1:(n.lm-1)) lm.mod[i]=(pds.catch1[i+1]-pds.catch1[i])/(F.i[i+1]-F.i[i])
+        
+        pentes=abs(lm.mod-(lm.mod[1]*0.1))
+        sel2=which(pentes==min(pentes))+1
+        
+        ref.table[2,]=c(F.i[sel2],pds.catch1[sel2], ssb1[sel2],pds.stock1[sel2], l.moy1[sel2],p.moy1[sel2],age.moy1[sel2])
+        
+        ### FMSP
+        sel4=which(abs(msp1-f.MSP*100)==min(abs(msp1-f.MSP*100)))
+        
+        ref.table[4,]=c(F.i[sel4],pds.catch1[sel4], ssb1[sel4],pds.stock1[sel4], l.moy1[sel4],p.moy1[sel4],age.moy1[sel4])
+}
+
+r.names=c("F.zero","F.01","F.max",f.MSP.name)
+row.names(ref.table)=r.names
+
+ref.line.sel=data.frame(line.sel=c(sel2,sel4, sel3))
+rownames(ref.line.sel)=r.names[c(2,4,3)]
+
+res=new("ypr",
+        parms=parms,
+        base=YPR,
+        refs=ref.table,
+        YPR=YPR.table)
+
+class(parms)
+res
+
 }
 
 
-full.sel <- function(infl, L,ptv=TRUE) {
+full.sel <- function(infl1, x,ptv=TRUE) {
         if(ptv){
-                s=which(L >=infl)
-                .sel=L*0
+                s=which(x >=infl1)
+                .sel=x*0
                 .sel[s]=1
                 .sel=as.integer(.sel)
-        }else{        s=which(L <=infl)
-                .sel=L*0
+        }else{        s=which(x <=infl1)
+                .sel=x*0
                 .sel[s]=1
                 .sel=as.integer(.sel)
         }
@@ -333,97 +372,99 @@ full.sel <- function(infl, L,ptv=TRUE) {
 
 
 
-plat.full.sel <- function(infl1, infl2, L, ptv=TRUE) {
+plat.full.sel <- function(infl1, infl2, x, ptv=TRUE) {
         if(ptv){
-                s=which(L >= infl1 & L <= infl2)
-                .sel=L*0
+                s=which(x >= infl1 & x <= infl2)
+                .sel=x*0
                 .sel[s]=1
                 .sel=as.integer(.sel)
-        }else{s=which(L <= infl1 | L >= infl2)
-                .sel=L*0
+        }else{s=which(x <= infl1 | x >= infl2)
+                .sel=x*0
                 .sel[s]=1
                 .sel=as.integer(.sel)}
         return(.sel)
 }
 
-ramp.sel <- function(infl1, infl2, L, ptv=T) {
+ramp.sel <- function(infl1, infl2, x, ptv=T) {
         
-        ramp=which(L >= infl1 & L <= infl2)
-        s1=which(L < infl1)
-        s2=which(L >infl2)
+        ramp=which(x >= infl1 & x <= infl2)
+        s1=which(x < infl1)
+        s2=which(x >infl2)
         if(ptv){
                 mod.ramp=coef(lm(c(0,1)~c(infl1,infl2)))
                 .sel=vector()
                 .sel[s1]=0
-                .sel[ramp]=L[ramp]*mod.ramp[2]+mod.ramp[1]
+                .sel[ramp]=x[ramp]*mod.ramp[2]+mod.ramp[1]
                 .sel[s2]=1
         }else{  mod.ramp=coef(lm(c(1,0)~c(infl1,infl2)))
                 .sel=vector()
                 .sel[s1]=1
-                .sel[ramp]=L[ramp]* mod.ramp[2]+mod.ramp[1]
+                .sel[ramp]=x[ramp]* mod.ramp[2]+mod.ramp[1]
                 .sel[s2]=0
         }
         return(.sel)
 }
 
-plat.ramp.sel <- function(infl1, infl2, infl3,infl4, L, ptv=TRUE) {
-       
-        ramp=which(L >= infl1 & L <= infl2)
-        ramp2=which(L >= infl3 & L <= infl4)
-        s1=which(L < infl1 | L > infl4)
-        s2=which(L >infl2 & L <infl3)
+plat.ramp.sel <- function(infl1, infl2, infl3,infl4, x, ptv=TRUE) {
+        
+        ramp=which(x >= infl1 & x <= infl2)
+        ramp2=which(x >= infl3 & x <= infl4)
+        s1=which(x < infl1 | x > infl4)
+        s2=which(x >infl2 & x <infl3)
         
         if(ptv){
                 mod.ramp=coef(lm(c(0,1)~c(infl1,infl2)))
                 mod.ramp2=coef(lm(c(1,0)~c(infl3,infl4)))
-                .sel=L*0
-                .sel[ramp]=L[ramp]*mod.ramp[2]+mod.ramp[1]
-                .sel[ramp2]=L[ramp2]*mod.ramp2[2]+mod.ramp2[1]
+                .sel=x*0
+                .sel[ramp]=x[ramp]*mod.ramp[2]+mod.ramp[1]
+                .sel[ramp2]=x[ramp2]*mod.ramp2[2]+mod.ramp2[1]
                 .sel[s2]=1
         }else{  mod.ramp=coef(lm(c(1,0)~c(infl1,infl2)))
                 mod.ramp2=coef(lm(c(0,1)~c(infl3,infl4)))
-                .sel=L*0
-                .sel[ramp]=L[ramp]*mod.ramp[2]+mod.ramp[1]
-                .sel[ramp2]=L[ramp2]*mod.ramp2[2]+mod.ramp2[1]
+                .sel=x*0
+                .sel[ramp]=x[ramp]*mod.ramp[2]+mod.ramp[1]
+                .sel[ramp2]=x[ramp2]*mod.ramp2[2]+mod.ramp2[1]
                 .sel[s1]=1
         }
         return(.sel)
 }
 
 
-mod.logit.sel <- function(alpha,beta, L) {
-        .sel=1/(1+exp(-(alpha+beta*(L))))
+mod.logit.sel <- function(alpha,beta, x) {
+        .sel=1/(1+exp(-(alpha+beta*(x))))
         return(.sel)
 }
-logit.sel <- function(infl1,infl2, L,ptv=TRUE, ...) {
+logit.sel <- function(infl1,infl2, x,ptv=TRUE, ...) {
         res=find.beta(minv=infl1,maxv=infl2,...)
         if(ptv){
-                .sel=1/(1+exp(-res$beta*(L-res$x50)))
+                .sel=1/(1+exp(-res$beta*(x-res$x50)))
         }else{
-                .sel=1/(1+exp(res$beta*(L-res$x50)))
+                .sel=1/(1+exp(res$beta*(x-res$x50)))
         }
         return(.sel)
 }
 
-
-plat.logit.sel <- function(infl1,infl2,infl3,infl4, L,ptv=TRUE,...) {
-        s1=which(L < ((sel.full2-sel.full1)/2)+sel.full1)
-        s2=which(L >= ((sel.full2-sel.full1)/2)+sel.full1)
+plat.logit.sel <- function(infl1,infl2,infl3,infl4, x,ptv=TRUE,...) {
+        s1=which(x < ((infl3-infl2)/2)+infl2)
+        s2=which(x >= ((infl3-infl2)/2)+infl2)
+        .sel=x
         if(ptv){
                 res1=find.beta(minv=infl1,maxv=infl2,...)
                 res2=find.beta(minv=infl3,maxv=infl4,...)
-                .sel[s1]=1/(1+exp(-res1$beta*(L[s1]-res1$x50)))
-                .sel[s2]=1/(1+exp(res2$beta*(L[s2]-res2$x50)))
+                .sel[s1]=1/(1+exp(-res1$beta*(x[s1]-res1$x50)))
+                .sel[s2]=1/(1+exp(res2$beta*(x[s2]-res2$x50)))
         }else{
                 res1=find.beta(minv=infl1,maxv=infl2,...)
                 res2=find.beta(minv=infl3,maxv=infl4,...)
-                .sel[s1]=1/(1+exp(res1$beta*(L[s1]-res1$x50)))
-                .sel[s2]=1/(1+exp(-res2$beta*(L[s2]-res2$x50)))
+                .sel[s1]=1/(1+exp(res1$beta*(x[s1]-res1$x50)))
+                .sel[s2]=1/(1+exp(-res2$beta*(x[s2]-res2$x50)))
                 
         }
         
         return(.sel)
 }
+
+
 
 
 setClass("ypr",
