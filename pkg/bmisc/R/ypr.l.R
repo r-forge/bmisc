@@ -100,7 +100,7 @@ ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, Fsel.type, F.max=2, F
         
         if(class(Mat.l)[1]=="glm"){
                 coeffs=coef(Mat.l)
-                mat.sel <- mod.logit.sel(alpha=coeffs[[1]], beta=coeffs[[2]], x=YPR$l.age)))
+                mat.sel <- mod.logit.sel(alpha=coeffs[[1]], beta=coeffs[[2]], x=YPR$l.age)
 }
 
 ##############################################################################
