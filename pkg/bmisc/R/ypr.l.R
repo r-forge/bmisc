@@ -465,8 +465,6 @@ plat.logit.sel <- function(infl1,infl2,infl3,infl4, x,ptv=TRUE,...) {
 }
 
 
-
-
 setClass("ypr",
         representation(
                 parms="list",

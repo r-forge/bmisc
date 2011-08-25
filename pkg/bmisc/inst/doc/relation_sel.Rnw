@@ -14,11 +14,14 @@
 \usepackage{lscape}
 \usepackage{color}
 \usepackage{listings}
-\usepackage{verbatim}
-\usepackage{wrapfig}
+%\usepackage{verbatim}
+%\usepackage{wrapfig}
 \usepackage{hyperref}
-\usepackage{parskip}
+\usepackage[all]{hypcap}
+
 \usepackage{amssymb, amsmath}
+
+
 
 
 \begin{document}
@@ -27,8 +30,8 @@
 \vspace*{3cm}
 \begin{center}
 
-\huge{\bf Type of relation for probabilities}\\
-\huge{\bf Package `bmisc'}\\
+\huge{\bf Types of relation between \\ a variable and its probabilities}\\
+
 \vspace*{2cm}
 \large{By Benoît Bruneau}
 \end{center}
@@ -41,7 +44,7 @@
 \item[Version:] 0.2-12
 \item[Depends:] car, lattice, zoo, robustbase, and methods
 \item[Author \& Maintainer:] Benoit Bruneau (\href{mailto:benoit.bruneau1@gmail.com}{benoit.bruneau1@gmail.com})
-\item[Description:] These functions can be used to estimate probabilities \verb=[0,1]= by specifying the inflection points of a relation. Described relations are of type `full',`ramp' and `logistic'.
+\item[Description:] These functions can be used to estimate probabilities \verb=[0,1]= by specifying the inflection points of a relation. Described relations are of type `full', `ramp' and `logistic'.
 \item[License:] LGPL $\geqslant$ 3.0
 \end{description}
 
@@ -54,62 +57,195 @@
 \tableofcontents
 \newpage
 
-\section{Type full and plat.full probabilities}
-%\noindent These relations have "all-or-nothing" types of probabilities. 
+\section{Types `full' and `plat.full'}
+\noindent These relations have "all-or-nothing" types of probabilities. One or two threshold (inflection points) need to be defined. 
+The main difference between `full'(Figure~\ref{fig:test}) and `plat.full' (Figure~\ref{fig:testt}) types 
+are the number of thresholds. For all types, `plat' stands for "plateau".\\*
 
-%\begin{description}
-%\item[\verb=full.sel=] \verb=(infl1,x)=
-%\item{\verb=plat.full.sel=]\verb=(infl1,infl2,x)=
-%\end{description}
+\begin{description}
+\item[full.sel]\verb#(infl1, x, ptv=TRUE)#
+\item[plat.full.sel]\verb#(infl1, infl2, x, ptv=TRUE)#
+\end{description}
+where \verb#infl1# and \verb#infl2# are the inflection points, \verb#x# is a numeric vector for which probabilities are 
+estimated and \verb#ptv# indicates if the trend is positive  (\verb#TRUE#) or negative (\verb#FALSE#).\\*
+
+Here are examples for these types:
 
 <<fig=F,echo=T, eval=T, results=hide>>=
-data=0:3000
-res1=full.sel(infl1=1500, x=data)
-plot(res1~data,type='l',lwd=2, col='blue', 
-        main="Type 'full'")
+full.sel(infl1=1500, x=data, ptv=TRUE) ## in blue
+full.sel(infl1=1500, x=data, ptv=FALSE) ## in red
 @ 
-
+\begin{figure}[h]
 \begin{center}
-<<fig=T,echo=F, eval=T, results=hide>>=
+<<fig=T,echo=F, eval=T,width=5, height=4>>=
 data=0:3000
 res1=full.sel(infl1=1500, x=data)
-plot(res1~data,type='l',lwd=2, col='blue', 
-        main="Type 'full'")
-@   
+res2=full.sel(infl1=1500, x=data, ptv=F)
+plot(res1~data,type='l',lwd=2, col='gray', ylab="probability",xlab="x",
+        main="")
+points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",
+        lty=2)
+@  
 \end{center}
+\label{fig:test}
+\caption{Type 'full' with pvt=TRUE in gray and pvt=FALSE in red.}
+\end{figure}
+
+\newpage
+<<fig=F,echo=T, eval=T, results=hide>>=
+data=0:3000
+plat.full.sel(infl1=1000, infl2=2000, x=data, ptv=TRUE) ## in gray
+plat.full.sel(infl1=1000, infl2=2000, x=data, ptv=FALSE) ## in red
+@ 
+\begin{figure}[h]
+\begin{center}
+<<fig=T,echo=F, eval=T,width=5, height=4>>=
+data=0:3000
+res1=plat.full.sel(infl1=1000, infl2=2000, x=data, ptv=TRUE) ## in gray
+res2=plat.full.sel(infl1=1000, infl2=2000, x=data, ptv=FALSE) ## in red
+plot(res1~data,type='l',lwd=2, col='gray', ylab="probability",xlab="x",
+        main="")
+points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",
+        lty=2)
+@  
+\end{center}
+\label{fig:testt}
+\caption{Type 'plat.full' with pvt=TRUE in gray and pvt=FALSE in red.}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\section{Types `ramp' and `plat.ramp'}
+\noindent These relations involve adding a gradual increase (or decrease) of probabitily between two inflection points. 
+They are an 'upgraded' version of `full' and `plat.full'. Two or four inflection points are needed. 
+ The main difference between `ramp'(Figure \ref{fig3}) and `plat.ramp' (Figure \ref{fig4}) types are the number 
+ inflection points.\\*
+
+\begin{description}
+\item[ramp.sel]\verb#(infl1, infl2, x, ptv=TRUE)#
+\item[plat.ramp.sel]\verb#(infl1, infl2, infl3, infl4, x, ptv=TRUE)#
+\end{description}
+where \verb#infl1# to \verb#infl4# are the inflection points, \verb#x# is a numeric vector for which probabilities are 
+estimated and \verb#ptv# indicates if the trend is positive  (\verb#TRUE#) or negative (\verb#FALSE#).\\*
+
+Here are examples for these types:
 
 <<fig=F,echo=T, eval=T, results=hide>>=
-e=rnorm(1000)
-
-mysummary <- function(x,npar=TRUE,print=TRUE) {
-    if (!npar) {
-      center <- mean(x); spread <- sd(x) 
-    } else {
-      center <- median(x); spread <- mad(x) 
-    }
-    if (print & !npar) {
-      cat("Mean=", center, "\n", "SD=", spread, "\n")
-    } else if (print & npar) {
-      cat("Median=", center, "\n", "MAD=", spread, "\n")
-    }
-    result <- list(center=center,spread=spread)
-    return(result)
-    }
-@  
-
-\noindent Exemple d'utilisation de cette fonction:  
-<<fig=F,echo=T, eval=T>>=
-  set.seed(1234)
-  x <- rpois(500, 4) 
-  y <- mysummary(x)
-@ \\ 
-
-
-
-
+ramp.sel(infl1=1000, infl2=1500, x=data, ptv=TRUE) ## in gray
+ramp.sel(infl1=1000, infl2=1500, x=data, ptv=FALSE) ## in red
+@ 
+\begin{figure}[h]
 \begin{center}
-\noindent \large{ \bf Le présent document est appelé à évoluer.}
+<<fig=T,echo=F, eval=T,width=5, height=4>>=
+data=0:3000
+res1=ramp.sel(infl1=1000, infl2=1500, x=data)
+res2=ramp.sel(infl1=1000, infl2=1500, x=data, ptv=F)
+plot(res1~data,type='l',lwd=2, col='gray', ylab="probability",xlab="x",
+        main="")
+points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",
+        lty=2)
+@  
 \end{center}
+\label{fig3}
+\caption{Type 'ramp' with pvt=TRUE in gray and pvt=FALSE in red.}
+\end{figure}
 
-       
+\newpage
+<<fig=F,echo=T, eval=T, results=hide>>=
+data=0:3000
+plat.ramp.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=TRUE) ## in gray
+plat.ramp.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=FALSE) ## in red
+@ 
+\begin{figure}[h]
+\begin{center}
+<<fig=T,echo=F, eval=T,width=5, height=4>>=
+data=0:3000
+res1=plat.ramp.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=TRUE) ## in gray
+res2=plat.ramp.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=FALSE) ## in red
+plot(res1~data,type='l',lwd=2, col='gray', ylab="probability",xlab="x",
+        main="")
+points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",
+        lty=2)
+@  
+\end{center}
+\label{fig4}
+\caption{Type 'plat.ramp' with pvt=TRUE in gray and pvt=FALSE in red.}
+\end{figure}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\section{Types `logit' and `plat.logit'}
+\noindent These relations use logistic curves. Inflection points are defined as points where the intantenuous splope 
+is a proportion (\verb#prop#) of the intantenuous slope at $x_{50}$. These types make use of the function \verb#find.beta()# 
+of \verb#package::bmisc#. Default value of \verb#prop# is \verb#0.1#. The end result is a logistic curve with 
+$x_{50}$ being the midpoint between the inflection points. Two or four inflection points are needed. 
+The main difference between `logit'(Figure \ref{fig5}) and `plat.logit' (Figure \ref{fig6}) types are the 
+number inflection points.\\*
+        
+\begin{description}
+\item[logit.sel]\verb#(infl1, infl2, x, ptv=TRUE)#
+\item[plat.logit.sel]\verb#(infl1, infl2, infl3, infl4, x, ptv=TRUE)#
+\end{description}
+where \verb#infl1# to \verb#infl4# are the inflection points, \verb#x# is a numeric vector for which probabilities are 
+estimated and \verb#ptv# indicates if the trend is positive  (\verb#TRUE#) or negative (\verb#FALSE#).\\*
+
+Here are examples for these types:
+
+<<fig=F,echo=T, eval=T, results=hide>>=
+logit.sel(infl1=1000, infl2=1500, x=data, ptv=TRUE) ## in gray
+logit.sel(infl1=1000, infl2=1500, x=data, ptv=FALSE) ## in red
+@ 
+\begin{figure}[h]
+\begin{center}
+<<fig=T,echo=F, eval=T,width=5, height=4>>=
+data=0:3000
+res1=logit.sel(infl1=1000, infl2=1500, x=data)
+res2=logit.sel(infl1=1000, infl2=1500, x=data, ptv=F)
+plot(res1~data,type='l',lwd=2, col='gray', ylab="probability",xlab="x",
+main="")
+points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",
+lty=2)
+lines(x=c(-1000,1250,1250), y=c(0.5,0.5,-1000), lty=3)
+text(x=0,y=0.5,labels=expression(x[50]),adj=c(0.5,-0.3))
+@  
+\end{center}
+\label{fig5}
+\caption{Type 'logit' with pvt=TRUE in gray and pvt=FALSE in red.}
+\end{figure}
+
+\newpage
+<<fig=F,echo=T, eval=T, results=hide>>=
+data=0:3000
+plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=TRUE) ## in gray
+plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=FALSE) ## in red
+@ 
+\begin{figure}[h]
+\begin{center}
+<<fig=T,echo=F, eval=T,width=5, height=4>>=
+data=0:3000
+res1=plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=TRUE) ## in gray
+res2=plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=FALSE) ## in red
+plot(res1~data,type='l',lwd=2, col='gray', ylab="probability",xlab="x",main="")
+points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",lty=2)
+lines(x=c(-1000,2250,2250), y=c(0.5,0.5,-1000), lty=3)
+lines(x=c(1250,1250), y=c(0.5,-1000), lty=3)
+text(x=0,y=0.5,labels=expression(x[50]),adj=c(0.5,-0.3))
+@  
+\end{center}
+\label{fig6}
+\caption{Type 'plat.logit' with pvt=TRUE in gray and pvt=FALSE in red.}
+\end{figure}
+
+        
+        
+        
+        
+        
 \end{document}

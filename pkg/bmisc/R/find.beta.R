@@ -32,7 +32,7 @@ find.beta=function( minv, maxv,prob=NULL, prop=0.1,beta=0.2, fast=TRUE){
                         if (!test.in){
                                 for(i in seq(beta,2000*beta, by=beta*0.0001)){
                                         test=.ess(beta=i,x50=x50,maxv=maxv)
-                                        if(test[1]*prop<=test[2]){
+                                        if(test[1]*prop>=test[2]){
                                                 beta=i
                                                 beta
                                                 break 
@@ -43,7 +43,7 @@ find.beta=function( minv, maxv,prob=NULL, prop=0.1,beta=0.2, fast=TRUE){
                         if (test.in){
                                 for(i in seq(beta, beta/2000,by=beta*-0.0001)){
                                         test=.ess(beta=i,x50=x50,maxv=maxv)
-                                        if(test[1]*prop>=test[2]){
+                                        if(test[1]*prop<=test[2]){
                                                 beta=i
                                                 beta
                                                 break  
@@ -82,7 +82,6 @@ find.beta=function( minv, maxv,prob=NULL, prop=0.1,beta=0.2, fast=TRUE){
                         
                         if (!test.in){
                                 for(i in seq( beta,beta/2000, by=beta*-0.0001)){
-
                                         test=.esp(beta=i,x50=x50,maxv=maxv)
                                         if(test<=prob){
                                                 beta=i
