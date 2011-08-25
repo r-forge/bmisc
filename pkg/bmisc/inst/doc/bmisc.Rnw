@@ -1,4 +1,4 @@
-\documentclass[letterpaper]{book}
+\documentclass[a4paper]{book}
 \usepackage[times,hyper]{Rd}
 \usepackage{makeidx}
 \usepackage[utf8,latin1]{inputenc}
@@ -16,9 +16,13 @@
 \item[Version]\AsIs{0.2-12}
 \item[Author]\AsIs{Benoit Bruneau}
 \item[Maintainer]\AsIs{Benoit Bruneau }\email{benoit.bruneau1@gmail.com}\AsIs{}
-\item[Description]\AsIs{This package has different functions that I have accumulated with time. This is the Alpha version.}
+\item[URL]\AsIs{}\url{http://r-forge.r-project.org/projects/bmisc/}\AsIs{}
+\item[Description]\AsIs{This package has different functions that I have accumulated with time. Thi is the Alpha version.}
 \item[Depends]\AsIs{car, lattice, zoo, robustbase, methods}
 \item[License]\AsIs{LGPL >= 3.0}
+\item[Repository]\AsIs{R-Forge}
+\item[Repository/R-Forge/Project]\AsIs{bmisc}
+\item[Repository/R-Forge/Revision]\AsIs{93}
 \end{description}
 \Rdcontents{\R{} topics documented:}
 \newpage
@@ -1690,7 +1694,8 @@ performance(expr, samples = 1, gcFirst = TRUE)
 \begin{Usage}
 \begin{verbatim}
 plot.logit(object, se.pred=TRUE, leg=TRUE, ref=TRUE, range.x=c("data","full"), 
-         warn.val=TRUE, ylab="ProbabilitC)",xlab="Longueur C  la fourche (mm)")
+         warn.val=TRUE, ylab="ProbabilitC)",xlab="Longueur C  la fourche (mm)",
+         main=NULL, enc.utf8=FALSE)
 \end{verbatim}
 \end{Usage}
 %
@@ -1698,19 +1703,31 @@ plot.logit(object, se.pred=TRUE, leg=TRUE, ref=TRUE, range.x=c("data","full"),
 \begin{ldescription}
 \item[\code{object}] an object of class \code{'glm'} resulting from a call to \code{\LinkA{glm}{glm}}.
 
-\item[\code{se.pred}] logical; if TRUE, SE is plotted.
+\item[\code{se.pred}] logical; if \code{TRUE}, SE is plotted.
 
-\item[\code{leg}] logical; if TRUE, a legend containing logistic equation and estimated values for the variables is plotted.
+\item[\code{leg}] logical; if \code{TRUE}, a legend containing logistic equation and estimated values for the variables is plotted.
 
-\item[\code{ref}] logical; if TRUE, reference lines for \code{L90, L50 and L10} are plotted.
+\item[\code{ref}] logical; if \code{TRUE}, reference lines for \code{L90, L50 and L10} are plotted.
 
 \item[\code{range.x}] the range used to define \code{xlim} in the plot. Read 'details'.
+
+\item[\code{warn.val}] logical; if \code{TRUE} plots \eqn{x01}{} and \eqn{x99}{} when the fit is suspicious.
+
+\item[\code{main}] an overall title for the plot. If \code{NULL} ...
+
+\item[\code{ylab}] a title for the y axis.
+
+\item[\code{xlab}] a title for the x axis.
+
+\item[\code{enc.utf8}] logical; if \code{TRUE}, \code{\LinkA{iconv}{iconv}(x,"utf-8")} is used for 
+plotting \code{main}, \code{ylab}, and \code{xlab}. Read 'details'. 
 
 \end{ldescription}
 \end{Arguments}
 %
 \begin{Details}\relax
-More to come.
+When using RConsole inside of Eclipse, encoding is wrong. The use of \code{enc.utf8=TRUE} is a temporary fix for correctly 
+plotting characters with accents.
 \end{Details}
 %
 \begin{Author}\relax
@@ -2539,7 +2556,7 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 \begin{Usage}
 \begin{verbatim}
  ypr.l(LW, vonB, l.start, last.age, age.step=1, Fsel.type, 
-       F.max=2,F.incr.YPR=0.0001, M.l,  M=0.2, f.MSP=0.4, 
+       F.max=2,F.incr.YPR=0.0001, Mat.l,  M=0.2, f.MSP=0.4, 
        F.f=0, M.f=0.5, riv.calc=FALSE)
 
 \end{verbatim}
@@ -2584,7 +2601,7 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 
 \item[\code{F.incr.YPR}] increment for generating the \code{F} values to be used for YPR calculation. Default is 0.0001.
 
-\item[\code{M.l}] one of:
+\item[\code{Mat.l}] one of:
 \begin{itemize}
 
 \item a list containing the type of maturity at length definition and the values needed for the function related to the type. See 'Details'. 
