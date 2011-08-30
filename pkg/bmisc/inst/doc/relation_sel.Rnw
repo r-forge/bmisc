@@ -4,7 +4,9 @@
 \usepackage{fancyhdr}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage[francais]{babel}
+%\usepackage[francais]{babel}
+\usepackage[frenchb]{babel}
+\usepackage[applemac]{inputenc}
 \usepackage{lipsum}
 \usepackage{vmargin}
 \usepackage{lastpage}
@@ -14,8 +16,8 @@
 \usepackage{lscape}
 \usepackage{color}
 \usepackage{listings}
-%\usepackage{verbatim}
-%\usepackage{wrapfig}
+\usepackage{verbatim}
+\usepackage{wrapfig}
 \usepackage{hyperref}
 \usepackage[all]{hypcap}
 
@@ -33,7 +35,7 @@
 \huge{\bf Types of relation between \\ a variable and its probabilities}\\
 
 \vspace*{2cm}
-\large{By Benoît Bruneau}
+\large{By Benoit Bruneau}
 \end{center}
 \vspace*{4cm}
 
@@ -59,7 +61,7 @@
 
 \section{Types `full' and `plat.full'}
 \noindent These relations have "all-or-nothing" types of probabilities. One or two threshold (inflection points) need to be defined. 
-The main difference between `full'(Figure~\ref{fig:test}) and `plat.full' (Figure~\ref{fig:testt}) types 
+The main difference between `full'(Figure~\ref{fig1}) and `plat.full' (Figure~\ref{fig2}) types 
 are the number of thresholds. For all types, `plat' stands for "plateau".\\*
 
 \begin{description}
@@ -72,6 +74,7 @@ estimated and \verb#ptv# indicates if the trend is positive  (\verb#TRUE#) or ne
 Here are examples for these types:
 
 <<fig=F,echo=T, eval=T, results=hide>>=
+data=0:3000
 full.sel(infl1=1500, x=data, ptv=TRUE) ## in blue
 full.sel(infl1=1500, x=data, ptv=FALSE) ## in red
 @ 
@@ -87,8 +90,8 @@ points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",
         lty=2)
 @  
 \end{center}
-\label{fig:test}
 \caption{Type 'full' with pvt=TRUE in gray and pvt=FALSE in red.}
+\label{fig1}
 \end{figure}
 
 \newpage
@@ -105,12 +108,11 @@ res1=plat.full.sel(infl1=1000, infl2=2000, x=data, ptv=TRUE) ## in gray
 res2=plat.full.sel(infl1=1000, infl2=2000, x=data, ptv=FALSE) ## in red
 plot(res1~data,type='l',lwd=2, col='gray', ylab="probability",xlab="x",
         main="")
-points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",
-        lty=2)
+points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",lty=2)
 @  
 \end{center}
-\label{fig:testt}
 \caption{Type 'plat.full' with pvt=TRUE in gray and pvt=FALSE in red.}
+\label{fig2}
 \end{figure}
 
 
@@ -148,8 +150,8 @@ points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",
         lty=2)
 @  
 \end{center}
-\label{fig3}
 \caption{Type 'ramp' with pvt=TRUE in gray and pvt=FALSE in red.}
+\label{fig3}
 \end{figure}
 
 \newpage
@@ -170,8 +172,8 @@ points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",
         lty=2)
 @  
 \end{center}
-\label{fig4}
 \caption{Type 'plat.ramp' with pvt=TRUE in gray and pvt=FALSE in red.}
+\label{fig4}
 \end{figure}
 
 
@@ -216,14 +218,15 @@ lines(x=c(-1000,1250,1250), y=c(0.5,0.5,-1000), lty=3)
 text(x=0,y=0.5,labels=expression(x[50]),adj=c(0.5,-0.3))
 @  
 \end{center}
-\label{fig5}
 \caption{Type 'logit' with pvt=TRUE in gray and pvt=FALSE in red.}
+\label{fig5}
 \end{figure}
 
 \newpage
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=TRUE) ## in gray
+plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, 
+	infl4=2500, x=data, ptv=TRUE) ## in gray
 plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=FALSE) ## in red
 @ 
 \begin{figure}[h]
@@ -239,8 +242,8 @@ lines(x=c(1250,1250), y=c(0.5,-1000), lty=3)
 text(x=0,y=0.5,labels=expression(x[50]),adj=c(0.5,-0.3))
 @  
 \end{center}
-\label{fig6}
 \caption{Type 'plat.logit' with pvt=TRUE in gray and pvt=FALSE in red.}
+\label{fig6}
 \end{figure}
 
         
