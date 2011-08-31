@@ -4,9 +4,9 @@
 \usepackage{fancyhdr}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-%\usepackage[francais]{babel}
-\usepackage[frenchb]{babel}
-\usepackage[applemac]{inputenc}
+\usepackage[francais]{babel}
+%\usepackage[frenchb]{babel}
+%\usepackage[applemac]{inputenc}
 \usepackage{lipsum}
 \usepackage{vmargin}
 \usepackage{lastpage}
@@ -72,6 +72,9 @@ where \verb#infl1# and \verb#infl2# are the inflection points, \verb#x# is a num
 estimated and \verb#ptv# indicates if the trend is positive  (\verb#TRUE#) or negative (\verb#FALSE#).\\*
 
 Here are examples for these types:
+<<fig=F,echo=F, eval=T, results=hide>>=
+library(bmisc)
+@ 
 
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
