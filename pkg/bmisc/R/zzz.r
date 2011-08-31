@@ -15,8 +15,9 @@ packageStartupMessage("
   ## modified most of them. This is an Alpha version.                ##
   # ----------------------------------------------------------------- #
   ##                                                                 ##
-  ## To view the user's guide 'bmisc.pdf', type vignette(\"bmisc\").   ##
-  ## It is still under construction.                                 ##
+  ## To view the user's guides 'bmisc.pdf' and 'relation_sel.pdf',   ##
+  ## type vignette(\"bmisc\") or vignette(\"relation_sel\").             ##
+  ## This package is still under construction.                       ##
   ##                                                                 ##
   ## Packaged on ",pkg_date,"                                         ##
   ##-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-##
