@@ -11,10 +11,10 @@
 ##-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-##
 #################################################################################
 
-ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, fish.sel=NULL ,Fsel.type, F.max=2, F.incr.YPR=0.0001, 
-		Mat.l,  M.part, M=0.2, f.MSP=0.4, F.f=0, M.f=0.5, riv.calc=FALSE){
+ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, fish.sel=NULL , fish.lim=NULL ,Fsel.type=NULL, F.max=2, F.incr.YPR=0.0001, 
+		Mat.l,  M.part=NULL, M=0.2, f.MSP=0.4, F.f=0, M.f=0.5, riv.calc=FALSE){
 	
-	parms=list(Fsel.type=Fsel.type,last.age=last.age, l.start=l.start,
+	parms=list(Fsel.type=Fsel.type,last.age=last.age, l.start=l.start, fish.sel=fish.sel, fish.lim=fish.lim,
 			age.step=age.step, LW=LW, vonB=vonB, F.max=F.max, F.incr.YPR=F.incr.YPR,
 			M.part=M.part, M=M, Mat.l=Mat.l, f.MSP=f.MSP, riv.calc=riv.calc, F.f=F.f, M.f=M.f)
 	
@@ -75,36 +75,47 @@ ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, fish.sel=NULL ,Fsel.t
 	##############################################################################
 	##                               Maturity                                   ##
 	##############################################################################
-	if(!(class(Mat.l)[1] %in% c("list","numeric","glm"))) stop("Mat.l should either be a numeric value, a list or a glm (logit) object.")
+
+	if(is.null(Mat.l)){ mat.sel <- const.sel( x = YPR$l.age)
+	}else{
+		if(!(class(Mat.l)[1] %in% c("list","glm"))) stop("Fsel.type should either be a list or a glm (logit) object.")
+	}
 	if(class(Mat.l)[1]=="list"){
-		neg=FALSE
 		switch(Mat.l[[1]],
 				const=  mat.sel <- const.sel( x = YPR$l.age),
 				full= {
-					if(length(Mat.l)==3){
-						if(is.logical(Mat.l[[3]])){
-							neg=Mat.l[[3]]
-						}else{stop("If Mat.l[[3]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					mat.sel <- full.sel(infl1=Mat.l[[2]], x = YPR$l.age, neg=neg)
+					if(all(!("infl1" %in% names(Mat.l)))) stop("'infl1' must be defined. Read help('ypr').")
+					Mat.l1=list(x=YPR$l.age, infl1=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(Mat.l1) %in% names(Mat.l))
+					name.sel=names(Mat.l1)[sel]
+					Mat.l1[name.sel] <-Mat.l[name.sel]			
+					mat.sel=do.call("full.sel", Mat.l1)					
 				},
 				ramp= {
-					if(length(Mat.l)==4){
-						if(is.logical(Mat.l[[4]])){
-							neg=Mat.l[[4]]
-						}else{stop("If Mat.l[[4]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					mat.sel <- ramp.sel(infl1 =Mat.l[[2]], infl2 = Mat.l[[3]], x = YPR$l.age, neg=neg)
+					if(all(!(c("infl1","infl2") %in% names(Mat.l)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					Mat.l1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(Mat.l1) %in% names(Mat.l))
+					name.sel=names(Mat.l1)[sel]
+					Mat.l1[name.sel] <-Mat.l[name.sel]	
+					mat.sel=do.call("ramp.sel", Mat.l1)
 				},
 				logit= {
-					if(length(Mat.l)==4){
-						if(is.logical(Mat.l[[4]])){
-							neg=Mat.l[[4]]
-						}else{stop("If Mat.l[[4]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					mat.sel <- logit.sel(infl1=Mat.l[[2]], infl2=Mat.l[[3]], x=YPR$l.age, neg=neg)
+					if(all(!(c("infl1","infl2") %in% names(Mat.l)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					Mat.l1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1 , prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+					sel=which(names(Mat.l1) %in% names(Mat.l))
+					name.sel=names(Mat.l1)[sel]
+					Mat.l1[name.sel] <-Mat.l[name.sel]		
+					mat.sel=do.call("logit.sel", Mat.l1)
 				},
-				mod.logit= mat.sel <- mod.logit.sel(alpha=Mat.l[[2]], beta=Mat.l[[3]], x=YPR$l.age)
+				mod.logit= { 					
+					if(all(!(c("alpha","beta") %in% names(Mat.l)))) stop("'alpha' and 'beta' must be defined. Read help('ypr').")
+					Mat.l1=list(x=YPR$l.age, alpha=NULL, beta=NULL)
+					sel=which(names(Mat.l1) %in% names(Mat.l))
+					name.sel=names(Mat.l1)[sel]
+					Mat.l1[name.sel] <-Mat.l[name.sel]		
+					mat.sel=do.call("mod.logit.sel", Mat.l1)
+					
+				}
 		)   
 	}
 	
@@ -117,60 +128,72 @@ ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, fish.sel=NULL ,Fsel.t
 	##                             F selectivity                                ##
 	##############################################################################
 	
-	if(!(class(Fsel.type)[1] %in% c("list","numeric","glm"))) stop("Fsel.type should either be a numeric value, a list or a glm (logit) object.")
-	if(class(Fsel.type)[1]=="numeric") F.sel <- const.sel( x = YPR$l.age)
+	if(is.null(Fsel.type)){ F.sel <- const.sel( x = YPR$l.age)
+	}else{
+		if(!(class(Fsel.type)[1] %in% c("list","glm"))) stop("Fsel.type should either be a list or a glm (logit) object.")
+	}
 	if(class(Fsel.type)[1]=="list"){
 		switch(Fsel.type[[1]],
 				const=  F.sel <- const.sel( x = YPR$l.age),
 				full= {
-					if(length(Fsel.type)==3){
-						if(is.logical(Fsel.type[[3]])){
-							neg=Fsel.type[[3]]
-						}else{stop("If Fsel.type[[3]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					F.sel <- full.sel(infl1=Fsel.type[[2]], x = YPR$l.age, neg=neg)
+					if(all(!("infl1" %in% names(Fsel.type)))) stop("'infl1' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=YPR$l.age, infl1=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(Fsel.type1) %in% names(Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-Fsel.type[name.sel]			
+					F.sel=do.call("full.sel", Fsel.type1)
 				},
 				plat.full= {
-					if(length(Fsel.type)==4){
-						if(is.logical(Fsel.type[[4]])){
-							neg=Fsel.type[[4]]
-						}else{stop("If Fsel.type[[4]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					F.sel <- plat.full.sel(infl1=Fsel.type[[2]],infl2=Fsel.type[[3]], x = YPR$l.age, neg=neg)
+					if(all(!(c("infl1","infl2") %in% names(Fsel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(Fsel.type1) %in% names(Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-Fsel.type[name.sel]		
+					F.sel=do.call("plat.full.sel", Fsel.type1)					
 				},
 				ramp= {
-					if(length(Fsel.type)==4){
-						if(is.logical(Fsel.type[[4]])){
-							neg=Fsel.type[[4]]
-						}else{stop("If Fsel.type[[4]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					F.sel <- ramp.sel(infl1 =Fsel.type[[2]], infl2 = Fsel.type[[3]], x = YPR$l.age, neg=neg)
+					if(all(!(c("infl1","infl2") %in% names(Fsel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(Fsel.type1) %in% names(Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-Fsel.type[name.sel]			
+					F.sel=do.call("ramp.sel", Fsel.type1)
 				},
 				plat.ramp= {
-					if(length(Fsel.type)==6){
-						if(is.logical(Fsel.type[[6]])){
-							neg=Fsel.type[[6]]
-						}else{stop("If Fsel.type[[6]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					F.sel <- ramp.sel(infl1 =Fsel.type[[2]], infl2 = Fsel.type[[3]],infl3 = Fsel.type[[4]],infl4 = Fsel.type[[5]], x = YPR$l.age, neg=neg)
+					if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(Fsel.type)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(Fsel.type1) %in% names(Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-Fsel.type[name.sel]		
+					F.sel=do.call("plat.ramp.sel", Fsel.type1)
 				},
 				logit= {
-					if(length(Fsel.type)==4){
-						if(is.logical(Fsel.type[[4]])){
-							neg=Fsel.type[[4]]
-						}else{stop("If Fsel.type[[4]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					F.sel <- logit.sel(infl1=Fsel.type[[2]], infl2=Fsel.type[[3]], x=YPR$l.age, neg=neg)
+					if(all(!(c("infl1","infl2") %in% names(Fsel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1 , 
+							prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+					sel=which(names(Fsel.type1) %in% names(Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-Fsel.type[name.sel]		
+					F.sel=do.call("logit.sel", Fsel.type1)
 				},
 				plat.logit= {
-					if(length(Fsel.type)==6){
-						if(is.logical(Fsel.type[[6]])){
-							neg=Fsel.type[[6]]
-						}else{stop("If Fsel.type[[6]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					F.sel <- plat.logit.sel(infl1=Fsel.type[[2]], infl2=Fsel.type[[3]], infl3=Fsel.type[[4]],infl4=Fsel.type[[5]], x=YPR$l.age, neg=neg)
+					if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(Fsel.type)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, neg=FALSE, lv=0, uv=1, 
+							prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+					sel=which(names(Fsel.type1) %in% names(Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-Fsel.type[name.sel]		
+					F.sel=do.call("plat.logit.sel", Fsel.type1)
 				},
-				mod.logit= F.sel <- mod.logit.sel(alpha=Fsel.type[[2]], beta=Fsel.type[[3]], x=YPR$l.age)
+				mod.logit= {
+					if(all(!(c("alpha","beta") %in% names(Fsel.type)))) stop("'alpha' and 'beta' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=YPR$l.age, alpha=NULL, beta=NULL)
+					sel=which(names(Fsel.type1) %in% names(Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-Fsel.type[name.sel]		
+					F.sel=do.call("ramp.sel", Fsel.type1)
+
+				}
 		)   
 	}
 	
@@ -182,71 +205,89 @@ ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, fish.sel=NULL ,Fsel.t
 	##                             FISHERMEN selectivity                        ##
 	##############################################################################
 	if(!is.null(fish.sel)){
-		
-		if(!is.list(fish.sel)) 
-			fun.names <- paste(deparse(substitute(fish.sel)), collapse = " ")
-		
-		fish.sel=fish.sel(length=YPR$l.age)
-		F.sel=F.sel*fish.sel
+		if(is.null(fish.lim))stop("'fish.lim' needs to have a values when 'fish.sel' is present. Read help('ypr.l').")
+		sel=which(YPR$l.age<fish.lim)
+		fish.sel=object@parms$fish.sel(YPR$l.age)
+		F.sel[sel]=F.sel[sel]*fish.sel[sel]
 	}
 	
 	##############################################################################
 	##                                  M.part                                  ##
 	##############################################################################
-	if(class(M.part)[1]=="list"){
+	
+	if(is.null(M.part)){ M.sel <- const.sel( x = YPR$l.age)
+	}else{
+		if(!(class(M.part)[1] %in% c("list", "glm"))) stop("M.part should either be a list or a glm (logit) object.")
+	}
+	if(class(M.part)[1]=="list"){		
 		switch(M.part[[1]],
-				const=  M.part <- const.sel( x = YPR$l.age),
+				const=  M.sel <- const.sel( x = YPR$l.age),
 				full= {
-					if(length(M.part)==3){
-						if(is.logical(M.part[[3]])){
-							neg=M.part[[3]]
-						}else{stop("If M.part[[3]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					M.part <- full.sel(infl1=M.part[[2]], x = YPR$l.age, neg=neg)
+					if(all(!("infl1" %in% names(M.part)))) stop("'infl1' must be defined. Read help('ypr').")
+					M.part1=list(x=YPR$l.age, infl1=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(M.part1) %in% names(M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-M.part[name.sel]		
+					M.sel=do.call("full.sel", M.part1)
 				},
 				plat.full= {
-					if(length(M.part)==4){
-						if(is.logical(M.part[[4]])){
-							neg=M.part[[4]]
-						}else{stop("If M.part[[4]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					M.part <- plat.full.sel(infl1=M.part[[2]],infl2=M.part[[3]], x = YPR$l.age, neg=neg)
+					if(all(!(c("infl1","infl2") %in% names(M.part)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					M.part1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(M.part1) %in% names(M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-M.part[name.sel]		
+					M.sel=do.call("plat.full.sel", M.part1)					
 				},
 				ramp= {
-					if(length(M.part)==4){
-						if(is.logical(M.part[[4]])){
-							neg=M.part[[4]]
-						}else{stop("If M.part[[4]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					M.part <- ramp.sel(infl1 =M.part[[2]], infl2 = M.part[[3]], x = YPR$l.age, neg=neg)
+					if(all(!(c("infl1","infl2") %in% names(M.part)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					M.part1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(M.part1) %in% names(M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-M.part[name.sel]	
+					M.sel=do.call("ramp.sel", M.part1)
 				},
 				plat.ramp= {
-					if(length(M.part)==6){
-						if(is.logical(M.part[[6]])){
-							neg=M.part[[6]]
-						}else{stop("If M.part[[6]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					M.part <- ramp.sel(infl1 =M.part[[2]], infl2 = M.part[[3]],infl3 = M.part[[4]],infl4 = M.part[[5]], x = YPR$l.age, neg=neg)
+					if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(M.part)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
+					M.part1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(M.part1) %in% names(M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-M.part[name.sel]		
+					M.sel=do.call("plat.ramp.sel", M.part1)
 				},
 				logit= {
-					if(length(M.part)==4){
-						if(is.logical(M.part[[4]])){
-							neg=M.part[[4]]
-						}else{stop("If M.part[[4]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					M.part <- logit.sel(infl1=M.part[[2]], infl2=M.part[[3]], x=YPR$l.age, neg=neg)
+					if(all(!(c("infl1","infl2") %in% names(M.part)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					M.part1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1 , 
+							prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+					sel=which(names(M.part1) %in% names(M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-M.part[name.sel]		
+					M.sel=do.call("logit.sel", M.part1)
 				},
 				plat.logit= {
-					if(length(M.part)==6){
-						if(is.logical(M.part[[6]])){
-							neg=M.part[[6]]
-						}else{stop("If M.part[[6]] is specified by user, it should a value of type 'logical'. See help('ypr.l').")}
-					}
-					M.part <- plat.logit.sel(infl1=M.part[[2]], infl2=M.part[[3]], infl3=M.part[[4]],infl4=M.part[[5]], x=YPR$l.age, neg=neg)
+					if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(M.part)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
+					M.part1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, neg=FALSE, lv=0, uv=1, 
+							prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+					sel=which(names(M.part1) %in% names(M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-M.part[name.sel]		
+					M.sel=do.call("plat.logit.sel", M.part1)
 				},
-				mod.logit= M.part <- mod.logit.sel(alpha=M.part[[2]], beta=M.part[[3]], x=YPR$l.age)
+				mod.logit= {
+					if(all(!(c("alpha","beta") %in% names(M.part)))) stop("'alpha' and 'beta' must be defined. Read help('ypr').")
+					M.part1=list(x=YPR$l.age, alpha=NULL, beta=NULL)
+					sel=which(names(M.part1) %in% names(M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-M.part[name.sel]	
+					M.sel=do.call("ramp.sel", M.part1)
+					
+				}
 		)   
-	}else{stop("M.part needs to be a list. See help('ypr.l')")}
+	}
+	
+	if(class(M.part)[1]=="glm"){
+		coeffs=coef(M.part)
+		M.sel <- mod.logit.sel(alpha=coeffs[[1]], beta=coeffs[[2]], x=YPR$l.age)
+	}   
 	##############################################################################
 	##                          Matrices des calculs                            ##
 	##############################################################################
@@ -256,7 +297,8 @@ ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, fish.sel=NULL ,Fsel.t
 	F.=matrix(rep(F.sel,n.F),ncol=n.F, nrow=n(F.sel))
 	F.=sweep(F.,MARGIN=2,F.i,`*`)
 	
-	Z=sweep(M*M.part,MARGIN=2,F.,`+`)
+	M.all=M*M.sel
+	Z=sweep(F.,MARGIN=1,M.all,`+`)
 	
 	Z1=colSums(Z, na.rm=TRUE)
 	
@@ -454,7 +496,7 @@ const.sel <- function(x) {
 	return(.sel)
 }
 
-full.sel <- function(infl1, x, neg=FALSE, lv=0, uv=1) {
+full.sel <- function(x, infl1, neg=FALSE, lv=0, uv=1) {
 	if(lv[1]>uv[1]){stop("'lv' should be smaller or equal to 'uv'.")}
 	if(any(c(lv[1],uv[1])<0) | any(c(lv[1],uv[1])>1)){stop("Values 'lv' and 'uv' should be in [0,1].")}
 	if(!neg){
@@ -471,7 +513,7 @@ full.sel <- function(infl1, x, neg=FALSE, lv=0, uv=1) {
 
 
 
-plat.full.sel <- function(infl1, infl2, x, neg=FALSE, lv=c(0,0), uv=c(1,1)) {
+plat.full.sel <- function(x, infl1, infl2, neg=FALSE, lv=c(0,0), uv=c(1,1)) {
 	n.uv=n(uv)
 	test=vector()
 	for(i in 1:n.uv) test[i]=any(lv>uv[i])
@@ -499,7 +541,7 @@ plat.full.sel <- function(infl1, infl2, x, neg=FALSE, lv=c(0,0), uv=c(1,1)) {
 	return(.sel)
 }
 
-ramp.sel <- function(infl1, infl2, x, neg=FALSE, lv=0, uv=1) {
+ramp.sel <- function(x, infl1, infl2, neg=FALSE, lv=0, uv=1) {
 	if(lv[1]>uv[1]){stop("'lv' should be smaller or equal to 'uv'.")}
 	if(any(c(lv[1],uv[1])<0) | any(c(lv[1],uv[1])>1)){stop("Values 'lv' and 'uv' should be in [0,1].")}
 	ramp=which(x >= infl1 & x <= infl2)
@@ -520,7 +562,7 @@ ramp.sel <- function(infl1, infl2, x, neg=FALSE, lv=0, uv=1) {
 	return(.sel)
 }
 
-plat.ramp.sel <- function(infl1, infl2, infl3,infl4, x, neg=FALSE, lv=c(0,0), uv=c(1,1)) {
+plat.ramp.sel <- function(x, infl1, infl2, infl3,infl4, neg=FALSE, lv=c(0,0), uv=c(1,1)) {
 	n.uv=n(uv)
 	test=vector()
 	for(i in 1:n.uv) test[i]=any(lv>uv[i])
@@ -567,7 +609,7 @@ plat.ramp.sel <- function(infl1, infl2, infl3,infl4, x, neg=FALSE, lv=c(0,0), uv
 	return(.sel)
 }
 
-logit.sel <- function(infl1,infl2, x,neg=FALSE, lv=0.5, uv=0.8,...) {
+logit.sel <- function(x, infl1,infl2, neg=FALSE, lv=0.5, uv=0.8,...) {
 	if(lv[1]>uv[1]){stop("'lv' should be smaller or equal to 'uv'.")}
 	if(any(c(lv[1],uv[1])<0) | any(c(lv[1],uv[1])>1)){stop("Values 'lv' and 'uv' should be in [0,1].")}
 	
@@ -583,7 +625,7 @@ logit.sel <- function(infl1,infl2, x,neg=FALSE, lv=0.5, uv=0.8,...) {
 }
 
 
-plat.logit.sel <- function(infl1,infl2,infl3,infl4, x, neg=FALSE, lv=c(0,0), uv=c(1,1),...) {
+plat.logit.sel <- function(x, infl1,infl2,infl3,infl4, neg=FALSE, lv=c(0,0), uv=c(1,1),...) {
 	n.uv=n(uv)
 	test=vector()
 	for(i in 1:n.uv) test[i]=any(lv>uv[i])
@@ -625,7 +667,7 @@ plat.logit.sel <- function(infl1,infl2,infl3,infl4, x, neg=FALSE, lv=c(0,0), uv=
 
 
 
-mod.logit.sel <- function(alpha,beta, x) {
+mod.logit.sel <- function(x, alpha,beta) {
 	.sel=1/(1+exp(-(alpha+beta*(x))))
 	return(.sel)
 }
@@ -721,4 +763,239 @@ plot.ypr<-
 	}
 }
 
-)
+plot.parms.ypr <- function(object){
+	
+	par(mfrow=c(2,2))
+	xlim=c(min(object@base$l.age,na.rm=T),max(object@base$l.age,na.rm=T))
+	x.dat=seq(xlim[1],xlim[2], by=(xlim[2]-xlim[1])/1000)
+	ylim=c(0,1)
+	
+	##############################################################################
+	##                               Maturity                                   ##
+	##############################################################################
+	
+	if(is.null(object@parms$Mat.l)){ mat.sel <- const.sel(x.dat)
+	}else{
+		if(!(class(object@parms$Mat.l)[1] %in% c("list","glm"))) stop("Fsel.type should either be a list or a glm (logit) object.")
+	}
+	if(class(object@parms$Mat.l)[1]=="list"){
+		switch(object@parms$Mat.l[[1]],
+				const=  mat.sel <- const.sel(x.dat),
+				full= {
+					if(all(!("infl1" %in% names(object@parms$Mat.l)))) stop("'infl1' must be defined. Read help('ypr').")
+					Mat.l1=list(x=x.dat, infl1=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(Mat.l1) %in% names(object@parms$Mat.l))
+					name.sel=names(Mat.l1)[sel]
+					Mat.l1[name.sel] <-object@parms$Mat.l[name.sel]		
+					mat.sel=do.call("full.sel", Mat.l1)					
+				},
+				ramp= {
+					if(all(!(c("infl1","infl2") %in% names(object@parms$Mat.l)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					Mat.l1=list(x=x.dat, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(Mat.l1) %in% names(object@parms$Mat.l))
+					name.sel=names(Mat.l1)[sel]
+					Mat.l1[name.sel] <-object@parms$Mat.l[name.sel]		
+					mat.sel=do.call("ramp.sel", Mat.l1)
+				},
+				logit= {
+					if(all(!(c("infl1","infl2") %in% names(object@parms$Mat.l)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					Mat.l1=list(x=x.dat, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1 , prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+					sel=which(names(Mat.l1) %in% names(object@parms$Mat.l))
+					name.sel=names(Mat.l1)[sel]
+					Mat.l1[name.sel] <-object@parms$Mat.l[name.sel]		
+					mat.sel=do.call("logit.sel", Mat.l1)
+				},
+				mod.logit= { 					
+					if(all(!(c("alpha","beta") %in% names(object@parms$Mat.l)))) stop("'alpha' and 'beta' must be defined. Read help('ypr').")
+					Mat.l1=list(x=x.dat, alpha=NULL, beta=NULL)
+					sel=which(names(Mat.l1) %in% names(object@parms$Mat.l))
+					name.sel=names(Mat.l1)[sel]
+					Mat.l1[name.sel] <-object@parms$Mat.l[name.sel]		
+					mat.sel=do.call("mod.logit.sel", Mat.l1)					
+				}
+		)   
+	}
+	
+	if(class(object@parms$Mat.l)[1]=="glm"){
+		coeffs=coef(object@parms$Mat.l)
+		mat.sel <- mod.logit.sel(alpha=coeffs[[1]], beta=coeffs[[2]], x=x.dat)
+	}
+	
+	##############################################################################
+	##                             F selectivity                                ##
+	##############################################################################
+	
+	if(is.null(object@parms$Fsel.type)){ F.sel <- const.sel(x.dat)
+	}else{
+		if(!(class(object@parms$Fsel.type)[1] %in% c("list","glm"))) stop("object@parms$Fsel.type should either be a list or a glm (logit) object.")
+	}
+	if(class(object@parms$Fsel.type)[1]=="list"){
+		switch(object@parms$Fsel.type[[1]],
+				const=  F.sel <- const.sel(x.dat),
+				full= {
+					if(all(!("infl1" %in% names(object@parms$Fsel.type)))) stop("'infl1' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=x.dat, infl1=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(Fsel.type1) %in% names(object@parms$Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-object@parms$Fsel.type[name.sel]		
+					F.sel=do.call("full.sel", Fsel.type1)
+				},
+				plat.full= {
+					if(all(!(c("infl1","infl2") %in% names(object@parms$Fsel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=x.dat, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(Fsel.type1) %in% names(object@parms$Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-object@parms$Fsel.type[name.sel]		
+					F.sel=do.call("plat.full.sel", Fsel.type1)					
+				},
+				ramp= {
+					if(all(!(c("infl1","infl2") %in% names(object@parms$Fsel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=x.dat, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(Fsel.type1) %in% names(object@parms$Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-object@parms$Fsel.type[name.sel]		
+					F.sel=do.call("ramp.sel", Fsel.type1)
+				},
+				plat.ramp= {
+					if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(object@parms$Fsel.type)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=x.dat, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(Fsel.type1) %in% names(object@parms$Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-object@parms$Fsel.type[name.sel]		
+					F.sel=do.call("plat.ramp.sel", Fsel.type1)
+				},
+				logit= {
+					if(all(!(c("infl1","infl2") %in% names(object@parms$Fsel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=x.dat, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1 , 
+							prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+					sel=which(names(Fsel.type1) %in% names(object@parms$Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-object@parms$Fsel.type[name.sel]		
+					F.sel=do.call("logit.sel", Fsel.type1)
+				},
+				plat.logit= {
+					if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(object@parms$Fsel.type)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=x.dat, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, neg=FALSE, lv=0, uv=1, 
+							prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+					sel=which(names(Fsel.type1) %in% names(object@parms$Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-object@parms$Fsel.type[name.sel]		
+					F.sel=do.call("plat.logit.sel", Fsel.type1)
+				},
+				mod.logit= {
+					if(all(!(c("alpha","beta") %in% names(object@parms$Fsel.type)))) stop("'alpha' and 'beta' must be defined. Read help('ypr').")
+					Fsel.type1=list(x=x.dat, alpha=NULL, beta=NULL)
+					sel=which(names(Fsel.type1) %in% names(object@parms$Fsel.type))
+					name.sel=names(Fsel.type1)[sel]
+					Fsel.type1[name.sel] <-object@parms$Fsel.type[name.sel]		
+					F.sel=do.call("ramp.sel", Fsel.type1)
+					
+				}
+		)   
+	}
+	
+	if(class(object@parms$Fsel.type)[1]=="glm"){
+		coeffs=coef(object@parms$Fsel.type)
+		F.sel <- mod.logit.sel(alpha=coeffs[[1]], beta=coeffs[[2]], x=x.dat)
+	}        
+	##############################################################################
+	##                             FISHERMEN selectivity                        ##
+	##############################################################################
+	if(!is.null(object@parms$fish.sel)){
+		if(is.null(object@parms$fish.lim))stop("'fish.lim' needs to have a values when 'fish.sel' is present. Read help('ypr.l').")
+		sel=which(x.dat<object@parms$fish.lim)
+		x.dat2=x.dat[sel]
+		fish.sel=object@parms$fish.sel(x.dat)
+		F.sel2=F.sel
+		F.sel2[sel]=F.sel[sel]*fish.sel[sel]
+
+	}
+	
+	##############################################################################
+	##                                  M.part                                  ##
+	##############################################################################
+	
+	if(is.null(object@parms$M.part)){ M.sel <- const.sel(x.dat)
+	}else{
+		if(!(class(object@parms$M.part)[1] %in% c("list", "glm"))) stop("object@parms$M.part should either be a list or a glm (logit) object.")
+	}
+	if(class(object@parms$M.part)[1]=="list"){		
+		switch(object@parms$M.part[[1]],
+				const=  M.sel <- const.sel(x.dat),
+				full= {
+					if(all(!("infl1" %in% names(object@parms$M.part)))) stop("'infl1' must be defined. Read help('ypr').")
+					M.part1=list(x=x.dat, infl1=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(M.part1) %in% names(object@parms$M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-object@parms$M.part[name.sel]		
+					M.sel=do.call("full.sel", M.part1)
+				},
+				plat.full= {
+					if(all(!(c("infl1","infl2") %in% names(object@parms$M.part)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					M.part1=list(x=x.dat, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(M.part1) %in% names(object@parms$M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-object@parms$M.part[name.sel]			
+					M.sel=do.call("plat.full.sel", M.part1)					
+				},
+				ramp= {
+					if(all(!(c("infl1","infl2") %in% names(object@parms$M.part)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					M.part1=list(x=x.dat, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(M.part1) %in% names(object@parms$M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-object@parms$M.part[name.sel]		
+					M.sel=do.call("ramp.sel", M.part1)
+				},
+				plat.ramp= {
+					if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(object@parms$M.part)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
+					M.part1=list(x=x.dat, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, neg=FALSE, lv=0, uv=1)
+					sel=which(names(M.part1) %in% names(object@parms$M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-object@parms$M.part[name.sel]			
+					M.sel=do.call("plat.ramp.sel", M.part1)
+				},
+				logit= {
+					if(all(!(c("infl1","infl2") %in% names(object@parms$M.part)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+					M.part1=list(x=x.dat, infl1=NULL, infl2=NULL, neg=FALSE, lv=0, uv=1 , 
+							prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+					sel=which(names(M.part1) %in% names(object@parms$M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-object@parms$M.part[name.sel]		
+					M.sel=do.call("logit.sel", M.part1)
+				},
+				plat.logit= {
+					if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(object@parms$M.part)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
+					M.part1=list(x=x.dat, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, neg=FALSE, lv=0, uv=1, 
+							prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+					sel=which(names(M.part1) %in% names(object@parms$M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-object@parms$M.part[name.sel]			
+					M.sel=do.call("plat.logit.sel", M.part1)
+				},
+				mod.logit= {
+					if(all(!(c("alpha","beta") %in% names(object@parms$M.part)))) stop("'alpha' and 'beta' must be defined. Read help('ypr').")
+					M.part1=list(x=x.dat, alpha=NULL, beta=NULL)
+					sel=which(names(M.part1) %in% names(object@parms$M.part))
+					name.sel=names(M.part1)[sel]
+					M.part1[name.sel] <-object@parms$M.part[name.sel]			
+					M.sel=do.call("ramp.sel", M.part1)
+					
+				}
+		)   
+	}
+	
+	if(class(object@parms$M.part)[1]=="glm"){
+		coeffs=coef(object@parms$M.part)
+		M.sel <- mod.logit.sel(alpha=coeffs[[1]], beta=coeffs[[2]], x=x.dat)
+	}   
+	
+	plot(mat.sel~x.dat, xlim=xlim, ylim=ylim, main="Mat.l", type='l', lwd=2.7, xlab="Length", ylab="Probability")	
+	plot(M.sel~x.dat  , xlim=xlim, ylim=ylim, main="M.part", type='l', lwd=2.7, xlab="Length", ylab="Probability")
+	plot(F.sel~x.dat  , xlim=xlim, ylim=ylim, main="Fsel.type", type='l', lwd=2.7, xlab="Length", ylab="Probability")
+	if(!is.null(object@parms$fish.sel)){
+		points(F.sel2~x.dat, type='l', lwd=2,5, col='blue' )
+		abline(v=object@parms$fish.lim, lwd=2.5, col="red")
+	}
+}
+
+

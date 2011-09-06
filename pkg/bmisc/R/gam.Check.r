@@ -26,7 +26,7 @@ gam.Check.default <-function (b,main=c("Normal Q-Q Plot","Resids vs. Linear Pred
                                        rug=TRUE , xlab=xlab[3], ylab=ylab[3], main=main[3])
                 
                 args.histplot1[names(args.histplot)] <- args.histplot
-                diff=which(names(args.histplot) %nin% names(args.histplot1))
+                diff=which(!(names(args.histplot) %in% names(args.histplot1)))
                 if(length(diff>=1)){
                     args.histplot1=c(args.histplot1,args.histplot[diff] )
                 }

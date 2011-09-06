@@ -4,9 +4,9 @@
 \usepackage{fancyhdr}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage[francais]{babel}
-%\usepackage[frenchb]{babel}
-%\usepackage[applemac]{inputenc}
+%\usepackage[francais]{babel}
+\usepackage[frenchb]{babel}
+\usepackage[applemac]{inputenc}
 \usepackage{lipsum}
 \usepackage{vmargin}
 \usepackage{lastpage}
@@ -20,7 +20,6 @@
 \usepackage{wrapfig}
 \usepackage{hyperref}
 \usepackage[all]{hypcap}
-
 \usepackage{amssymb, amsmath}
 
 
@@ -59,17 +58,21 @@
 \tableofcontents
 \newpage
 
-\section{Types `full' and `plat.full'}
-\noindent These relations have "all-or-nothing" types of probabilities. One or two threshold (inflection points) need to be defined. 
+\section{Types `const', `full', and `plat.full'}
+\noindent These relations are the simplest that can be used. While `const' stands for a constant probability of one, the other two 
+have "all-or-nothing" types of probabilities. One or two thresholds (inflection points) need to be defined. 
 The main difference between `full'(Figure~\ref{fig1}) and `plat.full' (Figure~\ref{fig2}) types 
 are the number of thresholds. For all types, `plat' stands for "plateau".\\*
 
 \begin{description}
-\item[full.sel]\verb#(infl1, x, ptv=TRUE)#
-\item[plat.full.sel]\verb#(infl1, infl2, x, ptv=TRUE)#
+\item[const.sel]\verb#(x)#
+\item[full.sel]\verb#(infl1, x, neg=FALSE, lv=0, uv=1)#
+\item[plat.full.sel]\verb#(infl1, infl2, x, neg=FALSE, lv=c(0,0), uv=c(1,1))#
 \end{description}
 where \verb#infl1# and \verb#infl2# are the inflection points, \verb#x# is a numeric vector for which probabilities are 
-estimated and \verb#ptv# indicates if the trend is positive  (\verb#TRUE#) or negative (\verb#FALSE#).\\*
+estimated, \verb#neg# indicates if the trend is negative  (\verb#TRUE#) or positive (\verb#FALSE#), \verb#lv# defines the 
+lower probability values of the relation, and \verb#uv# defines the upper probability values of the relation. By default, 
+all fonctions have \verb#neg=FALSE#, \verb#lv=c(0,0)#, and \verb#uv=c(0,0)#.\\*
 
 Here are examples for these types:
 <<fig=F,echo=F, eval=T, results=hide>>=
@@ -78,8 +81,8 @@ library(bmisc)
 
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-full.sel(infl1=1500, x=data, ptv=TRUE) ## in blue
-full.sel(infl1=1500, x=data, ptv=FALSE) ## in red
+full.sel(infl1=1500, x=data, neg=FALSE) ## in blue
+full.sel(infl1=1500, x=data, neg=TRUE) ## in red
 @ 
 \begin{figure}[h]
 \begin{center}
@@ -100,15 +103,15 @@ points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",
 \newpage
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-plat.full.sel(infl1=1000, infl2=2000, x=data, ptv=TRUE) ## in gray
-plat.full.sel(infl1=1000, infl2=2000, x=data, ptv=FALSE) ## in red
+plat.full.sel(infl1=1000, infl2=2000, x=data, neg=FALSE) ## in gray
+plat.full.sel(infl1=1000, infl2=2000, x=data, neg=TRUE) ## in red
 @ 
 \begin{figure}[h]
 \begin{center}
 <<fig=T,echo=F, eval=T,width=5, height=4>>=
 data=0:3000
-res1=plat.full.sel(infl1=1000, infl2=2000, x=data, ptv=TRUE) ## in gray
-res2=plat.full.sel(infl1=1000, infl2=2000, x=data, ptv=FALSE) ## in red
+res1=plat.full.sel(infl1=1000, infl2=2000, x=data, neg=FALSE) ## in gray
+res2=plat.full.sel(infl1=1000, infl2=2000, x=data, neg=TRUE) ## in red
 plot(res1~data,type='l',lwd=2, col='gray', ylab="probability",xlab="x",
         main="")
 points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",lty=2)
@@ -129,8 +132,8 @@ They are an 'upgraded' version of `full' and `plat.full'. Two or four inflection
  inflection points.\\*
 
 \begin{description}
-\item[ramp.sel]\verb#(infl1, infl2, x, ptv=TRUE)#
-\item[plat.ramp.sel]\verb#(infl1, infl2, infl3, infl4, x, ptv=TRUE)#
+\item[ramp.sel]\verb#(infl1, infl2, x, neg=FALSE)#
+\item[plat.ramp.sel]\verb#(infl1, infl2, infl3, infl4, x, neg=FALSE)#
 \end{description}
 where \verb#infl1# to \verb#infl4# are the inflection points, \verb#x# is a numeric vector for which probabilities are 
 estimated and \verb#ptv# indicates if the trend is positive  (\verb#TRUE#) or negative (\verb#FALSE#).\\*
@@ -138,8 +141,8 @@ estimated and \verb#ptv# indicates if the trend is positive  (\verb#TRUE#) or ne
 Here are examples for these types:
 
 <<fig=F,echo=T, eval=T, results=hide>>=
-ramp.sel(infl1=1000, infl2=1500, x=data, ptv=TRUE) ## in gray
-ramp.sel(infl1=1000, infl2=1500, x=data, ptv=FALSE) ## in red
+ramp.sel(infl1=1000, infl2=1500, x=data, neg=FALSE) ## in gray
+ramp.sel(infl1=1000, infl2=1500, x=data, neg=TRUE) ## in red
 @ 
 \begin{figure}[h]
 \begin{center}
@@ -160,15 +163,15 @@ points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",
 \newpage
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-plat.ramp.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=TRUE) ## in gray
-plat.ramp.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=FALSE) ## in red
+plat.ramp.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, neg=FALSE) ## in gray
+plat.ramp.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, neg=TRUE) ## in red
 @ 
 \begin{figure}[h]
 \begin{center}
 <<fig=T,echo=F, eval=T,width=5, height=4>>=
 data=0:3000
-res1=plat.ramp.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=TRUE) ## in gray
-res2=plat.ramp.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=FALSE) ## in red
+res1=plat.ramp.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, neg=FALSE) ## in gray
+res2=plat.ramp.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, neg=TRUE) ## in red
 plot(res1~data,type='l',lwd=2, col='gray', ylab="probability",xlab="x",
         main="")
 points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",
@@ -195,8 +198,8 @@ The main difference between `logit'(Figure \ref{fig5}) and `plat.logit' (Figure 
 number inflection points.\\*
         
 \begin{description}
-\item[logit.sel]\verb#(infl1, infl2, x, ptv=TRUE)#
-\item[plat.logit.sel]\verb#(infl1, infl2, infl3, infl4, x, ptv=TRUE)#
+\item[logit.sel]\verb#(infl1, infl2, x, neg=FALSE)#
+\item[plat.logit.sel]\verb#(infl1, infl2, infl3, infl4, x, neg=FALSE)#
 \end{description}
 where \verb#infl1# to \verb#infl4# are the inflection points, \verb#x# is a numeric vector for which probabilities are 
 estimated and \verb#ptv# indicates if the trend is positive  (\verb#TRUE#) or negative (\verb#FALSE#).\\*
@@ -204,8 +207,8 @@ estimated and \verb#ptv# indicates if the trend is positive  (\verb#TRUE#) or ne
 Here are examples for these types:
 
 <<fig=F,echo=T, eval=T, results=hide>>=
-logit.sel(infl1=1000, infl2=1500, x=data, ptv=TRUE) ## in gray
-logit.sel(infl1=1000, infl2=1500, x=data, ptv=FALSE) ## in red
+logit.sel(infl1=1000, infl2=1500, x=data, neg=FALSE) ## in gray
+logit.sel(infl1=1000, infl2=1500, x=data, neg=TRUE) ## in red
 @ 
 \begin{figure}[h]
 \begin{center}
@@ -229,15 +232,15 @@ text(x=0,y=0.5,labels=expression(x[50]),adj=c(0.5,-0.3))
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
 plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, 
-	infl4=2500, x=data, ptv=TRUE) ## in gray
-plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=FALSE) ## in red
+	infl4=2500, x=data, neg=FALSE) ## in gray
+plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, neg=TRUE) ## in red
 @ 
 \begin{figure}[h]
 \begin{center}
 <<fig=T,echo=F, eval=T,width=5, height=4>>=
 data=0:3000
-res1=plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=TRUE) ## in gray
-res2=plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, ptv=FALSE) ## in red
+res1=plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, neg=FALSE) ## in gray
+res2=plat.logit.sel(infl1=1000, infl2=1500, infl3=2000, infl4=2500, x=data, neg=TRUE) ## in red
 plot(res1~data,type='l',lwd=2, col='gray', ylab="probability",xlab="x",main="")
 points(res2~data,type='l',lwd=2, col='red', ylab="probability",xlab="x",lty=2)
 lines(x=c(-1000,2250,2250), y=c(0.5,0.5,-1000), lty=3)
