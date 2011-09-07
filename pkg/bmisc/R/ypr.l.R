@@ -207,7 +207,7 @@ ypr.l <- function(LW, vonB, l.start, last.age, age.step=1, fish.sel=NULL , fish.
 	if(!is.null(fish.sel)){
 		if(is.null(fish.lim))stop("'fish.lim' needs to have a values when 'fish.sel' is present. Read help('ypr.l').")
 		sel=which(YPR$l.age<fish.lim)
-		fish.sel=object@parms$fish.sel(YPR$l.age)
+		fish.sel=fish.sel(YPR$l.age)
 		F.sel[sel]=F.sel[sel]*fish.sel[sel]
 	}
 	
@@ -763,6 +763,8 @@ plot.ypr<-
 	}
 }
 
+plot.parms <- function (object) UseMethod("plot.parms")
+
 plot.parms.ypr <- function(object){
 	
 	par(mfrow=c(2,2))
@@ -993,7 +995,7 @@ plot.parms.ypr <- function(object){
 	plot(M.sel~x.dat  , xlim=xlim, ylim=ylim, main="M.part", type='l', lwd=2.7, xlab="Length", ylab="Probability")
 	plot(F.sel~x.dat  , xlim=xlim, ylim=ylim, main="Fsel.type", type='l', lwd=2.7, xlab="Length", ylab="Probability")
 	if(!is.null(object@parms$fish.sel)){
-		points(F.sel2~x.dat, type='l', lwd=2,5, col='blue' )
+		points(F.sel2~x.dat, type='l', lwd=2.5, col='blue' )
 		abline(v=object@parms$fish.lim, lwd=2.5, col="red")
 	}
 }
