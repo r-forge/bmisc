@@ -4,9 +4,9 @@
 \usepackage{fancyhdr}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-%\usepackage[francais]{babel}
-\usepackage[frenchb]{babel}
-\usepackage[applemac]{inputenc}
+\usepackage[francais]{babel}
+%\usepackage[frenchb]{babel}
+%\usepackage[applemac]{inputenc}
 \usepackage{lipsum}
 \usepackage{vmargin}
 \usepackage{lastpage}
