@@ -579,18 +579,17 @@ plat.ramp.sel <- function(x, infl1, infl2, infl3,infl4, neg=FALSE, lv=c(0,0), uv
 		mod.ramp=coef(lm(c(lv[1],uv[1])~c(infl1,infl2)))
 		.sel=vector()
 		.sel[s1]=lv[1]
-		
-		
+        .sel[s2]=uv[1]
+				
 		if(length(lv) >= 2){
 			mod.ramp2=coef(lm(c(uv[1],lv[2])~c(infl3,infl4)))
 			.sel[s11]=lv[2]
 		}else{
-			mod.ramp2=coef(lm(c(1,lv[1])~c(infl3,infl4)))
+			mod.ramp2=coef(lm(c(uv[1],lv[1])~c(infl3,infl4)))
 			.sel[s11]=lv[1]
 		}		
 		.sel[ramp]=x[ramp]*mod.ramp[2]+mod.ramp[1]
 		.sel[ramp2]=x[ramp2]*mod.ramp2[2]+mod.ramp2[1]
-		.sel[s2]=uv[1]
 	}else{  
 		mod.ramp=coef(lm(c(uv[1],lv[1])~c(infl1,infl2)))
 		
@@ -609,7 +608,7 @@ plat.ramp.sel <- function(x, infl1, infl2, infl3,infl4, neg=FALSE, lv=c(0,0), uv
 	return(.sel)
 }
 
-logit.sel <- function(x, infl1,infl2, neg=FALSE, lv=0.5, uv=0.8,...) {
+logit.sel <- function(x, infl1,infl2, neg=FALSE, lv=0, uv=1,...) {
 	if(lv[1]>uv[1]){stop("'lv' should be smaller or equal to 'uv'.")}
 	if(any(c(lv[1],uv[1])<0) | any(c(lv[1],uv[1])>1)){stop("Values 'lv' and 'uv' should be in [0,1].")}
 	
@@ -635,16 +634,9 @@ plat.logit.sel <- function(x, infl1,infl2,infl3,infl4, neg=FALSE, lv=c(0,0), uv=
 	s1=which(x < ((infl3-infl2)/2)+infl2)
 	s2=which(x >= ((infl3-infl2)/2)+infl2)
 	.sel=x
-	
-	minv1=lv[1]/(1-lv[1])
-	if(length(lv)==2){
-		minv2=lv[2]/(1-lv[2])
-	}else{
-		minv2=lv[1]/(1-lv[1])
-	}
+
 	if(!neg){
 		ajust1=coef(lm(c(uv[1],lv[1])~c(1,0)))
-		
 		if(length(lv)>=2){
 			ajust2=coef(lm(c(uv[1],lv[2])~c(1,0)))
 		}else{ajust2=coef(lm(c(uv[1],lv[1])~c(1,0)))}
@@ -653,13 +645,22 @@ plat.logit.sel <- function(x, infl1,infl2,infl3,infl4, neg=FALSE, lv=c(0,0), uv=
 		res2=find.beta(minv=infl3,maxv=infl4,...)
 		.sel[s1]=1/(1+exp(-res1$beta*(x[s1]-res1$x50)))
 		.sel[s1]=.sel[s1]*ajust1[2]+ajust1[1]
+        
 		.sel[s2]=1/(1+exp(res2$beta*(x[s2]-res2$x50)))
 		.sel[s2]=.sel[s2]*ajust2[2]+ajust2[1]
 	}else{
+        ajust1=coef(lm(c(uv[1],lv[1])~c(1,0)))
+        if(length(uv)>=2){
+            ajust2=coef(lm(c(uv[2],lv[1])~c(1,0)))
+        }else{ajust2=coef(lm(c(uv[1],lv[1])~c(1,0)))}
+        
 		res1=find.beta(minv=infl1,maxv=infl2,...)
 		res2=find.beta(minv=infl3,maxv=infl4,...)
-		.sel[s1]=(1/(1+exp(res1$beta*(x[s1]-res1$x50)))+minv1)/(1+minv1)
-		.sel[s2]=(1/(1+exp(-res2$beta*(x[s2]-res2$x50)))+minv1)/(1+minv1)		
+		.sel[s1]=1/(1+exp(res1$beta*(x[s1]-res1$x50)))
+        .sel[s1]=.sel[s1]*ajust1[2]+ajust1[1]
+        
+		.sel[s2]=1/(1+exp(-res2$beta*(x[s2]-res2$x50)))
+        .sel[s2]=.sel[s2]*ajust2[2]+ajust2[1]
 	}	
 	return(.sel)
 }
