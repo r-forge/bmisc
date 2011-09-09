@@ -4,7 +4,7 @@
 \usepackage{fancyhdr}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage[francais]{babel}
+%\usepackage[francais]{babel}
 %\usepackage[frenchb]{babel}
 %\usepackage[applemac]{inputenc}
 \usepackage{lipsum}
@@ -48,7 +48,7 @@
 \end{description}
 
 
-\vspace*{\fill;}
+\vspace*{\fill}
 
 
 \end{titlepage}
@@ -93,7 +93,7 @@ Here is an example for `const' type:
   \vspace{-10pt}
 \label{fig1}
 \end{figure}
-\vspace*{\fill;}
+\vspace*{\fill}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -140,6 +140,7 @@ Here are examples for `full' type:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
+
 Here are examples for `plat.full' type:
 \begin{Schunk}
 \begin{Sinput}
@@ -240,7 +241,7 @@ Here are examples for `ramp' type:
 \label{fig7}
 \end{figure}
 
-\vspace*{\fill;}
+\vspace*{\fill}
 \newpage
 
 
@@ -264,8 +265,9 @@ Here are examples for `ramp' type:
 \label{fig8}
 \end{figure}
 
+\newpage
 
-
+Here are examples for `plat.ramp' type:
 \begin{Schunk}
 \begin{Sinput}
 > data = 0:3000
@@ -348,7 +350,7 @@ lower probability values of the relation, and \verb#uv# defines the upper probab
 all fonctions have \verb#neg=FALSE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#. Additionnal options of \verb#find.beta()# 
 can be added. Default values are \verb#prob=NULL#, \verb#prop=0.1#,\verb#beta=0.2#, and \verb#fast=TRUE#.  \\*
 
-Here are examples for these types:
+Here are examples for `logit' type:
 \begin{Schunk}
 \begin{Sinput}
 > logit.sel(x = data, infl1 = 1000, infl2 = 2000, neg = FALSE)
@@ -366,7 +368,7 @@ Here are examples for these types:
 \label{fig12}
 \end{figure}
 
-\vspace*{\fill;}
+\vspace*{\fill}
 \newpage
 
 
@@ -390,8 +392,9 @@ Here are examples for these types:
 \label{fig13}
 \end{figure}
 
+\newpage
 
-
+Here are examples for `plat.logit' type:
 \begin{Schunk}
 \begin{Sinput}
 > data = 0:3000

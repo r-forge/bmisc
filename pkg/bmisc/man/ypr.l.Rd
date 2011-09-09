@@ -25,8 +25,8 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 }
   \item{vonB}{one of:
         \itemize{
-            \item a vector containing \code{c(Linf,K)} from von Bertalanffy grotwh curve. See \sQuote{Details}. 
-            \item an object of class \code{"\link{glm}"} in which eqn{Linf} and eqn{K} were estimated. See \sQuote{Details}.        
+            \item a vector containing \code{c(Linf,K)} from von Bertalanffy grotwh curve.
+            \item an object of class \code{"\link{glm}"} in which eqn{Linf} and eqn{K} were estimated.      
         }
 }
   \item{l.start}{length at the starting age
@@ -35,67 +35,79 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 }
   \item{age.step}{steps used to generate ages. Default is \code{1}.
 }
-  \item{Fsel.type}{one of:
+
+  \item{Fsel.type}{fishing selectivity can be defined as one of:
         \itemize{
-            \item a list containing the type of fishery selectivity and the values needed for the function related to the type. See \sQuote{Details}. 
-            \item an object of class \code{"\link{glm}"} in which \eqn{\alpha} and \eqn{\beta} were estimated by a logistic regression. See \sQuote{Details}.        
+            \item a list containing the type of fishery selectivity and the values needed for the function related to the type.
+            \item an object of class \code{"\link{glm}"} in which \eqn{\alpha} and \eqn{\beta} were estimated by a logistic regression.        
         }
+}
+  \item{fish.lim}{the minimum legal catch length.
+}
+  \item{prop.surv}{a function that defines the proportion of fish (< \code{fish.lim}) that will survive after being released back into the water (discarded by-catch).
 }
   \item{F.max}{maximum value of instantaneous rate of fishing mortality (\code{F}). Default is 2.
 }
   \item{F.incr.YPR}{increment for generating the \code{F} values to be used for YPR calculation. Default is 0.0001.
 }
-  \item{Mat.l}{one of:
+  \item{Mat}{Maturity can be defined by one of:
         \itemize{
-            \item a list containing the type of maturity at length definition and the values needed for the function related to the type. See \sQuote{Details}. 
-            \item an object of class \code{"\link{glm}"} in which \eqn{\alpha} and \eqn{\beta} were estimated by a logistic regression. See \sQuote{Details}.        
+            \item a list containing the type of maturity at length definition and the values needed for the function related to the type.
+            \item an object of class \code{"\link{glm}"} in which \eqn{\alpha} and \eqn{\beta} were estimated by a logistic regression.       
+        }
+}
+  \item{Msel.type}{natural mortality selectivity can be defined as one of:
+        \itemize{
+            \item a list containing the type of natural mortality selectivity and the values needed for the function related to the type. 
+            \item an object of class \code{"\link{glm}"} in which \eqn{\alpha} and \eqn{\beta} were estimated by a logistic regression.       
         }
 }
   \item{M}{instantaneous rate of natural mortality (\code{M}). Default is 0.2.
 }
   \item{f.MSP}{reference point defined as the fraction of maximum spawning potential. Default is 0.4.
 }
-  \item{F.f}{fraction of instantaneous rate of fishing mortality (\code{F}) before spawning.
-}
-  \item{M.f}{fraction of instantaneous rate of natural mortality (\code{M}) before spawning.
-}
-  \item{riv.calc}{a logical value indicating whether to use Rivard weights calculation (\code{TRUE}) or not. Default is \code{FALSE}.
-}
+%  \item{F.f}{fraction of instantaneous rate of fishing mortality (\code{F}) before spawning.
+%}
+%  \item{M.f}{fraction of instantaneous rate of natural mortality (\code{M}) before spawning.
+%}
+%  \item{riv.calc}{a logical value indicating whether to use Rivard weights calculation (\code{TRUE}) or not. Default is \code{FALSE}.
+%}
 }
 \details{
 \bold{Length-Weight relationship} can be provided either by indicating \code{c(\eqn{\alpha},\eqn{\beta})} values in a vector or by 
 directly using an object of class \code{"\link{nls}"} or \code{"\link{lm}"}. If \eqn{\alpha} and \eqn{\beta} are estimated 
 by \code{\link{lm}}, \code{\link{log}(x, base=exp(1))} transformation should be applied to the data prior to fitting the linear model. 
-When creating \code{\link{nls}} object,If an object resulting from \code{\link{nls}} is used, variables should be named \bold{alpha} and \bold{beta} 
+If \eqn{\alpha} and \eqn{\beta} are estimated by \code{\link{nls}}, variables should be named \bold{alpha} and \bold{beta} 
 using the following equation:
 \tabular{c}{
 \eqn{W=\alpha L^\beta}
 }
 where \eqn{W} is weight, \eqn{L} is length, \eqn{\alpha} is the elevation of the curve, and \eqn{\beta} 
-is the steepness of the curve. Both \eqn{\alpha} and \eqn{\beta} are coefficients estimated by the regression. 
+is the steepness of the curve. Both \eqn{\alpha} and \eqn{\beta} are estimated coefficients.
+
 
 \bold{Von Bartalanffy growth equation} parameters can be provided either by indicating \code{c(Linf,K)} values in a vector or by 
 directly using an object of class \code{"\link{nls}"}. If an object resulting from \code{\link{nls}} is used, variables 
 should be named \bold{Linf} and \bold{K}. As for \bold{\eqn{t0}}, any name may be used since only \eqn{L\infty } and \eqn{K} are 
-used in this length-based YPR model. The equation used in the \code{\link{nls}} for estimating \eqn{L\infty } 
+used in this length-based YPR model because age is considered as relative. The equation used in the \code{\link{nls}} for estimating \eqn{L\infty } 
 and \eqn{K} should be the following one:
 
-\eqn{ Lt=L\infty ( 1-e^{-K (t-t0)}) }
+\eqn{ Lt=L\infty ( 1-e^(-K (t-t0))) }
 
 where \eqn{Lt} is length-at-age \eqn{t}, \eqn{L\infty} is the asymptotic average maximum length, 
 \eqn{K} is a growth rate coefficient determinant of how quick the maximum is attained, and \eqn{t0} 
 is the hypothetical age at length zero.
 
-As stated above, since this length-based YPR model uses relative age, \eqn{t-t_0} becomes a relative age (\eqn{a}). 
+As stated above, since this length-based YPR model uses relative age, \eqn{t-t0} becomes a relative age (\eqn{a}). 
 The Von Bartalanffy growth equation used in this length-based YPR model is defined as:
 
-\eqn{ La=L\infty ( 1-e^{-Ka})+ Ls e^{-Ka} }
+\eqn{ La=L\infty ( 1-e^(-Ka))+ Ls e^(-Ka) }
 
 where \eqn{La} is length at a relative age \eqn{a} and \eqn{Ls} is length at relative age zero.
 
 
 The \bold{fishery selectivity} and \bold{maturity at length} components of the model can be defined 
-as one of \code{c("full", "ramp", "logistic")} equations. The proper way to specify which equation to use is by 
+as one of \code{c("full", "plat.full", "ramp", "plat.ramp", "logit", "plat.logit")} equations. The proper way to specify which equation to use is by 
 the construct of a \code{\link{list}} where the first element is the name of one of the three types of equation. 
 The following elements of the \code{\link{list}} are specific to the type of equation:
 \itemize{

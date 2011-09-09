@@ -4,7 +4,7 @@
 \usepackage{fancyhdr}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage[francais]{babel}
+%\usepackage[francais]{babel}
 %\usepackage[frenchb]{babel}
 %\usepackage[applemac]{inputenc}
 \usepackage{lipsum}
@@ -48,7 +48,7 @@
 \end{description}
 
 
-\vspace*{\fill;}
+\vspace*{\fill}
 
 
 \end{titlepage}
@@ -105,7 +105,7 @@ axis(side=2,at=c(0,0.5,1), las=1)
   \vspace{-10pt}
 \label{fig1}
 \end{figure}
-\vspace*{\fill;}
+\vspace*{\fill}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -136,6 +136,7 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000))
+axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
@@ -168,6 +169,7 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000), las=1)
+axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
@@ -178,6 +180,7 @@ axis(side=1,at=seq(0,3000,by=1000), las=1)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
+
 Here are examples for `plat.full' type:
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
@@ -202,6 +205,7 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000), las=1)
+axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
@@ -235,6 +239,7 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000), las=1)
+axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
@@ -266,6 +271,7 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000), las=1)
+axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
@@ -318,6 +324,7 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000))
+axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
@@ -326,7 +333,7 @@ axis(side=1,at=seq(0,3000,by=1000))
 \label{fig7}
 \end{figure}
 
-\vspace*{\fill;}
+\vspace*{\fill}
 \newpage
 
 
@@ -353,6 +360,7 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000))
+axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
@@ -361,8 +369,9 @@ axis(side=1,at=seq(0,3000,by=1000))
 \label{fig8}
 \end{figure}
 
+\newpage
 
-
+Here are examples for `plat.ramp' type:
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
 plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE)
@@ -386,6 +395,7 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000))
+axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
@@ -418,6 +428,7 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000))
+axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
@@ -449,6 +460,7 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000))
+axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
@@ -478,7 +490,7 @@ lower probability values of the relation, and \verb#uv# defines the upper probab
 all fonctions have \verb#neg=FALSE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#. Additionnal options of \verb#find.beta()# 
 can be added. Default values are \verb#prob=NULL#, \verb#prop=0.1#,\verb#beta=0.2#, and \verb#fast=TRUE#.  \\*
 
-Here are examples for these types:
+Here are examples for `logit' type:
 <<fig=F,echo=T, eval=T, results=hide>>=
 logit.sel(x=data, infl1=1000, infl2=2000, neg=FALSE)
 logit.sel(x=data, infl1=1000, infl2=2000, neg=TRUE) 
@@ -503,8 +515,9 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000))
-text(x=0,y=0.5,labels=expression(x[50]),adj=c(0.3,-0.3))
-lines(x=c(-1000,1500,1500), y=c(0.5,0.5,-1000), lty=3)
+axis(side=4,at=c(0,0.5,1), las=1)
+text(x=3000,y=0.5,labels=expression(x[50]),adj=c(0.7,-0.3))
+lines(x=c(5000,1500,1500), y=c(0.5,0.5,-1000), lty=3)
 
 @  
 \end{center}
@@ -514,7 +527,7 @@ lines(x=c(-1000,1500,1500), y=c(0.5,0.5,-1000), lty=3)
 \label{fig12}
 \end{figure}
 
-\vspace*{\fill;}
+\vspace*{\fill}
 \newpage
 
 
@@ -543,8 +556,9 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000))
-text(x=0,y=0.5,labels=expression(x[50]),adj=c(0.3,-0.3))
-lines(x=c(-1000,1500,1500), y=c(0.5,0.5,-1000), lty=3)
+axis(side=4,at=c(0,0.5,1), las=1)
+text(x=3000,y=0.5,labels=expression(x[50]),adj=c(0.7,-0.3))
+lines(x=c(5000,1500,1500), y=c(0.5,0.5,-1000), lty=3)
 @  
 \end{center}
 \vspace{-30pt}
@@ -553,8 +567,9 @@ lines(x=c(-1000,1500,1500), y=c(0.5,0.5,-1000), lty=3)
 \label{fig13}
 \end{figure}
 
+\newpage
 
-
+Here are examples for `plat.logit' type:
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
 plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE)
@@ -564,11 +579,12 @@ plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE)
 \vspace{-20pt}
 \begin{center}
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
-par(mfrow=c(1,2), mar=c(3,4,1,1))
+
 data=0:3000
 res1=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE)
 res2=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE) 
 
+par(mfrow=c(1,2), mar=c(3,4,1,1))
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
         main="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000), las=1)
@@ -582,8 +598,9 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000))
-text(x=0,y=0.5,labels=expression(x[50]),adj=c(0.3,-0.3))
-lines(x=c(-1000,2250), y=c(0.5,0.5), lty=3)
+axis(side=4,at=c(0,0.5,1), las=1)
+text(x=3000,y=0.5,labels=expression(x[50]),adj=c(0.7,-0.3))
+lines(x=c(5000,750), y=c(0.5,0.5), lty=3)
 lines(x=c(750,750), y=c(0.5,-1000), lty=3)
 lines(x=c(2250,2250), y=c(0.5,-1000), lty=3)
 @  
@@ -604,11 +621,12 @@ plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, 
 \vspace{-20pt}
 \begin{center}
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
-par(mfrow=c(1,2), mar=c(3,4,1,1))
+
 data=0:3000
 res1=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE, lv=0.2,uv=0.8)
 res2=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, lv=0.2,uv=0.8) 
 
+par(mfrow=c(1,2), mar=c(3,4,1,1))
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
         main="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000), las=1)
@@ -622,8 +640,9 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000))
-text(x=0,y=0.5,labels=expression(x[50]),adj=c(0.3,-0.3))
-lines(x=c(-1000,2250), y=c(0.5,0.5), lty=3)
+axis(side=4,at=c(0,0.5,1), las=1)
+text(x=3000,y=0.5,labels=expression(x[50]),adj=c(0.7,-0.3))
+lines(x=c(5000,750), y=c(0.5,0.5), lty=3)
 lines(x=c(750,750), y=c(0.5,-1000), lty=3)
 lines(x=c(2250,2250), y=c(0.5,-1000), lty=3)
 @  
@@ -643,11 +662,12 @@ plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, 
 \vspace{-20pt}
 \begin{center}
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
-par(mfrow=c(1,2), mar=c(3,4,1,1))
+
 data=0:3000
 res1=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE, lv=c(0.2,0.4),uv=0.8)
 res2=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, lv=0.2,uv=c(0.8,0.6)) 
 
+par(mfrow=c(1,2), mar=c(3,4,1,1))
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
         main="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000), las=1)
@@ -663,8 +683,10 @@ par(mar=c(3,0.5,1,4.5))
 
 plot(res2~data,type='l',lwd=2, ylab="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
 axis(side=1,at=seq(0,3000,by=1000))
-text(x=0,y=0.5,labels=expression(x[50]),adj=c(0.3,-0.3))
-lines(x=c(-1000,750), y=c(0.5,0.5), lty=3)
+axis(side=4,at=c(0,0.5,1), las=1)
+text(x=3000,y=0.5,labels=expression(x[50]),adj=c(0.7,-0.3))
+lines(x=c(5000,2500), y=c(0.5,0.5), lty=3)
+lines(x=c(2100,750), y=c(0.5,0.5), lty=3)
 lines(x=c(750,750), y=c(0.5,-1000), lty=3)
 
 lines(x=c(2250,2250), y=c(0.4,-1000), lty=3)
