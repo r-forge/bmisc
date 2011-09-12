@@ -107,18 +107,10 @@ where \eqn{La} is length at a relative age \eqn{a} and \eqn{Ls} is length at rel
 
 
 The \bold{fishery selectivity} and \bold{maturity at length} components of the model can be defined 
-as one of \code{c("full", "plat.full", "ramp", "plat.ramp", "logit", "plat.logit")} equations. The proper way to specify which equation to use is by 
-the construct of a \code{\link{list}} where the first element is the name of one of the three types of equation. 
-The following elements of the \code{\link{list}} are specific to the type of equation:
-\itemize{
-    \item \bold{full:}  element \code{[[2]]} is the length at which full maturity is achieved.
-    
-    \item \bold{ramp:}  element \code{[[2]]} is the maximum length at which maturity is null and 
-    element \code{[[3]]} is the minimum length at which maturity is fully achieved.
-    
-    \item \bold{logistic}  elements \code{[[2]]} and \code{[[3]]} are respectively \eqn{\alpha} and \eqn{\beta} 
-    components of a logistic curve.
-}
+as one of \code{c("full", "plat.full", "ramp", "plat.ramp", "logit", "plat.logit")} equations. The proper 
+way to specify which function to use is by the construct of a \code{list} where the first element is the 
+name of one of the six types of function. See example and \code{\link{selectivity}} for more details.  
+
 Alternatively, an object of class \code{"glm"} can directly be used for the \bold{fishery selectivity} and \bold{maturity at length} components. 
 The Generalized Linear Model should have  the option \code{family} set to either \code{binomial} or \code{quasibinomial} keeping link function to the 
 default (\eqn{i.e.} \code{"logit"}).

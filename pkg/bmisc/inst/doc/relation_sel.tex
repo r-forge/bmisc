@@ -29,7 +29,7 @@
 \vspace*{3cm}
 \begin{center}
 
-\huge{\bf Types of relation between \\ a variable and its probabilities}\\
+\huge{\bf Selectivity functions that estimates\\ the relation between a variable and its probabilities}\\
 
 \vspace*{2cm}
 \large{By Benoit Bruneau}
@@ -65,13 +65,13 @@ and `plat.full' (Figure~\ref{fig4}, \ref{fig5} \& \ref{fig6}) types are the numb
 
 \begin{description}
 \item[const.sel]\verb#(x)#
-\item[full.sel]\verb#(x, infl1, neg=FALSE, lv=0, uv=1)#
-\item[plat.full.sel]\verb#(x, infl1, infl2, neg=FALSE, lv=c(0,0), uv=c(1,1))#
+\item[full.sel]\verb#(x, infl1, pos=TRUE, lv=0, uv=1)#
+\item[plat.full.sel]\verb#(x, infl1, infl2, pos=TRUE, lv=c(0,0), uv=c(1,1))#
 \end{description}
-where \verb#infl1# and \verb#infl2# are the inflection points, \verb#x# is a numeric vector for which probabilities are 
-estimated, \verb#neg# indicates if the trend is negative  (\verb#TRUE#) or positive (\verb#FALSE#), \verb#lv# defines the 
+where \verb#x# is a numeric vector for which probabilities are estimated, \verb#infl1# and \verb#infl2# are the inflection points, 
+\verb#pos# indicates if the trend at the beginning is positive  (\verb#TRUE#) or negative (\verb#FALSE#), \verb#lv# defines the 
 lower probability values of the relation, and \verb#uv# defines the upper probability values of the relation. By default, 
-all fonctions have \verb#neg=FALSE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#.\\*
+all fonctions have \verb#pos=TRUE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#.\\*
 
 Here is an example for `const' type:
 
@@ -103,8 +103,8 @@ Here are examples for `full' type:
 \begin{Schunk}
 \begin{Sinput}
 > data = 0:3000
-> full.sel(x = data, infl1 = 1500, neg = FALSE)
-> full.sel(x = data, infl1 = 1500, neg = TRUE)
+> full.sel(x = data, infl1 = 1500, pos = TRUE)
+> full.sel(x = data, infl1 = 1500, pos = FALSE)
 \end{Sinput}
 \end{Schunk}
 
@@ -114,7 +114,7 @@ Here are examples for `full' type:
 \includegraphics{relation_sel-005}
 \end{center}
 \vspace{-30pt}
-\caption{Type `full' probabilities (left -> neg=FALSE |  right -> neg=TRUE).}
+\caption{Type `full' probabilities (left -> pos=TRUE |  right -> pos=FALSE).}
 \vspace{-10pt}
 \label{fig2}
 \end{figure}
@@ -122,8 +122,8 @@ Here are examples for `full' type:
 \begin{Schunk}
 \begin{Sinput}
 > data = 0:3000
-> full.sel(x = data, infl1 = 1500, neg = FALSE, lv = 0.2, uv = 0.8)
-> full.sel(x = data, infl1 = 1500, neg = TRUE, lv = 0.2, uv = 0.8)
+> full.sel(x = data, infl1 = 1500, pos = TRUE, lv = 0.2, uv = 0.8)
+> full.sel(x = data, infl1 = 1500, pos = FALSE, lv = 0.2, uv = 0.8)
 \end{Sinput}
 \end{Schunk}
 
@@ -133,7 +133,7 @@ Here are examples for `full' type:
 \includegraphics{relation_sel-007}
 \end{center}
 \vspace{-30pt}
-\caption{Type `full' probabilities (left -> neg=FALSE |  right -> neg=TRUE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
+\caption{Type `full' probabilities (left -> pos=TRUE |  right -> pos=FALSE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
 \vspace{-10pt}
 \label{fig3}
 \end{figure}
@@ -145,8 +145,8 @@ Here are examples for `plat.full' type:
 \begin{Schunk}
 \begin{Sinput}
 > data = 0:3000
-> plat.full.sel(x = data, infl1 = 1000, infl2 = 2000, neg = FALSE)
-> plat.full.sel(x = data, infl1 = 1000, infl2 = 2000, neg = TRUE)
+> plat.full.sel(x = data, infl1 = 1000, infl2 = 2000, pos = TRUE)
+> plat.full.sel(x = data, infl1 = 1000, infl2 = 2000, pos = FALSE)
 \end{Sinput}
 \end{Schunk}
 \begin{figure}[h]
@@ -155,7 +155,7 @@ Here are examples for `plat.full' type:
 \includegraphics{relation_sel-009}
 \end{center}
 \vspace{-30pt}
-\caption{Type `plat.full' probabilities (left -> neg=FALSE |  right -> neg=TRUE).}
+\caption{Type `plat.full' probabilities (left -> pos=TRUE |  right -> pos=FALSE).}
 \vspace{-10pt}
 \label{fig4}
 \end{figure}
@@ -165,9 +165,9 @@ Here are examples for `plat.full' type:
 \begin{Schunk}
 \begin{Sinput}
 > data = 0:3000
-> plat.full.sel(x = data, infl1 = 1000, infl2 = 2000, neg = FALSE, 
+> plat.full.sel(x = data, infl1 = 1000, infl2 = 2000, pos = TRUE, 
 +     lv = 0.2, uv = 0.8)
-> plat.full.sel(x = data, infl1 = 1000, infl2 = 2000, neg = TRUE, 
+> plat.full.sel(x = data, infl1 = 1000, infl2 = 2000, pos = FALSE, 
 +     lv = 0.2, uv = 0.8)
 \end{Sinput}
 \end{Schunk}
@@ -177,7 +177,7 @@ Here are examples for `plat.full' type:
 \includegraphics{relation_sel-011}
 \end{center}
 \vspace{-30pt}
-\caption{Type `plat.full' probabilities (left -> neg=FALSE |  right -> neg=TRUE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
+\caption{Type `plat.full' probabilities (left -> pos=TRUE |  right -> pos=FALSE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
 \vspace{-10pt}
 \label{fig5}
 \end{figure}
@@ -185,9 +185,9 @@ Here are examples for `plat.full' type:
 \begin{Schunk}
 \begin{Sinput}
 > data = 0:3000
-> plat.full.sel(x = data, infl1 = 1000, infl2 = 2000, neg = FALSE, 
+> plat.full.sel(x = data, infl1 = 1000, infl2 = 2000, pos = TRUE, 
 +     lv = c(0.2, 0.4), uv = 0.8)
-> plat.full.sel(x = data, infl1 = 1000, infl2 = 2000, neg = TRUE, 
+> plat.full.sel(x = data, infl1 = 1000, infl2 = 2000, pos = FALSE, 
 +     lv = 0.2, uv = c(0.8, 0.6))
 \end{Sinput}
 \end{Schunk}
@@ -197,7 +197,7 @@ Here are examples for `plat.full' type:
 \includegraphics{relation_sel-013}
 \end{center}
 \vspace{-30pt}
-\caption{Type `plat.full' probabilities (left -> neg=FALSE, lv=c(0.2,0.4) , uv=0.8 | right -> neg=TRUE, lv=0.2, uv=c(0.8,0.6)).}
+\caption{Type `plat.full' probabilities (left -> pos=TRUE, lv=c(0.2,0.4) , uv=0.8 | right -> pos=FALSE, lv=0.2, uv=c(0.8,0.6)).}
 \vspace{-10pt}
 \label{fig6}
 \end{figure}
@@ -214,19 +214,18 @@ The main difference between `ramp'(Figure \ref{fig7} \& \ref{fig8}) and `plat.ra
 types are the number inflection points.\\*
 			
 \begin{description}
-\item[ramp.sel]\verb#(x, infl1, infl2, neg=FALSE, lv=0, uv=1)#
-\item[plat.ramp.sel]\verb#(x, infl1, infl2, infl3, infl4, neg=FALSE,# \\* \verb#lv=c(0,0), uv=c(1,1))#
+\item[ramp.sel]\verb#(x, infl1, infl2, pos=TRUE, lv=0, uv=1)#
+\item[plat.ramp.sel]\verb#(x, infl1, infl2, infl3, infl4, pos=TRUE,# \\* \verb#lv=c(0,0), uv=c(1,1))#
 \end{description}
-where \verb#infl1# to \verb#infl4# are the inflection points, \verb#x# is a numeric vector for which probabilities are 
-estimated, \verb#neg# indicates if the trend is negative  (\verb#TRUE#) or positive (\verb#FALSE#), \verb#lv# defines the 
+where \verb#x# is a numeric vector for which probabilities are estimated, \verb#infl1# to \verb#infl4# are the inflection points,  \verb#pos# indicates if the trend at the beginning is positive  (\verb#TRUE#) or negative (\verb#FALSE#), \verb#lv# defines the 
 lower probability values of the relation, and \verb#uv# defines the upper probability values of the relation. By default, 
-all fonctions have \verb#neg=FALSE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#.\\*
+all fonctions have \verb#pos=TRUE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#.\\*
 
 Here are examples for `ramp' type:
 \begin{Schunk}
 \begin{Sinput}
-> ramp.sel(x = data, infl1 = 1000, infl2 = 2000, neg = FALSE)
-> ramp.sel(x = data, infl1 = 1000, infl2 = 2000, neg = TRUE)
+> ramp.sel(x = data, infl1 = 1000, infl2 = 2000, pos = TRUE)
+> ramp.sel(x = data, infl1 = 1000, infl2 = 2000, pos = FALSE)
 \end{Sinput}
 \end{Schunk}
 
@@ -236,7 +235,7 @@ Here are examples for `ramp' type:
 \includegraphics{relation_sel-015}
 \end{center}
 \vspace{-30pt}
-\caption{Type 'ramp' probabilities (left -> neg=FALSE |  right -> neg=TRUE).}
+\caption{Type 'ramp' probabilities (left -> pos=TRUE |  right -> pos=FALSE).}
 \vspace{-10pt}
 \label{fig7}
 \end{figure}
@@ -247,9 +246,9 @@ Here are examples for `ramp' type:
 
 \begin{Schunk}
 \begin{Sinput}
-> ramp.sel(x = data, infl1 = 1000, infl2 = 2000, neg = FALSE, lv = 0.2, 
+> ramp.sel(x = data, infl1 = 1000, infl2 = 2000, pos = TRUE, lv = 0.2, 
 +     uv = 0.8)
-> ramp.sel(x = data, infl1 = 1000, infl2 = 2000, neg = TRUE, lv = 0.2, 
+> ramp.sel(x = data, infl1 = 1000, infl2 = 2000, pos = FALSE, lv = 0.2, 
 +     uv = 0.8)
 \end{Sinput}
 \end{Schunk}
@@ -260,7 +259,7 @@ Here are examples for `ramp' type:
 \includegraphics{relation_sel-017}
 \end{center}
 \vspace{-30pt}
-\caption{Type 'ramp' probabilities (left -> neg=FALSE |  right -> neg=TRUE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
+\caption{Type 'ramp' probabilities (left -> pos=TRUE |  right -> pos=FALSE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
 \vspace{-10pt}
 \label{fig8}
 \end{figure}
@@ -272,9 +271,9 @@ Here are examples for `plat.ramp' type:
 \begin{Sinput}
 > data = 0:3000
 > plat.ramp.sel(x = data, infl1 = 500, infl2 = 1000, infl3 = 2000, 
-+     infl4 = 2500, neg = FALSE)
++     infl4 = 2500, pos = TRUE)
 > plat.ramp.sel(x = data, infl1 = 500, infl2 = 1000, infl3 = 2000, 
-+     infl4 = 2500, neg = TRUE)
++     infl4 = 2500, pos = FALSE)
 \end{Sinput}
 \end{Schunk}
 \begin{figure}[h]
@@ -283,7 +282,7 @@ Here are examples for `plat.ramp' type:
 \includegraphics{relation_sel-019}
 \end{center}
 \vspace{-30pt}
-\caption{Type 'plat.ramp' probabilities (left -> neg=FALSE |  right -> neg=TRUE).}
+\caption{Type 'plat.ramp' probabilities (left -> pos=TRUE |  right -> pos=FALSE).}
 \vspace{-10pt}
 \label{fig9}
 \end{figure}
@@ -293,9 +292,9 @@ Here are examples for `plat.ramp' type:
 \begin{Sinput}
 > data = 0:3000
 > plat.ramp.sel(x = data, infl1 = 500, infl2 = 1000, infl3 = 2000, 
-+     infl4 = 2500, neg = FALSE, lv = 0.2, uv = 0.8)
++     infl4 = 2500, pos = TRUE, lv = 0.2, uv = 0.8)
 > plat.ramp.sel(x = data, infl1 = 500, infl2 = 1000, infl3 = 2000, 
-+     infl4 = 2500, neg = TRUE, lv = 0.2, uv = 0.8)
++     infl4 = 2500, pos = FALSE, lv = 0.2, uv = 0.8)
 \end{Sinput}
 \end{Schunk}
 \begin{figure}[h]
@@ -304,7 +303,7 @@ Here are examples for `plat.ramp' type:
 \includegraphics{relation_sel-021}
 \end{center}
 \vspace{-30pt}
-\caption{Type 'plat.ramp' probabilities (left -> neg=FALSE |  right -> neg=TRUE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
+\caption{Type 'plat.ramp' probabilities (left -> pos=TRUE |  right -> pos=FALSE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
 \vspace{-20pt}
 \label{fig10}
 \end{figure}
@@ -313,9 +312,9 @@ Here are examples for `plat.ramp' type:
 \begin{Sinput}
 > data = 0:3000
 > plat.ramp.sel(x = data, infl1 = 500, infl2 = 1000, infl3 = 2000, 
-+     infl4 = 2500, neg = FALSE, lv = c(0.2, 0.4), uv = 0.8)
++     infl4 = 2500, pos = TRUE, lv = c(0.2, 0.4), uv = 0.8)
 > plat.ramp.sel(x = data, infl1 = 500, infl2 = 1000, infl3 = 2000, 
-+     infl4 = 2500, neg = TRUE, lv = 0.2, uv = c(0.8, 0.6))
++     infl4 = 2500, pos = FALSE, lv = 0.2, uv = c(0.8, 0.6))
 \end{Sinput}
 \end{Schunk}
 \begin{figure}[h]
@@ -324,7 +323,7 @@ Here are examples for `plat.ramp' type:
 \includegraphics{relation_sel-023}
 \end{center}
 \vspace{-30pt}
-\caption{Type 'plat.ramp' probabilities (left -> neg=FALSE, lv=c(0.2,0.4) , uv=0.8 | right -> neg=TRUE, lv=0.2, uv=c(0.8,0.6)).}
+\caption{Type 'plat.ramp' probabilities (left -> pos=TRUE, lv=c(0.2,0.4) , uv=0.8 | right -> pos=FALSE, lv=0.2, uv=c(0.8,0.6)).}
 \vspace{-10pt}
 \label{fig11}
 \end{figure}
@@ -341,20 +340,19 @@ The main difference between `logit'(Figure \ref{fig12} \& \ref{fig13}) and `plat
 types are the number inflection points.\\*
 
 \begin{description}
-\item[logit.sel]\verb#(x, infl1, infl2, neg=FALSE, lv=0, uv=1, ...)#
-\item[plat.logit.sel]\verb#(x, infl1, infl2, infl3, infl4, neg=FALSE,# \\* \verb#lv=c(0,0), uv=c(1,1), ...)#
+\item[logit.sel]\verb#(x, infl1, infl2, pos=TRUE, lv=0, uv=1, ...)#
+\item[plat.logit.sel]\verb#(x, infl1, infl2, infl3, infl4, pos=TRUE,# \\* \verb#lv=c(0,0), uv=c(1,1), ...)#
 \end{description}
-where \verb#infl1# to \verb#infl4# are the inflection points, \verb#x# is a numeric vector for which probabilities are 
-estimated, \verb#neg# indicates if the trend is negative  (\verb#TRUE#) or positive (\verb#FALSE#), \verb#lv# defines the 
+where \verb#x# is a numeric vector for which probabilities are estimated, \verb#infl1# to \verb#infl4# are the inflection points,  \verb#pos# indicates if the trend at the beginning is positive  (\verb#TRUE#) or negative (\verb#FALSE#), \verb#lv# defines the 
 lower probability values of the relation, and \verb#uv# defines the upper probability values of the relation. By default, 
-all fonctions have \verb#neg=FALSE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#. Additionnal options of \verb#find.beta()# 
+all fonctions have \verb#pos=TRUE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#. Additionnal options of \verb#find.beta()# 
 can be added. Default values are \verb#prob=NULL#, \verb#prop=0.1#,\verb#beta=0.2#, and \verb#fast=TRUE#.  \\*
 
 Here are examples for `logit' type:
 \begin{Schunk}
 \begin{Sinput}
-> logit.sel(x = data, infl1 = 1000, infl2 = 2000, neg = FALSE)
-> logit.sel(x = data, infl1 = 1000, infl2 = 2000, neg = TRUE)
+> logit.sel(x = data, infl1 = 1000, infl2 = 2000, pos = TRUE)
+> logit.sel(x = data, infl1 = 1000, infl2 = 2000, pos = FALSE)
 \end{Sinput}
 \end{Schunk}
 \begin{figure}[h]
@@ -363,7 +361,7 @@ Here are examples for `logit' type:
 \includegraphics{relation_sel-025}
 \end{center}
 \vspace{-30pt}
-\caption{Type 'logit' probabilities (left -> neg=FALSE |  right -> neg=TRUE).}
+\caption{Type 'logit' probabilities (left -> pos=TRUE |  right -> pos=FALSE).}
 \vspace{-10pt}
 \label{fig12}
 \end{figure}
@@ -374,10 +372,10 @@ Here are examples for `logit' type:
 
 \begin{Schunk}
 \begin{Sinput}
-> logit.sel(x = data, infl1 = 1000, infl2 = 2000, neg = FALSE, 
-+     lv = 0.2, uv = 0.8)
-> logit.sel(x = data, infl1 = 1000, infl2 = 2000, neg = TRUE, lv = 0.2, 
+> logit.sel(x = data, infl1 = 1000, infl2 = 2000, pos = TRUE, lv = 0.2, 
 +     uv = 0.8)
+> logit.sel(x = data, infl1 = 1000, infl2 = 2000, pos = FALSE, 
++     lv = 0.2, uv = 0.8)
 \end{Sinput}
 \end{Schunk}
 
@@ -387,7 +385,7 @@ Here are examples for `logit' type:
 \includegraphics{relation_sel-027}
 \end{center}
 \vspace{-30pt}
-\caption{Type 'logit' probabilities (left -> neg=FALSE |  right -> neg=TRUE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
+\caption{Type 'logit' probabilities (left -> pos=TRUE |  right -> pos=FALSE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
 \vspace{-10pt}
 \label{fig13}
 \end{figure}
@@ -399,9 +397,9 @@ Here are examples for `plat.logit' type:
 \begin{Sinput}
 > data = 0:3000
 > plat.logit.sel(x = data, infl1 = 500, infl2 = 1000, infl3 = 2000, 
-+     infl4 = 2500, neg = FALSE)
++     infl4 = 2500, pos = TRUE)
 > plat.logit.sel(x = data, infl1 = 500, infl2 = 1000, infl3 = 2000, 
-+     infl4 = 2500, neg = TRUE)
++     infl4 = 2500, pos = FALSE)
 \end{Sinput}
 \end{Schunk}
 \begin{figure}[h]
@@ -410,7 +408,7 @@ Here are examples for `plat.logit' type:
 \includegraphics{relation_sel-029}
 \end{center}
 \vspace{-30pt}
-\caption{Type 'plat.logit' probabilities (left -> neg=FALSE |  right -> neg=TRUE).}
+\caption{Type 'plat.logit' probabilities (left -> pos=TRUE |  right -> pos=FALSE).}
 \vspace{-10pt}
 \label{fig14}
 \end{figure}
@@ -420,9 +418,9 @@ Here are examples for `plat.logit' type:
 \begin{Sinput}
 > data = 0:3000
 > plat.logit.sel(x = data, infl1 = 500, infl2 = 1000, infl3 = 2000, 
-+     infl4 = 2500, neg = FALSE, lv = 0.2, uv = 0.8)
++     infl4 = 2500, pos = TRUE, lv = 0.2, uv = 0.8)
 > plat.logit.sel(x = data, infl1 = 500, infl2 = 1000, infl3 = 2000, 
-+     infl4 = 2500, neg = TRUE, lv = 0.2, uv = 0.8)
++     infl4 = 2500, pos = FALSE, lv = 0.2, uv = 0.8)
 \end{Sinput}
 \end{Schunk}
 \begin{figure}[h]
@@ -431,7 +429,7 @@ Here are examples for `plat.logit' type:
 \includegraphics{relation_sel-031}
 \end{center}
 \vspace{-30pt}
-\caption{Type 'plat.logit' probabilities (left -> neg=FALSE |  right -> neg=TRUE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
+\caption{Type 'plat.logit' probabilities (left -> pos=TRUE |  right -> pos=FALSE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
 \vspace{-20pt}
 \label{fig15}
 \end{figure}
@@ -440,9 +438,9 @@ Here are examples for `plat.logit' type:
 \begin{Sinput}
 > data = 0:3000
 > plat.logit.sel(x = data, infl1 = 500, infl2 = 1000, infl3 = 2000, 
-+     infl4 = 2500, neg = FALSE, lv = c(0.2, 0.4), uv = 0.8)
++     infl4 = 2500, pos = TRUE, lv = c(0.2, 0.4), uv = 0.8)
 > plat.logit.sel(x = data, infl1 = 500, infl2 = 1000, infl3 = 2000, 
-+     infl4 = 2500, neg = TRUE, lv = 0.2, uv = c(0.8, 0.6))
++     infl4 = 2500, pos = FALSE, lv = 0.2, uv = c(0.8, 0.6))
 \end{Sinput}
 \end{Schunk}
 \begin{figure}[h]
@@ -451,7 +449,7 @@ Here are examples for `plat.logit' type:
 \includegraphics{relation_sel-033}
 \end{center}
 \vspace{-30pt}
-\caption{Type 'plat.logit' probabilities (left -> neg=FALSE, lv=c(0.2,0.4) , uv=0.8 | right -> neg=TRUE, lv=0.2, uv=c(0.8,0.6)).}
+\caption{Type 'plat.logit' probabilities (left -> pos=TRUE, lv=c(0.2,0.4) , uv=0.8 | right -> pos=FALSE, lv=0.2, uv=c(0.8,0.6)).}
 \vspace{-10pt}
 \label{fig16}
 \end{figure}

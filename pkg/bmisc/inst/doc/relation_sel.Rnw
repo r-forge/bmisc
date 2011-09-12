@@ -29,7 +29,7 @@
 \vspace*{3cm}
 \begin{center}
 
-\huge{\bf Types of relation between \\ a variable and its probabilities}\\
+\huge{\bf Selectivity functions that estimates\\ the relation between a variable and its probabilities}\\
 
 \vspace*{2cm}
 \large{By Benoit Bruneau}
@@ -65,13 +65,13 @@ and `plat.full' (Figure~\ref{fig4}, \ref{fig5} \& \ref{fig6}) types are the numb
 
 \begin{description}
 \item[const.sel]\verb#(x)#
-\item[full.sel]\verb#(x, infl1, neg=FALSE, lv=0, uv=1)#
-\item[plat.full.sel]\verb#(x, infl1, infl2, neg=FALSE, lv=c(0,0), uv=c(1,1))#
+\item[full.sel]\verb#(x, infl1, pos=TRUE, lv=0, uv=1)#
+\item[plat.full.sel]\verb#(x, infl1, infl2, pos=TRUE, lv=c(0,0), uv=c(1,1))#
 \end{description}
-where \verb#infl1# and \verb#infl2# are the inflection points, \verb#x# is a numeric vector for which probabilities are 
-estimated, \verb#neg# indicates if the trend is negative  (\verb#TRUE#) or positive (\verb#FALSE#), \verb#lv# defines the 
+where \verb#x# is a numeric vector for which probabilities are estimated, \verb#infl1# and \verb#infl2# are the inflection points, 
+\verb#pos# indicates if the trend at the beginning is positive  (\verb#TRUE#) or negative (\verb#FALSE#), \verb#lv# defines the 
 lower probability values of the relation, and \verb#uv# defines the upper probability values of the relation. By default, 
-all fonctions have \verb#neg=FALSE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#.\\*
+all fonctions have \verb#pos=TRUE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#.\\*
 
 Here is an example for `const' type:
 <<fig=F,echo=F, eval=T, results=hide>>=
@@ -114,8 +114,8 @@ axis(side=2,at=c(0,0.5,1), las=1)
 Here are examples for `full' type:
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-full.sel(x=data, infl1=1500, neg=FALSE)
-full.sel(x=data, infl1=1500, neg=TRUE) 
+full.sel(x=data, infl1=1500, pos=TRUE)
+full.sel(x=data, infl1=1500, pos=FALSE) 
 @ 
 
 \begin{figure}[h]
@@ -124,8 +124,8 @@ full.sel(x=data, infl1=1500, neg=TRUE)
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 data=0:3000
-res1=full.sel(x=data, infl1=1500, neg=FALSE)
-res2=full.sel(x=data, infl1=1500, neg=TRUE)
+res1=full.sel(x=data, infl1=1500, pos=TRUE)
+res2=full.sel(x=data, infl1=1500, pos=FALSE)
 
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
         main="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
@@ -140,15 +140,15 @@ axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type `full' probabilities (left -> neg=FALSE |  right -> neg=TRUE).}
+\caption{Type `full' probabilities (left -> pos=TRUE |  right -> pos=FALSE).}
 \vspace{-10pt}
 \label{fig2}
 \end{figure}
 
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-full.sel(x=data, infl1=1500, neg=FALSE, lv=0.2,uv=0.8)
-full.sel(x=data, infl1=1500, neg=TRUE, lv=0.2,uv=0.8) 
+full.sel(x=data, infl1=1500, pos=TRUE, lv=0.2,uv=0.8)
+full.sel(x=data, infl1=1500, pos=FALSE, lv=0.2,uv=0.8) 
 @ 
 
 \begin{figure}[h]
@@ -157,8 +157,8 @@ full.sel(x=data, infl1=1500, neg=TRUE, lv=0.2,uv=0.8)
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 data=0:3000
-res1=full.sel(x=data, infl1=1500, neg=FALSE, lv=0.2,uv=0.8)
-res2=full.sel(x=data, infl1=1500, neg=TRUE, lv=0.2,uv=0.8)
+res1=full.sel(x=data, infl1=1500, pos=TRUE, lv=0.2,uv=0.8)
+res2=full.sel(x=data, infl1=1500, pos=FALSE, lv=0.2,uv=0.8)
 
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
         main="",  xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
@@ -173,7 +173,7 @@ axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type `full' probabilities (left -> neg=FALSE |  right -> neg=TRUE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
+\caption{Type `full' probabilities (left -> pos=TRUE |  right -> pos=FALSE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
 \vspace{-10pt}
 \label{fig3}
 \end{figure}
@@ -184,8 +184,8 @@ axis(side=4,at=c(0,0.5,1), las=1)
 Here are examples for `plat.full' type:
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-plat.full.sel(x=data, infl1=1000, infl2=2000, neg=FALSE)
-plat.full.sel(x=data, infl1=1000, infl2=2000, neg=TRUE) 
+plat.full.sel(x=data, infl1=1000, infl2=2000, pos=TRUE)
+plat.full.sel(x=data, infl1=1000, infl2=2000, pos=FALSE) 
 @ 
 \begin{figure}[h]
 \vspace{-20pt}
@@ -193,8 +193,8 @@ plat.full.sel(x=data, infl1=1000, infl2=2000, neg=TRUE)
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 data=0:3000
-res1=plat.full.sel(infl1=1000, infl2=2000, x=data, neg=FALSE)
-res2=plat.full.sel(infl1=1000, infl2=2000, x=data, neg=TRUE) 
+res1=plat.full.sel(infl1=1000, infl2=2000, x=data, pos=TRUE)
+res2=plat.full.sel(infl1=1000, infl2=2000, x=data, pos=FALSE) 
 
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
 main="",  xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
@@ -209,7 +209,7 @@ axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type `plat.full' probabilities (left -> neg=FALSE |  right -> neg=TRUE).}
+\caption{Type `plat.full' probabilities (left -> pos=TRUE |  right -> pos=FALSE).}
 \vspace{-10pt}
 \label{fig4}
 \end{figure}
@@ -218,8 +218,8 @@ axis(side=4,at=c(0,0.5,1), las=1)
 
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-plat.full.sel(x=data, infl1=1000, infl2=2000, neg=FALSE, lv=0.2,uv=0.8)
-plat.full.sel(x=data, infl1=1000, infl2=2000, neg=TRUE, lv=0.2,uv=0.8) 
+plat.full.sel(x=data, infl1=1000, infl2=2000, pos=TRUE, lv=0.2,uv=0.8)
+plat.full.sel(x=data, infl1=1000, infl2=2000, pos=FALSE, lv=0.2,uv=0.8) 
 @ 
 \begin{figure}[h]
 \vspace{-20pt}
@@ -227,8 +227,8 @@ plat.full.sel(x=data, infl1=1000, infl2=2000, neg=TRUE, lv=0.2,uv=0.8)
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 data=0:3000
-res1=plat.full.sel(infl1=1000, infl2=2000, x=data, neg=FALSE, lv=0.2,uv=0.8)
-res2=plat.full.sel(infl1=1000, infl2=2000, x=data, neg=TRUE, lv=0.2,uv=0.8) 
+res1=plat.full.sel(infl1=1000, infl2=2000, x=data, pos=TRUE, lv=0.2,uv=0.8)
+res2=plat.full.sel(infl1=1000, infl2=2000, x=data, pos=FALSE, lv=0.2,uv=0.8) 
 
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
 main="",  xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
@@ -243,15 +243,15 @@ axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type `plat.full' probabilities (left -> neg=FALSE |  right -> neg=TRUE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
+\caption{Type `plat.full' probabilities (left -> pos=TRUE |  right -> pos=FALSE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
 \vspace{-10pt}
 \label{fig5}
 \end{figure}
 
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-plat.full.sel(x=data, infl1=1000, infl2=2000, neg=FALSE, lv=c(0.2,0.4),uv=0.8)
-plat.full.sel(x=data, infl1=1000, infl2=2000, neg=TRUE, lv=0.2,uv=c(0.8,0.6)) 
+plat.full.sel(x=data, infl1=1000, infl2=2000, pos=TRUE, lv=c(0.2,0.4),uv=0.8)
+plat.full.sel(x=data, infl1=1000, infl2=2000, pos=FALSE, lv=0.2,uv=c(0.8,0.6)) 
 @ 
 \begin{figure}[h]
 \vspace{-20pt}
@@ -259,8 +259,8 @@ plat.full.sel(x=data, infl1=1000, infl2=2000, neg=TRUE, lv=0.2,uv=c(0.8,0.6))
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 data=0:3000
-res1=plat.full.sel(x=data, infl1=1000, infl2=2000, neg=FALSE, lv=c(0.2,0.4),uv=0.8)
-res2=plat.full.sel(x=data, infl1=1000, infl2=2000, neg=TRUE, lv=0.2,uv=c(0.8,0.6)) 
+res1=plat.full.sel(x=data, infl1=1000, infl2=2000, pos=TRUE, lv=c(0.2,0.4),uv=0.8)
+res2=plat.full.sel(x=data, infl1=1000, infl2=2000, pos=FALSE, lv=0.2,uv=c(0.8,0.6)) 
 
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
 main="",  xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
@@ -275,7 +275,7 @@ axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type `plat.full' probabilities (left -> neg=FALSE, lv=c(0.2,0.4) , uv=0.8 | right -> neg=TRUE, lv=0.2, uv=c(0.8,0.6)).}
+\caption{Type `plat.full' probabilities (left -> pos=TRUE, lv=c(0.2,0.4) , uv=0.8 | right -> pos=FALSE, lv=0.2, uv=c(0.8,0.6)).}
 \vspace{-10pt}
 \label{fig6}
 \end{figure}
@@ -292,18 +292,17 @@ The main difference between `ramp'(Figure \ref{fig7} \& \ref{fig8}) and `plat.ra
 types are the number inflection points.\\*
 			
 \begin{description}
-\item[ramp.sel]\verb#(x, infl1, infl2, neg=FALSE, lv=0, uv=1)#
-\item[plat.ramp.sel]\verb#(x, infl1, infl2, infl3, infl4, neg=FALSE,# \\* \verb#lv=c(0,0), uv=c(1,1))#
+\item[ramp.sel]\verb#(x, infl1, infl2, pos=TRUE, lv=0, uv=1)#
+\item[plat.ramp.sel]\verb#(x, infl1, infl2, infl3, infl4, pos=TRUE,# \\* \verb#lv=c(0,0), uv=c(1,1))#
 \end{description}
-where \verb#infl1# to \verb#infl4# are the inflection points, \verb#x# is a numeric vector for which probabilities are 
-estimated, \verb#neg# indicates if the trend is negative  (\verb#TRUE#) or positive (\verb#FALSE#), \verb#lv# defines the 
+where \verb#x# is a numeric vector for which probabilities are estimated, \verb#infl1# to \verb#infl4# are the inflection points,  \verb#pos# indicates if the trend at the beginning is positive  (\verb#TRUE#) or negative (\verb#FALSE#), \verb#lv# defines the 
 lower probability values of the relation, and \verb#uv# defines the upper probability values of the relation. By default, 
-all fonctions have \verb#neg=FALSE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#.\\*
+all fonctions have \verb#pos=TRUE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#.\\*
 
 Here are examples for `ramp' type:
 <<fig=F,echo=T, eval=T, results=hide>>=
-ramp.sel(x=data, infl1=1000, infl2=2000, neg=FALSE)
-ramp.sel(x=data, infl1=1000, infl2=2000, neg=TRUE) 
+ramp.sel(x=data, infl1=1000, infl2=2000, pos=TRUE)
+ramp.sel(x=data, infl1=1000, infl2=2000, pos=FALSE) 
 @ 
 
 \begin{figure}[h]
@@ -312,8 +311,8 @@ ramp.sel(x=data, infl1=1000, infl2=2000, neg=TRUE)
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 data=0:3000
-res1=ramp.sel(x=data, infl1=1000, infl2=2000, neg=FALSE)
-res2=ramp.sel(x=data, infl1=1000, infl2=2000, neg=TRUE) 
+res1=ramp.sel(x=data, infl1=1000, infl2=2000, pos=TRUE)
+res2=ramp.sel(x=data, infl1=1000, infl2=2000, pos=FALSE) 
 
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
         main="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
@@ -328,7 +327,7 @@ axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type 'ramp' probabilities (left -> neg=FALSE |  right -> neg=TRUE).}
+\caption{Type 'ramp' probabilities (left -> pos=TRUE |  right -> pos=FALSE).}
 \vspace{-10pt}
 \label{fig7}
 \end{figure}
@@ -338,8 +337,8 @@ axis(side=4,at=c(0,0.5,1), las=1)
 
 
 <<fig=F,echo=T, eval=T, results=hide>>=
-ramp.sel(x=data, infl1=1000, infl2=2000, neg=FALSE, lv=0.2,uv=0.8)
-ramp.sel(x=data, infl1=1000, infl2=2000, neg=TRUE, lv=0.2,uv=0.8) 
+ramp.sel(x=data, infl1=1000, infl2=2000, pos=TRUE, lv=0.2,uv=0.8)
+ramp.sel(x=data, infl1=1000, infl2=2000, pos=FALSE, lv=0.2,uv=0.8) 
 @ 
 
 \begin{figure}[h]
@@ -348,8 +347,8 @@ ramp.sel(x=data, infl1=1000, infl2=2000, neg=TRUE, lv=0.2,uv=0.8)
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 data=0:3000
-res1=ramp.sel(x=data, infl1=1000, infl2=2000, neg=FALSE, lv=0.2,uv=0.8)
-res2=ramp.sel(x=data, infl1=1000, infl2=2000, neg=TRUE, lv=0.2,uv=0.8) 
+res1=ramp.sel(x=data, infl1=1000, infl2=2000, pos=TRUE, lv=0.2,uv=0.8)
+res2=ramp.sel(x=data, infl1=1000, infl2=2000, pos=FALSE, lv=0.2,uv=0.8) 
 
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
         main="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
@@ -364,7 +363,7 @@ axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type 'ramp' probabilities (left -> neg=FALSE |  right -> neg=TRUE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
+\caption{Type 'ramp' probabilities (left -> pos=TRUE |  right -> pos=FALSE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
 \vspace{-10pt}
 \label{fig8}
 \end{figure}
@@ -374,8 +373,8 @@ axis(side=4,at=c(0,0.5,1), las=1)
 Here are examples for `plat.ramp' type:
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE)
-plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE) 
+plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=TRUE)
+plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=FALSE) 
 @ 
 \begin{figure}[h]
 \vspace{-20pt}
@@ -383,8 +382,8 @@ plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE)
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 data=0:3000
-res1=plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE)
-res2=plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE) 
+res1=plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=TRUE)
+res2=plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=FALSE) 
 
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
         main="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
@@ -399,7 +398,7 @@ axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type 'plat.ramp' probabilities (left -> neg=FALSE |  right -> neg=TRUE).}
+\caption{Type 'plat.ramp' probabilities (left -> pos=TRUE |  right -> pos=FALSE).}
 \vspace{-10pt}
 \label{fig9}
 \end{figure}
@@ -407,8 +406,8 @@ axis(side=4,at=c(0,0.5,1), las=1)
 
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE, lv=0.2,uv=0.8)
-plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, lv=0.2,uv=0.8) 
+plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=TRUE, lv=0.2,uv=0.8)
+plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=FALSE, lv=0.2,uv=0.8) 
 @ 
 \begin{figure}[h]
 \vspace{-20pt}
@@ -416,8 +415,8 @@ plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, l
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 data=0:3000
-res1=plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE, lv=0.2,uv=0.8)
-res2=plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, lv=0.2,uv=0.8) 
+res1=plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=TRUE, lv=0.2,uv=0.8)
+res2=plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=FALSE, lv=0.2,uv=0.8) 
 
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
         main="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
@@ -432,15 +431,15 @@ axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type 'plat.ramp' probabilities (left -> neg=FALSE |  right -> neg=TRUE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
+\caption{Type 'plat.ramp' probabilities (left -> pos=TRUE |  right -> pos=FALSE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
 \vspace{-20pt}
 \label{fig10}
 \end{figure}
 
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE, lv=c(0.2,0.4),uv=0.8)
-plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, lv=0.2,uv=c(0.8,0.6))
+plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=TRUE, lv=c(0.2,0.4),uv=0.8)
+plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=FALSE, lv=0.2,uv=c(0.8,0.6))
 @ 
 \begin{figure}[h]
 \vspace{-20pt}
@@ -448,8 +447,8 @@ plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, l
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 data=0:3000
-res1=plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE, lv=c(0.2,0.4),uv=0.8)
-res2=plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, lv=0.2,uv=c(0.8,0.6)) 
+res1=plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=TRUE, lv=c(0.2,0.4),uv=0.8)
+res2=plat.ramp.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=FALSE, lv=0.2,uv=c(0.8,0.6)) 
 
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
         main="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
@@ -464,7 +463,7 @@ axis(side=4,at=c(0,0.5,1), las=1)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type 'plat.ramp' probabilities (left -> neg=FALSE, lv=c(0.2,0.4) , uv=0.8 | right -> neg=TRUE, lv=0.2, uv=c(0.8,0.6)).}
+\caption{Type 'plat.ramp' probabilities (left -> pos=TRUE, lv=c(0.2,0.4) , uv=0.8 | right -> pos=FALSE, lv=0.2, uv=c(0.8,0.6)).}
 \vspace{-10pt}
 \label{fig11}
 \end{figure}
@@ -481,19 +480,18 @@ The main difference between `logit'(Figure \ref{fig12} \& \ref{fig13}) and `plat
 types are the number inflection points.\\*
 
 \begin{description}
-\item[logit.sel]\verb#(x, infl1, infl2, neg=FALSE, lv=0, uv=1, ...)#
-\item[plat.logit.sel]\verb#(x, infl1, infl2, infl3, infl4, neg=FALSE,# \\* \verb#lv=c(0,0), uv=c(1,1), ...)#
+\item[logit.sel]\verb#(x, infl1, infl2, pos=TRUE, lv=0, uv=1, ...)#
+\item[plat.logit.sel]\verb#(x, infl1, infl2, infl3, infl4, pos=TRUE,# \\* \verb#lv=c(0,0), uv=c(1,1), ...)#
 \end{description}
-where \verb#infl1# to \verb#infl4# are the inflection points, \verb#x# is a numeric vector for which probabilities are 
-estimated, \verb#neg# indicates if the trend is negative  (\verb#TRUE#) or positive (\verb#FALSE#), \verb#lv# defines the 
+where \verb#x# is a numeric vector for which probabilities are estimated, \verb#infl1# to \verb#infl4# are the inflection points,  \verb#pos# indicates if the trend at the beginning is positive  (\verb#TRUE#) or negative (\verb#FALSE#), \verb#lv# defines the 
 lower probability values of the relation, and \verb#uv# defines the upper probability values of the relation. By default, 
-all fonctions have \verb#neg=FALSE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#. Additionnal options of \verb#find.beta()# 
+all fonctions have \verb#pos=TRUE#, \verb#lv=c(0,0)#, and \verb#uv=c(1,1)#. Additionnal options of \verb#find.beta()# 
 can be added. Default values are \verb#prob=NULL#, \verb#prop=0.1#,\verb#beta=0.2#, and \verb#fast=TRUE#.  \\*
 
 Here are examples for `logit' type:
 <<fig=F,echo=T, eval=T, results=hide>>=
-logit.sel(x=data, infl1=1000, infl2=2000, neg=FALSE)
-logit.sel(x=data, infl1=1000, infl2=2000, neg=TRUE) 
+logit.sel(x=data, infl1=1000, infl2=2000, pos=TRUE)
+logit.sel(x=data, infl1=1000, infl2=2000, pos=FALSE) 
 @ 
 \begin{figure}[h]
 \vspace{-20pt}
@@ -501,8 +499,8 @@ logit.sel(x=data, infl1=1000, infl2=2000, neg=TRUE)
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 data=0:3000
-res1=logit.sel(x=data, infl1=1000, infl2=2000, neg=FALSE)
-res2=logit.sel(x=data, infl1=1000, infl2=2000, neg=TRUE) 
+res1=logit.sel(x=data, infl1=1000, infl2=2000, pos=TRUE)
+res2=logit.sel(x=data, infl1=1000, infl2=2000, pos=FALSE) 
 
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
         main="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
@@ -522,7 +520,7 @@ lines(x=c(5000,1500,1500), y=c(0.5,0.5,-1000), lty=3)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type 'logit' probabilities (left -> neg=FALSE |  right -> neg=TRUE).}
+\caption{Type 'logit' probabilities (left -> pos=TRUE |  right -> pos=FALSE).}
 \vspace{-10pt}
 \label{fig12}
 \end{figure}
@@ -532,8 +530,8 @@ lines(x=c(5000,1500,1500), y=c(0.5,0.5,-1000), lty=3)
 
 
 <<fig=F,echo=T, eval=T, results=hide>>=
-logit.sel(x=data, infl1=1000, infl2=2000, neg=FALSE, lv=0.2,uv=0.8)
-logit.sel(x=data, infl1=1000, infl2=2000, neg=TRUE, lv=0.2,uv=0.8) 
+logit.sel(x=data, infl1=1000, infl2=2000, pos=TRUE, lv=0.2,uv=0.8)
+logit.sel(x=data, infl1=1000, infl2=2000, pos=FALSE, lv=0.2,uv=0.8) 
 @ 
 
 \begin{figure}[h]
@@ -542,8 +540,8 @@ logit.sel(x=data, infl1=1000, infl2=2000, neg=TRUE, lv=0.2,uv=0.8)
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 data=0:3000
-res1=logit.sel(x=data, infl1=1000, infl2=2000, neg=FALSE, lv=0.2,uv=0.8)
-res2=logit.sel(x=data, infl1=1000, infl2=2000, neg=TRUE, lv=0.2,uv=0.8) 
+res1=logit.sel(x=data, infl1=1000, infl2=2000, pos=TRUE, lv=0.2,uv=0.8)
+res2=logit.sel(x=data, infl1=1000, infl2=2000, pos=FALSE, lv=0.2,uv=0.8) 
 
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
         main="", xaxt='n', yaxt='n', ylim=ylim, xlim=xlim, xlab="")
@@ -562,7 +560,7 @@ lines(x=c(5000,1500,1500), y=c(0.5,0.5,-1000), lty=3)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type 'logit' probabilities (left -> neg=FALSE |  right -> neg=TRUE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
+\caption{Type 'logit' probabilities (left -> pos=TRUE |  right -> pos=FALSE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
 \vspace{-10pt}
 \label{fig13}
 \end{figure}
@@ -572,8 +570,8 @@ lines(x=c(5000,1500,1500), y=c(0.5,0.5,-1000), lty=3)
 Here are examples for `plat.logit' type:
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE)
-plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE) 
+plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=TRUE)
+plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=FALSE) 
 @ 
 \begin{figure}[h]
 \vspace{-20pt}
@@ -581,8 +579,8 @@ plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE)
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 
 data=0:3000
-res1=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE)
-res2=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE) 
+res1=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=TRUE)
+res2=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=FALSE) 
 
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
@@ -606,7 +604,7 @@ lines(x=c(2250,2250), y=c(0.5,-1000), lty=3)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type 'plat.logit' probabilities (left -> neg=FALSE |  right -> neg=TRUE).}
+\caption{Type 'plat.logit' probabilities (left -> pos=TRUE |  right -> pos=FALSE).}
 \vspace{-10pt}
 \label{fig14}
 \end{figure}
@@ -614,8 +612,8 @@ lines(x=c(2250,2250), y=c(0.5,-1000), lty=3)
 
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE, lv=0.2,uv=0.8)
-plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, lv=0.2,uv=0.8) 
+plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=TRUE, lv=0.2,uv=0.8)
+plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=FALSE, lv=0.2,uv=0.8) 
 @ 
 \begin{figure}[h]
 \vspace{-20pt}
@@ -623,8 +621,8 @@ plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, 
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 
 data=0:3000
-res1=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE, lv=0.2,uv=0.8)
-res2=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, lv=0.2,uv=0.8) 
+res1=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=TRUE, lv=0.2,uv=0.8)
+res2=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=FALSE, lv=0.2,uv=0.8) 
 
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
@@ -648,15 +646,15 @@ lines(x=c(2250,2250), y=c(0.5,-1000), lty=3)
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type 'plat.logit' probabilities (left -> neg=FALSE |  right -> neg=TRUE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
+\caption{Type 'plat.logit' probabilities (left -> pos=TRUE |  right -> pos=FALSE). In this example, minimum and maximum probabilities are respectively lv=0.2 and uv=0.8.}
 \vspace{-20pt}
 \label{fig15}
 \end{figure}
 
 <<fig=F,echo=T, eval=T, results=hide>>=
 data=0:3000
-plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE, lv=c(0.2,0.4),uv=0.8)
-plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, lv=0.2,uv=c(0.8,0.6))
+plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=TRUE, lv=c(0.2,0.4),uv=0.8)
+plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=FALSE, lv=0.2,uv=c(0.8,0.6))
 @ 
 \begin{figure}[h]
 \vspace{-20pt}
@@ -664,8 +662,8 @@ plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, 
 <<fig=T,echo=F, eval=T,width=6, height=3>>=
 
 data=0:3000
-res1=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=FALSE, lv=c(0.2,0.4),uv=0.8)
-res2=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, neg=TRUE, lv=0.2,uv=c(0.8,0.6)) 
+res1=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=TRUE, lv=c(0.2,0.4),uv=0.8)
+res2=plat.logit.sel(x=data, infl1=500, infl2=1000, infl3=2000, infl4=2500, pos=FALSE, lv=0.2,uv=c(0.8,0.6)) 
 
 par(mfrow=c(1,2), mar=c(3,4,1,1))
 plot(res1~data,type='l',lwd=2, col='black', ylab="probability",
@@ -694,7 +692,7 @@ points(x=2250, y=0.4, cex=1.2,pch=21, bg="gray")
 @  
 \end{center}
 \vspace{-30pt}
-\caption{Type 'plat.logit' probabilities (left -> neg=FALSE, lv=c(0.2,0.4) , uv=0.8 | right -> neg=TRUE, lv=0.2, uv=c(0.8,0.6)).}
+\caption{Type 'plat.logit' probabilities (left -> pos=TRUE, lv=c(0.2,0.4) , uv=0.8 | right -> pos=FALSE, lv=0.2, uv=c(0.8,0.6)).}
 \vspace{-10pt}
 \label{fig16}
 \end{figure}
