@@ -109,7 +109,8 @@ where \eqn{La} is length at a relative age \eqn{a} and \eqn{Ls} is length at rel
 The \bold{fishery selectivity} and \bold{maturity at length} components of the model can be defined 
 as one of \code{c("full", "plat.full", "ramp", "plat.ramp", "logit", "plat.logit")} equations. The proper 
 way to specify which function to use is by the construct of a \code{list} where the first element is the 
-name of one of the six types of function. See example and \code{\link{selectivity}} for more details.  
+name of one of the six types of function. See example, read \code{\link{selectivity}}, or read \code{vignette("selectivity")} 
+for more details.  
 
 Alternatively, an object of class \code{"glm"} can directly be used for the \bold{fishery selectivity} and \bold{maturity at length} components. 
 The Generalized Linear Model should have  the option \code{family} set to either \code{binomial} or \code{quasibinomial} keeping link function to the 
@@ -166,7 +167,7 @@ Benoit Bruneau
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{plot.ypr}} and \code{\link{plot.parms.ypr}}  
 }
 \examples{
 

@@ -1,4 +1,5 @@
-\name{Selectivity}
+\name{selectivity}
+\alias{selectivity}
 \alias{const.sel}
 \alias{full.sel}
 \alias{plat.full.sel}
