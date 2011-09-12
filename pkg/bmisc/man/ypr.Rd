@@ -1,5 +1,5 @@
-\name{ypr.l}
-\alias{ypr.l}
+\name{ypr}
+\alias{ypr}
 
 \title{
 Length Based Yield Per Recruit 
@@ -10,7 +10,7 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 
 }
 \usage{
- ypr.l(LW, vonB, l.start, last.age, age.step=1, Fsel.type, 
+ ypr(LW, vonB, l.start, last.age, age.step=1, Fsel.type, 
        F.max=2,F.incr.YPR=0.0001, Mat.l,  M=0.2, f.MSP=0.4, 
        F.f=0, M.f=0.5, riv.calc=FALSE)
 
@@ -141,7 +141,7 @@ Use \code{vignette("bmisc")} for a better presentation of the equations.
 More to come.
 }
 \value{
-  \code{ypr.l} returns an object of \code{class(S4)} \code{"ypr"}. The functions \code{summary} and \code{plot} are used to respectively
+  \code{ypr} returns an object of \code{class(S4)} \code{"ypr"}. The functions \code{summary} and \code{plot} are used to respectively
   obtain a summary and a standard plot of the results.  
   
   An object of class \code{"ypr"} has the the following slots:
@@ -178,7 +178,7 @@ Benoit Bruneau
 }
 \examples{
 
-ypr.l(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), 
+ypr(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), 
       l.start=72.53,last.age=25,LW=c(exp( -18.47894),3.043), F.max=2,
       F.incr.YPR=0.01, M=0.2, mat=list('full',900), f.MSP=0.4, riv.calc=F) 
 
