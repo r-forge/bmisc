@@ -213,7 +213,7 @@ logit.sel <- function(x, infl1,infl2, pos=TRUE, lv=0, uv=1,...) {
     if(any(c(lv[1],uv[1])<0) | any(c(lv[1],uv[1])>1)){stop("Values 'lv' and 'uv' should be in [0,1].")}
     
     res=find.beta(minv=infl1,maxv=infl2,...)
-    ajust=coef(lm(c(uv,lv)~c(1,0)))
+    ajust=coef(lm(c(uv[1],lv[1])~c(1,0)))
     if(pos){
         .sel=(1/(1+exp(-res$beta*(x-res$x50))))
     }else{

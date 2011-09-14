@@ -73,17 +73,17 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     ##############################################################################
     ##                               Maturity                                   ##
     ##############################################################################
-    mat=selectivity(Mat,YPR$l.age)
+    mat=.selectivity(Mat,YPR$l.age)
     
     ##############################################################################
     ##                                  Msel.type                               ##
     ##############################################################################
-    M.sel=selectivity(Msel.type,YPR$l.age)
+    M.sel=.selectivity(Msel.type,YPR$l.age)
     
     ##############################################################################
     ##                             F selectivity                                ##
     ##############################################################################
-    F.sel=selectivity(Fsel.type,YPR$l.age)
+    F.sel=.selectivity(Fsel.type,YPR$l.age)
     
     ##############################################################################
     ##                             FISHERMEN selectivity                        ##
@@ -270,13 +270,17 @@ plot.ypr<-
         for(i in 2:dim(refs)[1]){
             lines(c(-1,YPR)~c(F,F),data=refs[i,], lty=2)
         }
-        points(YPR~F,data=refs[2:dim(refs)[1],], pch=21, col='black', bg='white',cex=1.2)
+        col.lines=c(gray(0.4),gray(0),gray(0.8))
+        points(YPR~F,data=refs[2:dim(refs)[1],], pch=21, col='black', bg=col.lines,cex=1.2)
         y.coord=par('usr')[2]*0.01
         r.names=rownames(refs)
-        
-        text(x=refs[2,1], y=y.coord, labels=r.names[2], srt=90,adj=c(0.2,1.2) , cex=0.8, font=2)
-        text(x=refs[3,1], y=y.coord, labels=r.names[3], srt=90,adj=c(0.13,1.2), cex=0.8, font=2)
-        text(x=refs[4,1], y=y.coord, labels=r.names[4], srt=90,adj=c(0.2,-0.4) , cex=0.8, font=2)
+        par("usr")
+        lines(c(-1,YPR)~c(F,F),data=refs[2,], lty=2, col=col.lines[1])
+        lines(c(-1,YPR)~c(F,F),data=refs[3,], lty=2, col=col.lines[2])
+        lines(c(-1,YPR)~c(F,F),data=refs[4,], lty=2, col=col.lines[3])
+        mtext(side=1, at=refs[2,1], line=-1, text=r.names[2], cex=0.8, font=2, xpd=T, las=2,adj=0, padj=1.5, col=col.lines[1])
+        mtext(side=1, at=refs[3,1], line=-1, text=r.names[3], cex=0.8, font=2, xpd=T, las=2,adj=0, padj=1.5, col=col.lines[2])
+        mtext(side=1, at=refs[4,1], line=-1, text=r.names[4], cex=0.8, font=2, xpd=T, las=2,adj=0, padj=-0.3, col=col.lines[3])
     }
     
     par(new=TRUE)
@@ -303,17 +307,17 @@ plot.parms.ypr <- function(object){
     ##############################################################################
     ##                               Maturity                                   ##
     ##############################################################################
-    mat=.selectivity(object@parms$Mat)
+    mat=.selectivity(object@parms$Mat, x.dat)
     
     ##############################################################################
     ##                                  Msel.type                               ##
     ##############################################################################
-    M.sel=.selectivity(object@parms$Msel.type)
+    M.sel=.selectivity(object@parms$Msel.type, x.dat)
     
     ##############################################################################
     ##                             F selectivity                                ##
     ##############################################################################
-    F.sel=.selectivity(object@parms$Fsel.type)
+    F.sel=.selectivity(object@parms$Fsel.type, x.dat)
     
     ##############################################################################
     ##                             FISHERMEN selectivity                        ##
