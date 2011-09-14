@@ -12,18 +12,18 @@
 #################################################################################
 
 
-selectivity <- function(sel.type, out){
+.selectivity <- function(sel.type, x){
     
-    if(is.null(sel.type)){ .sel <- const.sel( x = YPR$l.age)
+    if(is.null(sel.type)){ .sel <- const.sel( x = x)
     }else{
         if(!(class(sel.type)[1] %in% c("list", "glm"))) stop("sel.type should either be a list or a glm (logit) object.")
     }
     if(class(sel.type)[1]=="list"){     
         switch(sel.type[[1]],
-                const=  .sel <- const.sel( x = YPR$l.age),
+                const=  .sel <- const.sel( x = x),
                 full= {
                     if(all(!("infl1" %in% names(sel.type)))) stop("'infl1' must be defined. Read help('ypr').")
-                    sel.type1=list(x=YPR$l.age, infl1=NULL, pos=TRUE, lv=0, uv=1)
+                    sel.type1=list(x=x, infl1=NULL, pos=TRUE, lv=0, uv=1)
                     sel=which(names(sel.type1) %in% names(sel.type))
                     name.sel=names(sel.type1)[sel]
                     sel.type1[name.sel] <-sel.type[name.sel]        
@@ -31,7 +31,7 @@ selectivity <- function(sel.type, out){
                 },
                 plat.full= {
                     if(all(!(c("infl1","infl2") %in% names(sel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
-                    sel.type1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, pos=TRUE, lv=0, uv=1)
+                    sel.type1=list(x=x, infl1=NULL, infl2=NULL, pos=TRUE, lv=0, uv=1)
                     sel=which(names(sel.type1) %in% names(sel.type))
                     name.sel=names(sel.type1)[sel]
                     sel.type1[name.sel] <-sel.type[name.sel]        
@@ -39,7 +39,7 @@ selectivity <- function(sel.type, out){
                 },
                 ramp= {
                     if(all(!(c("infl1","infl2") %in% names(sel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
-                    sel.type1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, pos=TRUE, lv=0, uv=1)
+                    sel.type1=list(x=x, infl1=NULL, infl2=NULL, pos=TRUE, lv=0, uv=1)
                     sel=which(names(sel.type1) %in% names(sel.type))
                     name.sel=names(sel.type1)[sel]
                     sel.type1[name.sel] <-sel.type[name.sel]    
@@ -47,7 +47,7 @@ selectivity <- function(sel.type, out){
                 },
                 plat.ramp= {
                     if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(sel.type)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
-                    sel.type1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, pos=TRUE, lv=0, uv=1)
+                    sel.type1=list(x=x, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, pos=TRUE, lv=0, uv=1)
                     sel=which(names(sel.type1) %in% names(sel.type))
                     name.sel=names(sel.type1)[sel]
                     sel.type1[name.sel] <-sel.type[name.sel]        
@@ -55,7 +55,7 @@ selectivity <- function(sel.type, out){
                 },
                 logit= {
                     if(all(!(c("infl1","infl2") %in% names(sel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
-                    sel.type1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, pos=TRUE, lv=0, uv=1 , 
+                    sel.type1=list(x=x, infl1=NULL, infl2=NULL, pos=TRUE, lv=0, uv=1 , 
                             prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
                     sel=which(names(sel.type1) %in% names(sel.type))
                     name.sel=names(sel.type1)[sel]
@@ -64,7 +64,7 @@ selectivity <- function(sel.type, out){
                 },
                 plat.logit= {
                     if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(sel.type)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
-                    sel.type1=list(x=YPR$l.age, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, pos=TRUE, lv=0, uv=1, 
+                    sel.type1=list(x=x, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, pos=TRUE, lv=0, uv=1, 
                             prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
                     sel=which(names(sel.type1) %in% names(sel.type))
                     name.sel=names(sel.type1)[sel]
@@ -73,7 +73,7 @@ selectivity <- function(sel.type, out){
                 },
                 mod.logit= {
                     if(all(!(c("alpha","beta") %in% names(sel.type)))) stop("'alpha' and 'beta' must be defined. Read help('ypr').")
-                    sel.type1=list(x=YPR$l.age, alpha=NULL, beta=NULL)
+                    sel.type1=list(x=x, alpha=NULL, beta=NULL)
                     sel=which(names(sel.type1) %in% names(sel.type))
                     name.sel=names(sel.type1)[sel]
                     sel.type1[name.sel] <-sel.type[name.sel]    
@@ -85,7 +85,7 @@ selectivity <- function(sel.type, out){
     
     if(class(sel.type)[1]=="glm"){
         coeffs=coef(sel.type)
-        .sel <- mod.logit.sel(alpha=coeffs[[1]], beta=coeffs[[2]], x=YPR$l.age)
+        .sel <- mod.logit.sel(alpha=coeffs[[1]], beta=coeffs[[2]], x=x)
     }   
     return(.sel)
 }

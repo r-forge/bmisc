@@ -12,13 +12,12 @@
 #################################################################################
 
 ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.lim=NULL ,
-        Fsel.type=NULL, F.max=2, F.incr.YPR=0.0001,Mat,  Msel.type=NULL, 
-        M=0.2, f.MSP=0.4) #, F.f=0, M.f=0.5, riv.calc=FALSE)
-{
+        Fsel.type=NULL, F.max=2, F.incr.YPR=0.0001,Mat=NULL,  Msel.type=NULL, 
+        M=0.2, f.MSP=0.4){
     
-    parms=list(Fsel.type=Fsel.type,last.age=last.age, l.start=l.start, prop.surv=prop.surv, fish.lim=fish.lim,
-            age.step=age.step, LW=LW, vonB=vonB, F.max=F.max, F.incr.YPR=F.incr.YPR,
-            Msel.type=Msel.type, M=M, Mat=Mat, f.MSP=f.MSP)#, riv.calc=riv.calc, F.f=F.f, M.f=M.f)
+    parms=list(LW=LW, vonB=vonB, last.age=last.age, l.start=l.start, age.step=age.step, prop.surv=prop.surv, fish.lim=fish.lim,
+            Fsel.type=Fsel.type, F.max=F.max, F.incr.YPR=F.incr.YPR, Mat=Mat,
+            Msel.type=Msel.type, M=M,  f.MSP=f.MSP)
     
     cl.vb=class(vonB)
     cl.LW=class(LW)
@@ -62,12 +61,9 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     )
     
     
-#    if(riv.calc){
-#        p.age.riv=rivard(data.frame(p.age,p.age),pred=FALSE,plus.gr=FALSE)[,2]
-#        YPR=data.frame(age,l.age, p.age, p.age.riv)
-#    }else{
+
     YPR=data.frame(age,l.age, p.age)
-#    }
+
     
     F.i=seq(0,F.max, by=F.incr.YPR)
     F.i=as.integer( F.i*1000000)
@@ -77,17 +73,17 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     ##############################################################################
     ##                               Maturity                                   ##
     ##############################################################################
-    mat=selectivity(Mat)
+    mat=selectivity(Mat,YPR$l.age)
     
     ##############################################################################
     ##                                  Msel.type                               ##
     ##############################################################################
-    M.sel=selectivity(Msel.type)
+    M.sel=selectivity(Msel.type,YPR$l.age)
     
     ##############################################################################
     ##                             F selectivity                                ##
     ##############################################################################
-    F.sel=selectivity(Fsel.type)
+    F.sel=selectivity(Fsel.type,YPR$l.age)
     
     ##############################################################################
     ##                             FISHERMEN selectivity                        ##
@@ -151,88 +147,7 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     age.moy=sweep(n.stock,MARGIN=1,YPR$age,"*")
     age.moy1=colSums(age.moy, na.rm=TRUE)/n.stock1
     
-    ##############################################################################
-    ##            recalcul en fonction du premier janvier avec Rivard           ##
-    ##############################################################################
-#	if(riv.calc){
-#		
-#		F.ts=sweep(F.,MARGIN=2,F.f,`*`)
-#		M.ts=M*M.f
-#		Z.ts=F.ts+M.ts
-#		
-#		n.stock.ts=n.stock*exp(-Z.ts)
-#		
-#		n.stock.ts1=colSums(n.stock.ts, na.rm=TRUE)
-#		
-#		pds.stock.ts=sweep(n.stock,MARGIN=1,YPR$p.age.riv,FUN="*")
-#		pds.stock.ts1=colSums(pds.stock.ts, na.rm=TRUE)
-#		pds.stock.ts1[201]
-#		
-#		W=n.stock.ts*pds.stock.ts
-#		Wts=sweep(W,MARGIN=1,mat,FUN="*")
-#		Wts1=colSums(Wts, na.rm=TRUE)
-#		Wts1[1]-ssb1[1]
-#		
-#		
-#		ssn.ts=sweep(n.stock.ts,MARGIN=1,mat,FUN="*")
-#		ssn.ts1=colSums(ssn.ts, na.rm=TRUE)
-#		ssn.ts1[1]
-#		
-#		ssb.ts=sweep(ssn.ts,MARGIN=1,YPR$p.age.riv,"*")
-#		ssb.ts1=colSums(ssb.ts, na.rm=TRUE)
-#		ssb.ts1[1]
-#		
-#		msp.ts1=ssb.ts1/max(ssb.ts1)*100
-#		msp.ts1[201]
-#		
-#		##############################################################################
-#		##                          Tableau de YPR vs F.i                           ##
-#		##############################################################################
-#		YPR.table=data.frame(F=F.i, catch.num=n.catch1, ypr=pds.catch1, stock.num=n.stock.ts1,stock.w=pds.stock.ts1, 
-#				ssn=ssn.ts1,ssb=ssb.ts1,f.MSP=msp.ts1, avr.l=l.moy1, avr.w=p.moy1, avr.age=age.moy1)
-#		
-#		##############################################################################
-#		##                       Tableau de YPR vs F.i Resume                       ##
-#		##############################################################################
-#		
-#		F.i2=seq(0,F.max, by=0.01)
-#		F.i2=as.integer( F.i2*1000000)
-#		F.i2=F.i2/1000000
-#		
-#		sel.Fi=which(YPR.table$F %in% F.i2)
-#		YPR.table.short=YPR.table[sel.Fi,]
-#		
-#		
-#		##############################################################################
-#		##                     Tableau des points de references                     ##
-#		##############################################################################
-#		f.MSP.name=paste('F',round(f.MSP*100,digits=0),sep=".")
-#		ref.table=data.frame(F=NA,YPR=NA,SSB.R=NA,TBmass.R=NA, avr.L=NA, avr.wgt=NA, avr.age=NA)
-#		
-#		### F0
-#		sel1=which(F.i==0)
-#		ref.table[1,]=c(F.i[sel1],pds.catch1[sel1], ssb.ts1[sel1],pds.stock.ts1[sel1], l.moy1[sel1],p.moy1[sel1],age.moy1[sel1])
-#		
-#		### FMAX
-#		sel3=which(pds.catch1==max(pds.catch1))
-#		ref.table[3,]=c(F.i[sel3],pds.catch1[sel3], ssb.ts1[sel3],pds.stock.ts1[sel3], l.moy1[sel3],p.moy1[sel3],age.moy1[sel3])
-#		
-#		###F01
-#		n.lm=length(pds.catch1)
-#		lm.mod=vector()
-#		for(i in 1:(n.lm-1)) lm.mod[i]=(pds.catch1[i+1]-pds.catch1[i])/(F.i[i+1]-F.i[i])
-#		
-#		pentes=abs(lm.mod-(lm.mod[1]*0.1))
-#		sel2=which(pentes==min(pentes))+1
-#		
-#		ref.table[2,]=c(F.i[sel2],pds.catch1[sel2], ssb.ts1[sel2],pds.stock.ts1[sel2], l.moy1[sel2],p.moy1[sel2],age.moy1[sel2])
-#		
-#		### FMSP
-#		sel4=which(abs(msp.ts1-f.MSP*100)==min(abs(msp.ts1-f.MSP*100)))
-#		
-#		ref.table[4,]=c(F.i[sel4],pds.catch1[sel4], ssb.ts1[sel4],pds.stock.ts1[sel4], l.moy1[sel4],p.moy1[sel4],age.moy1[sel4])
-#		
-#	}else{
+
     
     ##############################################################################
     ##                          Tableau de YPR vs F.i                           ##
@@ -242,19 +157,7 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
             ssn=ssn1,ssb=ssb1,f.MSP=msp1, avr.l=l.moy1, avr.w=p.moy1, avr.age=age.moy1)
     
     
-    
-#        ##############################################################################
-#        ##                       Tableau de YPR vs F.i Resume                       ##
-#        ##############################################################################
-#        
-#        F.i2=seq(0,F.max, by=0.01)
-#        F.i2=as.integer( F.i2*1000000)
-#        F.i2=F.i2/1000000
-#        
-#        sel.Fi=which(YPR.table$F %in% F.i2)
-#        YPR.table.short=YPR.table[sel.Fi,]
-    
-    
+     
     ##############################################################################
     ##                     Tableau des points de references                     ##
     ##############################################################################
@@ -283,7 +186,7 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     sel4=which(abs(msp1-f.MSP*100)==min(abs(msp1-f.MSP*100)))
     
     ref.table[4,]=c(F.i[sel4],pds.catch1[sel4], ssb1[sel4],pds.stock1[sel4], l.moy1[sel4],p.moy1[sel4],age.moy1[sel4])
-#	}
+
     
     r.names=c("F.zero","F.01","F.max",f.MSP.name)
     row.names(ref.table)=r.names
@@ -297,7 +200,6 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
             refs=ref.table,
             YPR=YPR.table)
     
-    class(parms)
     res
     
 }
@@ -323,11 +225,9 @@ setMethod("show", "ypr",
 
 setMethod("summary", "ypr",
         function(object){
-#            if(object@parms$riv.calc){
-#                title= "Length based Yield per Recruit\n   Rivard weights calculations"                
-#            }else{
+
             title= "Length based Yield per Recruit"                
-#            }
+
             
             # Title:
             cat("\nTitle:\n ",title, "\n", sep = "")
@@ -403,17 +303,17 @@ plot.parms.ypr <- function(object){
     ##############################################################################
     ##                               Maturity                                   ##
     ##############################################################################
-    mat=selectivity(object@parms$Mat)
+    mat=.selectivity(object@parms$Mat)
     
     ##############################################################################
     ##                                  Msel.type                               ##
     ##############################################################################
-    M.sel=selectivity(object@parms$Msel.type)
+    M.sel=.selectivity(object@parms$Msel.type)
     
     ##############################################################################
     ##                             F selectivity                                ##
     ##############################################################################
-    F.sel=selectivity(object@parms$Fsel.type)
+    F.sel=.selectivity(object@parms$Fsel.type)
     
     ##############################################################################
     ##                             FISHERMEN selectivity                        ##
