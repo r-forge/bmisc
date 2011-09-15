@@ -13,80 +13,77 @@
 
 
 .selectivity <- function(sel.type, x){
-    
-    if(is.null(sel.type)){ .sel <- const.sel( x = x)
-    }else{
-        if(!(class(sel.type)[1] %in% c("list", "glm"))) stop("sel.type should either be a list or a glm (logit) object.")
+    NAME <- paste(deparse(substitute(sel.type), 500), collapse="\n")
+    cl.sel=class(sel.type)[1]
+    if(cl.sel=="function")cl.sel="fct"
+    if(!(cl.sel %in% c("NULL","fct", "list", "glm"))) stop(paste(NAME," should be an object of class c('NULL', 'function', 'list','glm'). Read help('ypr')."))
+    if(cl.sel=="list" & !(sel.type[[1]] %in% c("const","full","plat.full","ramp","plat.ramp","logit","plat.logit","mod.logit"))){
+        stop(paste(NAME,"is a list. The fist value of this list should be one of\n  c('const','full','plat.full','ramp','plat.ramp','logit','plat.logit','mod.logit').\n\nRead help('ypr')."))
     }
-    if(class(sel.type)[1]=="list"){     
-        switch(sel.type[[1]],
-                const=  .sel <- const.sel( x = x),
-                full= {
-                    if(all(!("infl1" %in% names(sel.type)))) stop("'infl1' must be defined. Read help('ypr').")
-                    sel.type1=list(x=x, infl1=NULL, pos=TRUE, lv=0, uv=1)
-                    sel=which(names(sel.type1) %in% names(sel.type))
-                    name.sel=names(sel.type1)[sel]
-                    sel.type1[name.sel] <-sel.type[name.sel]        
-                    .sel=do.call("full.sel", sel.type1)
-                },
-                plat.full= {
-                    if(all(!(c("infl1","infl2") %in% names(sel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
-                    sel.type1=list(x=x, infl1=NULL, infl2=NULL, pos=TRUE, lv=0, uv=1)
-                    sel=which(names(sel.type1) %in% names(sel.type))
-                    name.sel=names(sel.type1)[sel]
-                    sel.type1[name.sel] <-sel.type[name.sel]        
-                    .sel=do.call("plat.full.sel", sel.type1)                    
-                },
-                ramp= {
-                    if(all(!(c("infl1","infl2") %in% names(sel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
-                    sel.type1=list(x=x, infl1=NULL, infl2=NULL, pos=TRUE, lv=0, uv=1)
-                    sel=which(names(sel.type1) %in% names(sel.type))
-                    name.sel=names(sel.type1)[sel]
-                    sel.type1[name.sel] <-sel.type[name.sel]    
-                    .sel=do.call("ramp.sel", sel.type1)
-                },
-                plat.ramp= {
-                    if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(sel.type)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
-                    sel.type1=list(x=x, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, pos=TRUE, lv=0, uv=1)
-                    sel=which(names(sel.type1) %in% names(sel.type))
-                    name.sel=names(sel.type1)[sel]
-                    sel.type1[name.sel] <-sel.type[name.sel]        
-                    .sel=do.call("plat.ramp.sel", sel.type1)
-                },
-                logit= {
-                    if(all(!(c("infl1","infl2") %in% names(sel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
-                    sel.type1=list(x=x, infl1=NULL, infl2=NULL, pos=TRUE, lv=0, uv=1 , 
-                            prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
-                    sel=which(names(sel.type1) %in% names(sel.type))
-                    name.sel=names(sel.type1)[sel]
-                    sel.type1[name.sel] <-sel.type[name.sel]        
-                    .sel=do.call("logit.sel", sel.type1)
-                },
-                plat.logit= {
-                    if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(sel.type)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
-                    sel.type1=list(x=x, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, pos=TRUE, lv=0, uv=1, 
-                            prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
-                    sel=which(names(sel.type1) %in% names(sel.type))
-                    name.sel=names(sel.type1)[sel]
-                    sel.type1[name.sel] <-sel.type[name.sel]        
-                    .sel=do.call("plat.logit.sel", sel.type1)
-                },
-                mod.logit= {
-                    if(all(!(c("alpha","beta") %in% names(sel.type)))) stop("'alpha' and 'beta' must be defined. Read help('ypr').")
-                    sel.type1=list(x=x, alpha=NULL, beta=NULL)
-                    sel=which(names(sel.type1) %in% names(sel.type))
-                    name.sel=names(sel.type1)[sel]
-                    sel.type1[name.sel] <-sel.type[name.sel]    
-                    .sel=do.call("mod.logit.sel", sel.type1)
-                    
-                }
-        )   
-    }
+    switch(cl.sel,
+            fct = .sel<-sel.type(x),
+            NULL=     .sel <- const.sel(x),
+            glm={
+                coeffs=coef(sel.type)
+                .sel <- mod.logit.sel(alpha=coeffs[[1]], beta=coeffs[[2]], x=x)},
+            list=               
+                    switch(sel.type[[1]],
+                            const=  .sel <- const.sel( x = x),
+                            full= {
+                                if(all(!("infl1" %in% names(sel.type)))) stop("'infl1' must be defined. Read help('ypr').")
+                                sel.type1=list(x=x, infl1=NULL, pos=TRUE, lv=0, uv=1)
+                                sel=which(names(sel.type1) %in% names(sel.type))
+                                name.sel=names(sel.type1)[sel]
+                                sel.type1[name.sel] <-sel.type[name.sel]        
+                                .sel=do.call("full.sel", sel.type1)},
+                            plat.full= {
+                                if(all(!(c("infl1","infl2") %in% names(sel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+                                sel.type1=list(x=x, infl1=NULL, infl2=NULL, pos=TRUE, lv=0, uv=1)
+                                sel=which(names(sel.type1) %in% names(sel.type))
+                                name.sel=names(sel.type1)[sel]
+                                sel.type1[name.sel] <-sel.type[name.sel]        
+                                .sel=do.call("plat.full.sel", sel.type1)                    },
+                            ramp= {
+                                if(all(!(c("infl1","infl2") %in% names(sel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+                                sel.type1=list(x=x, infl1=NULL, infl2=NULL, pos=TRUE, lv=0, uv=1)
+                                sel=which(names(sel.type1) %in% names(sel.type))
+                                name.sel=names(sel.type1)[sel]
+                                sel.type1[name.sel] <-sel.type[name.sel]    
+                                .sel=do.call("ramp.sel", sel.type1)},
+                            plat.ramp= {
+                                if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(sel.type)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
+                                sel.type1=list(x=x, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, pos=TRUE, lv=0, uv=1)
+                                sel=which(names(sel.type1) %in% names(sel.type))
+                                name.sel=names(sel.type1)[sel]
+                                sel.type1[name.sel] <-sel.type[name.sel]        
+                                .sel=do.call("plat.ramp.sel", sel.type1)},
+                            logit= {
+                                if(all(!(c("infl1","infl2") %in% names(sel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
+                                sel.type1=list(x=x, infl1=NULL, infl2=NULL, pos=TRUE, lv=0, uv=1 , 
+                                        prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+                                sel=which(names(sel.type1) %in% names(sel.type))
+                                name.sel=names(sel.type1)[sel]
+                                sel.type1[name.sel] <-sel.type[name.sel]        
+                                .sel=do.call("logit.sel", sel.type1)},
+                            plat.logit= {
+                                if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(sel.type)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
+                                sel.type1=list(x=x, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, pos=TRUE, lv=0, uv=1, 
+                                        prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+                                sel=which(names(sel.type1) %in% names(sel.type))
+                                name.sel=names(sel.type1)[sel]
+                                sel.type1[name.sel] <-sel.type[name.sel]        
+                                .sel=do.call("plat.logit.sel", sel.type1)},
+                            mod.logit= {
+                                if(all(!(c("alpha","beta") %in% names(sel.type)))) stop("'alpha' and 'beta' must be defined. Read help('ypr').")
+                                sel.type1=list(x=x, alpha=NULL, beta=NULL)
+                                sel=which(names(sel.type1) %in% names(sel.type))
+                                name.sel=names(sel.type1)[sel]
+                                sel.type1[name.sel] <-sel.type[name.sel]    
+                                .sel=do.call("mod.logit.sel", sel.type1)}
+                    )
     
-    if(class(sel.type)[1]=="glm"){
-        coeffs=coef(sel.type)
-        .sel <- mod.logit.sel(alpha=coeffs[[1]], beta=coeffs[[2]], x=x)
-    }   
+    )
+    
     return(.sel)
 }
 

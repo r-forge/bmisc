@@ -8,16 +8,14 @@ Logistic curve parameter estimates
 Finds the parameters of a logistic curve for given inflection points.
 }
 \usage{
-find.beta(beta=0.5, minv, maxv, prop=0.01)
+find.beta(minv, maxv,prob=NULL, prop=0.1, beta=0.1, fast=TRUE)
 }
 
 \arguments{
-  \item{beta}{stating value of beta. Default is \code{0.5}.}
   \item{minv}{the minimum value on the abscissa is the first inflection point.}
   \item{maxv}{the maximum value on the abscissa is the second inflection point.}
   \item{prop}{the proportion of the instantaneous slope at 50\% probability that should be used to define the position of the inflection points of the curve. Default is \code{0.01}.}
-
-
+  \item{beta}{stating value of beta. Default is \code{0.5}.}
 }
 \details{
 A logistic curve is defined by:

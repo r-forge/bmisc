@@ -12,7 +12,7 @@
 #################################################################################
 
 
-find.beta=function( minv, maxv,prob=NULL, prop=0.1,beta=0.2, fast=TRUE){
+find.beta=function(minv, maxv,prob=NULL, prop=0.1, beta=0.1, fast=TRUE){
         
         if(minv>maxv){
                 warning(paste("Be sure that 'minv' is a smaller value than 'maxv'.\n  The results are shown for minv=",maxv," and maxv=", minv,".", sep=""))

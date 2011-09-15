@@ -262,6 +262,7 @@ plot.ypr<-
     refs=object@refs
     
     par(mar=c(5,4,4,4.1))
+    col.lines=c(gray(0.4),gray(0),gray(0.6))
     ylim1=c(0,max(YPR$ypr)*1.1)
     ylim2=c(0,max(YPR$ssb)*1.1)
     plot(YPR$ypr~YPR$F  ,main=main,ylim=ylim1, 
@@ -270,14 +271,15 @@ plot.ypr<-
         for(i in 2:dim(refs)[1]){
             lines(c(-1,YPR)~c(F,F),data=refs[i,], lty=2)
         }
-        col.lines=c(gray(0.4),gray(0),gray(0.8))
+        
+        lines(c(-1,YPR)~c(F,F),data=refs[2,], lty=2, col=col.lines[1])
+        lines(c(-1,YPR)~c(F,F),data=refs[3,], lty=2, col=col.lines[2])
+        lines(c(-1,YPR)~c(F,F),data=refs[4,], lty=1, col=col.lines[3])
         points(YPR~F,data=refs[2:dim(refs)[1],], pch=21, col='black', bg=col.lines,cex=1.2)
         y.coord=par('usr')[2]*0.01
         r.names=rownames(refs)
         par("usr")
-        lines(c(-1,YPR)~c(F,F),data=refs[2,], lty=2, col=col.lines[1])
-        lines(c(-1,YPR)~c(F,F),data=refs[3,], lty=2, col=col.lines[2])
-        lines(c(-1,YPR)~c(F,F),data=refs[4,], lty=2, col=col.lines[3])
+
         mtext(side=1, at=refs[2,1], line=-1, text=r.names[2], cex=0.8, font=2, xpd=T, las=2,adj=0, padj=1.5, col=col.lines[1])
         mtext(side=1, at=refs[3,1], line=-1, text=r.names[3], cex=0.8, font=2, xpd=T, las=2,adj=0, padj=1.5, col=col.lines[2])
         mtext(side=1, at=refs[4,1], line=-1, text=r.names[4], cex=0.8, font=2, xpd=T, las=2,adj=0, padj=-0.3, col=col.lines[3])
@@ -286,7 +288,7 @@ plot.ypr<-
     par(new=TRUE)
     plot(YPR$ssb~YPR$F,type='l',xaxt="n",yaxt="n",xlab="",ylab="", lwd=3, col=col.ssb, ylim=ylim2)
     
-    if(ref)points(SSB.R~F,data=refs[2:dim(refs)[1],], pch=21, col='black', bg='white',cex=1.2)
+    if(ref)points(SSB.R~F,data=refs[2:dim(refs)[1],], pch=21, col='black', bg=col.lines,cex=1.2)
     
     axis(4, las=1)
     mtext(ylab.ssb,side=4,line=2.9)
@@ -339,6 +341,9 @@ plot.parms.ypr <- function(object){
     if(!is.null(object@parms$prop.surv)){
         points(F.sel2~x.dat, type='l', lwd=2.5, col='blue' )
         abline(v=object@parms$fish.lim, lwd=2.5, col="red")
+        plot(1,type="n", xaxt="n",yaxt="n", xlab="", ylab="", bty="n")
+        legend("topleft",col=c("red", "blue"),lty=1, lwd=3,legend=c("Minimum legal catch size","Fishing selectivity when\nconsidering survival of\nbycatch"),
+                horiz=F, bty='n', bg='white', seg.len=1)
     }
 }
 
