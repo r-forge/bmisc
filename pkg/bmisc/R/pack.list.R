@@ -12,16 +12,17 @@
 #################################################################################
 
 
-pack.list <- function(n.names=7, rprofile=FALSE)
+pack.list <- function( rprofile=FALSE)
 {
+    n.names=7
     library(utils)
-    if (.Platform$OS.type== "unix") {sdir=file.path("~/.Rprofile")}
-    if (.Platform$OS.type=="windows") {sdir=choose.files(default = "C:/Program Files/R", caption = "Select files 'Rprofile.site' in 'R/R-x.xx.x/etc' folder")}
-    
     libs=installed.packages()[, 'Package']
     libs=att.strp(libs)
     
     if(rprofile){
+        if (.Platform$OS.type== "unix") {sdir=file.path("~/.Rprofile")}
+        if (.Platform$OS.type=="windows") {sdir=choose.files(default = "C:/Program Files/R", caption = "Select files 'Rprofile.site' in 'R/R-x.xx.x/etc' folder")}
+        
         sel=seq(1,n(libs),n.names)
         pack=vector()
         for(i in sel){
@@ -108,10 +109,10 @@ pack.list <- function(n.names=7, rprofile=FALSE)
         inst="library(utils,quietly = T,warn.conflicts =F)\ninstalled <- necessary %in% installed.packages()[,'Package']\nif (length(necessary[!installed]) >=1)\n    install.packages(necessary[!installed])"
         packs=paste(t1,"\n",pack,"\n\n",t2,"\n",inst,sep="")
         if (.Platform$OS.type== "unix") {
-            fil=tclvalue(tkgetSaveFile(title='test',initialdir ='~/',initialfile = "List of installed R packages.txt", filetypes = "{{txt files} {.txt}} {{All files} .*}"))
+            fil=tclvalue(tkgetSaveFile(title='Save File',initialdir ='~/',initialfile = "List of installed R packages.txt", filetypes = "{{txt files} {.txt}} {{All files} .*}"))
         }
         if (.Platform$OS.type=="windows") {
-            fil=choose.files(default = "C:/", caption = "Select files")
+            fil=choose.files(default="C:/List of installed R packages.txt", caption = "Save File")
         }
         
         write(packs,file=fil)
