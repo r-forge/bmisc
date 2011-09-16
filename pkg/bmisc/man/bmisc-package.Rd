@@ -4,7 +4,7 @@
 \docType{package}
 \title{Miscellaneous functions}
 \description{
-This package has different functions that I have accumulated with time. I am not the author of all of them even though I have modified most of them. This is the Alpha version.
+This package has different functions that I have accumulated with time. This is the Alpha version.
 }
 
 \details{

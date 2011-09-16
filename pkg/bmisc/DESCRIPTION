@@ -6,7 +6,7 @@ Author: Benoit Bruneau
 Maintainer: Benoit Bruneau <benoit.bruneau1@gmail.com>
 URL: http://r-forge.r-project.org/projects/bmisc/
 Description: This package has different functions that I have accumulated with time. This is the Alpha version.
-Depends: car, lattice, zoo, robustbase, methods
+Depends: car, lattice, zoo, robustbase, methods, tcltk
 License: LGPL >= 3.0
 Repository: R-Forge
 Repository/R-Forge/Project: bmisc

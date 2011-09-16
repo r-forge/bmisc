@@ -3,7 +3,7 @@
 \usepackage{makeidx}
 \usepackage[utf8,latin1]{inputenc}
 \makeindex{}
-\usepackage{Sweave}
+\usepackage{/Library/Frameworks/R.framework/Versions/2.13/Resources/share/texmf/tex/latex/Sweave}
 \begin{document}
 \chapter*{}
 \begin{center}
@@ -19,7 +19,7 @@
 \item[Maintainer]\AsIs{Benoit Bruneau }\email{benoit.bruneau1@gmail.com}\AsIs{}
 \item[URL]\AsIs{}\url{http://r-forge.r-project.org/projects/bmisc/}\AsIs{}
 \item[Description]\AsIs{This package has different functions that I have accumulated with time. This is the Alpha version.}
-\item[Depends]\AsIs{car, lattice, zoo, robustbase, methods}
+\item[Depends]\AsIs{car, lattice, zoo, robustbase, methods, tcltk}
 \item[License]\AsIs{LGPL >= 3.0}
 \item[Repository]\AsIs{R-Forge}
 \item[Repository/R-Forge/Project]\AsIs{bmisc}
@@ -147,7 +147,7 @@ attributes(u2[[3]][,,2])  # array in the list
 \HeaderA{bmisc}{Miscellaneous functions}{bmisc}
 %
 \begin{Description}\relax
-This package has different functions that I have accumulated with time. I am not the author of all of them even though I have modified most of them. This is the Alpha version.
+This package has different functions that I have accumulated with time. This is the Alpha version.
 \end{Description}
 %
 \begin{Format}
@@ -155,7 +155,7 @@ This package has different functions that I have accumulated with time. I am not
 \Tabular{ll}{
 Package: & bmisc\\{}
 Type: & Package\\{}
-Version: & 0.2-13\\{}
+Version: & 0.2-12\\{}
 Date: & 30-08-2011\\{}
 License: & LGPL >= 3.0\\{}
 
@@ -441,18 +441,16 @@ Finds the parameters of a logistic curve for given inflection points.
 %
 \begin{Usage}
 \begin{verbatim}
-find.beta(beta=0.5, minv, maxv, prop=0.01)
+find.beta(minv, maxv,prob=NULL, prop=0.1, beta=0.1, fast=TRUE)
 \end{verbatim}
 \end{Usage}
 %
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{beta}] stating value of beta. Default is \code{0.5}.
 \item[\code{minv}] the minimum value on the abscissa is the first inflection point.
 \item[\code{maxv}] the maximum value on the abscissa is the second inflection point.
 \item[\code{prop}] the proportion of the instantaneous slope at 50\% probability that should be used to define the position of the inflection points of the curve. Default is \code{0.01}.
-
-
+\item[\code{beta}] stating value of beta. Default is \code{0.5}.
 \end{ldescription}
 \end{Arguments}
 %
@@ -461,9 +459,10 @@ A logistic curve is defined by:
 
 
 \Tabular{c}{
-\eqn{y=1/(1+e^{-(\alpha+\beta x)}) < == > 1/(1+e^{-\beta(x-x_{50})})}{}
+\eqn{y=1/(1+e^(-(\alpha+\beta x))) < == > 1/(1+e^(-\beta(x-x50)))}{}
 }
-Depending on the sign of \eqn{\beta}{}, the curve will be negative or positive.
+Depending on the sign of \eqn{\beta}{}, the curve will be negative or positive.\\{}\\{}
+Use \code{vignette("bmisc")} for a better presentation of the equations.  
 \end{Details}
 %
 \begin{Value}
@@ -1267,7 +1266,7 @@ D'Agostino Skewness, Anscombe-Glynn Kurtosis and D'Agostino-Pearson normality te
 \begin{Usage}
 \begin{verbatim}
 ## Default S3 method:
- plot(norm.test(x, title=NULL, type=c("G1","b1","mc")))
+ norm.test(norm.test(x, title=NULL, sk=c("G1","b1","mc"), type))
 \end{verbatim}
 \end{Usage}
 %
@@ -1296,14 +1295,14 @@ gives \code{"glm" "lm"}. The \code{type} of residuals can be defined. It general
 \code{c("working", "response", "deviance", "pearson", "partial")}.
 
 D'Agostino-Pearson's test is more appropriate for analysing a vector with
-duplicate values in it. The more there are duplicate values, the more
+duplicate values in it. The more duplicate values in a vector, the more
 Shapiro-Wilk will be far from correctly testing the \eqn{H0}{} hypothesis.
 
-Given samples from a population, the equation for the sample skewness \eqn{g_1}{}
-is a biased estimator of the population skewness. The use of \eqn{G_1}{} or \eqn{b_1}{} is advisable.
+Given samples from a population, the equation for the sample skewness \eqn{g1}{}
+is a biased estimator of the population skewness. The use of \eqn{G1}{} or \eqn{b1}{} is advisable.
 For large samples, the various skewness estimates yield similar results. For small
-normal distributed samples, \eqn{b_1}{} is less biased than \eqn{G_1}{}.
-However, for small non-normal distributed samples, \eqn{G_1}{} is less biased than \eqn{b_1}{}.
+normal distributed samples, \eqn{b1}{} is less biased than \eqn{G1}{}.
+However, for small non-normal distributed samples, \eqn{G1}{} is less biased than \eqn{b1}{}.
 These two skewness estimate can be sensitive to outliers in the data (contaminated data).
 Therefore, the medcouple \code{\LinkA{mc}{mc}} is also an option in \code{type}. It has a good
 performance on uncontaminated data and is robust on contaminated data.
@@ -1315,9 +1314,10 @@ For more information on medcouple, please read references in \code{\LinkA{mc}{mc
 
 
 \Tabular{c}{
-\eqn{g_1=\frac{m_3}{m_2^{3/2}}}{}
+\eqn{g1=m3 / m2^(3/2)}{}
 }
-where \eqn{m_3}{} is the sample third central moment, and \eqn{m_2}{} is the sample variance.\\{}
+
+where \eqn{m3}{} is the sample third central moment, and \eqn{m2}{} is the sample variance.\\{}
 
 \end{itemize}
 
@@ -1328,14 +1328,13 @@ where \eqn{m_3}{} is the sample third central moment, and \eqn{m_2}{} is the sam
 
 
 \Tabular{c}{
-\eqn{G_1=g_1 \frac{k_3}{k_2^{3/2}} = g_1 \frac{\sqrt{n(n-1)}}{n-2}}{}
+\eqn{G1=g1 * [k3/(k2^(3/2))] = g1 * [sqrt{n(n-1)} / (n-2)]}{}
 }
-where \eqn{k_3}{} is the unique symmetric unbiased estimator of the third 
-cumulant and \eqn{k_2}{} is the symmetric unbiased estimator of the second cumulant.\\{}
+
+where \eqn{k3}{} is the unique symmetric unbiased estimator of the third
+cumulant and \eqn{k2}{} is the symmetric unbiased estimator of the second cumulant.\\{}
 
 \end{itemize}
-   
-
 
 
 \begin{itemize}
@@ -1343,11 +1342,10 @@ cumulant and \eqn{k_2}{} is the symmetric unbiased estimator of the second cumul
 \item Definition used in MINITAB and BMDP:
 
 \Tabular{c}{
-\eqn{b_1=\frac{m_3}{s^3} = g_1 \big{(}\frac{n-1}{n}\big{)}^{3/2}}{}
+\eqn{b1=m3 / s^3 = g1 ((n-1)/n)^(3/2)}{}
 }
 
 \end{itemize}
-
 
 
 
@@ -1366,6 +1364,10 @@ An S4 object of class 'norm' containig the following components:
 \end{ldescription}
 \end{Value}
 %
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
+%
 \begin{References}\relax
 D. N. Joanes and C. A. Gill (1998),
 Comparing measures of sample skewness and kurtosis.
@@ -1382,6 +1384,10 @@ A Robust Measure of Skewness;
 \emph{JCGS} \bold{13} (4), 996--1017.
 
 \end{References}
+%
+\begin{SeeAlso}\relax
+\code{\LinkA{residuals}{residuals}}, \code{\LinkA{residuals.lm}{residuals.lm}}, \code{\LinkA{residuals.glm}{residuals.glm}}, and \code{\LinkA{residuals.gam}{residuals.gam}}
+\end{SeeAlso}
 %
 \begin{Examples}
 \begin{ExampleCode}
@@ -1563,22 +1569,34 @@ round((pN.a / p.adj)[1:20, ] , 4)
 \HeaderA{pack.list}{List of installed packages}{pack.list}
 %
 \begin{Description}\relax
-Create a text file containing the list of the packages currently installed in R.
+Adds the list of the packages currently installed in R to Rprofile.
 \end{Description}
 %
 \begin{Usage}
 \begin{verbatim}
-pack.list(n.names=7)
+pack.list(rptofile=FALSE)
 \end{verbatim}
 \end{Usage}
 %
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{n.names}] 
-Number of package names to put per line of the output text file.
+\item[\code{rprofile}] 
+logical. Should the list of installed packages be added to the Rprofile (\code{TRUE}) or saved in a text file (\code{FALSE})
 
 \end{ldescription}
 \end{Arguments}
+%
+\begin{Details}\relax
+\bold{rprofile = \code{TRUE}}\\{}
+A \code{SAVE} dialog box opens.
+
+
+\bold{rprofile = \code{TRUE}}\\{}
+For Mac and Linux users, \code{.Rprofile} is either modified or created. On Windows systems, users are prompted for 
+\code{Rprofile.site} location. This File is usually in \code{"C:/Program Files/R/R-x.xx.x/etc"}. Once it's selected, it is 
+modified to include the list of packages currently installed in R.
+
+\end{Details}
 %
 \begin{Author}\relax
 Benoit Bruneau
@@ -1695,7 +1713,7 @@ performance(expr, samples = 1, gcFirst = TRUE)
 \begin{Usage}
 \begin{verbatim}
 plot.logit(object, se.pred=TRUE, leg=TRUE, ref=TRUE, range.x=c("data","full"), 
-         warn.val=TRUE, ylab="ProbabilitC)",xlab="Longueur C  la fourche (mm)",
+         warn.val=TRUE, ylab="Probabilit<c3><a9>",xlab="Longueur <c3><a0> la fourche (mm)",
          main=NULL, enc.utf8=FALSE)
 \end{verbatim}
 \end{Usage}
@@ -2710,7 +2728,8 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 \end{Arguments}
 %
 \begin{Details}\relax
-\bold{Length-Weight relationship} can be provided either by indicating \code{c(\eqn{\alpha}{},\eqn{\beta}{})} values in a vector or by 
+\bold{LENGTH-WEIGHT RELATIONSHIP:}\\{}
+Length-Weight relationship can be provided either by indicating \code{c(\eqn{\alpha}{},\eqn{\beta}{})} values in a vector or by 
 directly using an object of class \code{"\LinkA{nls}{nls}"} or \code{"\LinkA{lm}{lm}"}. If \eqn{\alpha}{} and \eqn{\beta}{} are estimated 
 by \code{\LinkA{lm}{lm}}, \code{\LinkA{log}{log}(x, base=exp(1))} transformation should be applied to the data prior to fitting the linear model. 
 If \eqn{\alpha}{} and \eqn{\beta}{} are estimated by \code{\LinkA{nls}{nls}}, variables should be named \bold{alpha} and \bold{beta} 
@@ -2720,10 +2739,10 @@ using the following equation:
 \eqn{W=\alpha L^\beta}{}
 }
 where \eqn{W}{} is weight, \eqn{L}{} is length, \eqn{\alpha}{} is the elevation of the curve, and \eqn{\beta}{} 
-is the steepness of the curve. Both \eqn{\alpha}{} and \eqn{\beta}{} are estimated coefficients.
+is the steepness of the curve. Both \eqn{\alpha}{} and \eqn{\beta}{} are estimated coefficients.\\{}\\{}
 
-
-\bold{Von Bartalanffy growth equation} parameters can be provided either by indicating \code{c(Linf,K)} values in a vector or by 
+\bold{VON BARTANLANFFY GROWTH EQUATION:}\\{}
+Von Bartalanffy growth equation parameters can be provided either by indicating \code{c(Linf,K)} values in a vector or by 
 directly using an object of class \code{"\LinkA{nls}{nls}"}. If an object resulting from \code{\LinkA{nls}{nls}} is used, variables 
 should be named \bold{Linf} and \bold{K}. As for \bold{\eqn{t0}{}}, any name may be used since only \eqn{L\infty }{} and \eqn{K}{} are 
 used in this length-based YPR model because age is considered as relative. The equation used in the \code{\LinkA{nls}{nls}} for estimating \eqn{L\infty }{} 
@@ -2740,12 +2759,12 @@ The Von Bartalanffy growth equation used in this length-based YPR model is defin
 
 \eqn{ La=L\infty ( 1-e^(-Ka))+ Ls e^(-Ka) }{}
 
-where \eqn{La}{} is length at a relative age \eqn{a}{} and \eqn{Ls}{} is length at relative age zero.
+where \eqn{La}{} is length at a relative age \eqn{a}{} and \eqn{Ls}{} is length at relative age zero.\\{}\\{}
 
-
-The \bold{fishery selectivity} and \bold{maturity at length} components of the model can be defined 
-as one of \code{c("full", "plat.full", "ramp", "plat.ramp", "logit", "plat.logit")} equations. The proper 
-way to specify which function to use is by the construct of a \code{list} where the first element is the 
+\bold{SELECTIVITY CURVES:}\\{}
+The \bold{fishery selectivity}, \bold{natural mortality selectivity}, and \bold{maturity at length} components of the 
+model can be defined as one of \code{c("full", "plat.full", "ramp", "plat.ramp", "logit", "plat.logit")} equations. The 
+proper way to specify which function to use is by the construct of a \code{list} where the first element is the 
 name of one of the six types of function. See example, read \code{\LinkA{selectivity}{selectivity}}, or read \code{vignette("selectivity")} 
 for more details.  
 
@@ -2755,10 +2774,11 @@ default (\eqn{i.e.}{} \code{"logit"}).
 Estimated coefficients are use as follow: 
 
 \Tabular{c}{
-\eqn{Mat=1/(1+e^-(\alpha+\beta L))}{}
+\eqn{Mat=1/(1+e^-(\alpha+\beta L))}{}\\{}\\{}
 }
 
-\bold{Reference points} used for result output are defined as follow:
+\bold{REFERENCE POINTS:}\\{}
+Reference points used for result output are defined as follow:
 \begin{itemize}
 
 \item \bold{F.zero:}  F level when there is no fishing (F=0).
@@ -2814,210 +2834,6 @@ Benoit Bruneau
 \begin{ExampleCode}
 
 ypr(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), 
-      l.start=72.53,last.age=25,LW=c(exp( -18.47894),3.043), F.max=2,
-      F.incr.YPR=0.01, M=0.2, mat=list('full',900), f.MSP=0.4, riv.calc=F) 
-
-\end{ExampleCode}
-\end{Examples}
-\newpage
-\inputencoding{utf8}
-\HeaderA{ypr.l}{Length Based Yield Per Recruit }{ypr.l}
-%
-\begin{Description}\relax
-Length based Yield Per Recruit model is define by fishery selectivity and life history parameters related to length. 
-
-
-\end{Description}
-%
-\begin{Usage}
-\begin{verbatim}
- ypr.l(LW, vonB, l.start, last.age, age.step=1, Fsel.type, 
-       F.max=2,F.incr.YPR=0.0001, Mat.l,  M=0.2, f.MSP=0.4, 
-       F.f=0, M.f=0.5, riv.calc=FALSE)
-
-\end{verbatim}
-\end{Usage}
-%
-\begin{Arguments}
-\begin{ldescription}
-\item[\code{LW}] one of:
-\begin{itemize}
-
-\item a vector containing \code{c(\eqn{\alpha}{},\eqn{\beta}{})} from length-weight curve. See `Details'. 
-\item an object of class \code{"\LinkA{nls}{nls}"} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated. See `Details'.        
-
-\end{itemize}
-
-
-\item[\code{vonB}] one of:
-\begin{itemize}
-
-\item a vector containing \code{c(Linf,K)} from von Bertalanffy grotwh curve.
-\item an object of class \code{"\LinkA{glm}{glm}"} in which eqnLinf and eqnK were estimated.      
-
-\end{itemize}
-
-
-\item[\code{l.start}] length at the starting age
-
-\item[\code{last.age}] last age to be considered in the model
-
-\item[\code{age.step}] steps used to generate ages. Default is \code{1}.
-
-
-\item[\code{Fsel.type}] fishing selectivity can be defined as one of:
-\begin{itemize}
-
-\item a list containing the type of fishery selectivity and the values needed for the function related to the type.
-\item an object of class \code{"\LinkA{glm}{glm}"} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated by a logistic regression.        
-
-\end{itemize}
-
-
-\item[\code{fish.lim}] the minimum legal catch length.
-
-\item[\code{prop.surv}] a function that defines the proportion of fish that will survive after being released back into the water (discarded by-catch).
-
-\item[\code{F.max}] maximum value of instantaneous rate of fishing mortality (\code{F}). Default is 2.
-
-\item[\code{F.incr.YPR}] increment for generating the \code{F} values to be used for YPR calculation. Default is 0.0001.
-
-\item[\code{Mat}] Maturity can be defined by one of:
-\begin{itemize}
-
-\item a list containing the type of maturity at length definition and the values needed for the function related to the type.
-\item an object of class \code{"\LinkA{glm}{glm}"} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated by a logistic regression.       
-
-\end{itemize}
-
-
-\item[\code{Msel.type}] natural mortality selectivity can be defined as one of:
-\begin{itemize}
-
-\item a list containing the type of natural mortality selectivity and the values needed for the function related to the type. 
-\item an object of class \code{"\LinkA{glm}{glm}"} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated by a logistic regression.       
-
-\end{itemize}
-
-
-\item[\code{M}] instantaneous rate of natural mortality (\code{M}). Default is 0.2.
-
-\item[\code{f.MSP}] reference point defined as the fraction of maximum spawning potential. Default is 0.4.
-
-
-
-
-
-
-
-\end{ldescription}
-\end{Arguments}
-%
-\begin{Details}\relax
-\bold{Length-Weight relationship} can be provided either by indicating \code{c(\eqn{\alpha}{},\eqn{\beta}{})} values in a vector or by 
-directly using an object of class \code{"\LinkA{nls}{nls}"} or \code{"\LinkA{lm}{lm}"}. If \eqn{\alpha}{} and \eqn{\beta}{} are estimated 
-by \code{\LinkA{lm}{lm}}, \code{\LinkA{log}{log}(x, base=exp(1))} transformation should be applied to the data prior to fitting the linear model. 
-If \eqn{\alpha}{} and \eqn{\beta}{} are estimated by \code{\LinkA{nls}{nls}}, variables should be named \bold{alpha} and \bold{beta} 
-using the following equation:
-
-\Tabular{c}{
-\eqn{W=\alpha L^\beta}{}
-}
-where \eqn{W}{} is weight, \eqn{L}{} is length, \eqn{\alpha}{} is the elevation of the curve, and \eqn{\beta}{} 
-is the steepness of the curve. Both \eqn{\alpha}{} and \eqn{\beta}{} are estimated coefficients.\\{}\\{}\\{}
-
-
-\bold{Von Bartalanffy growth equation} parameters can be provided either by indicating \code{c(Linf,K)} values in a vector or by 
-directly using an object of class \code{'nls'}. If an object resulting from \code{\LinkA{nls}{nls}} is used, variables 
-should be named \bold{Linf} and \bold{K}. As for \eqn{t_0}{}, any name may be used since only \eqn{L_{\infty }}{} and \eqn{K}{} are 
-used in this length-based YPR modelbecause age is considered as relative. The equation used in the \code{\LinkA{nls}{nls}} for estimating \eqn{L_{\infty }}{} 
-and \eqn{K}{} should be the following one:
-
-\Tabular{c}{
-\eqn{ L_t=L_{\infty }\bigg{(} 1-e^{-K (t-t_0)}\bigg{)} }{}
-}
-where \eqn{L_t}{} is length-at-age \eqn{t}{}, \eqn{L_{\infty }}{} is the asymptotic average maximum length, 
-\eqn{K}{} is a growth rate coefficient determinant of how quick the maximum is attained, and \eqn{t_0}{} 
-is the hypothetical age at length zero.
-
-As stated above, since this length-based YPR model uses relative age, \eqn{t-t_0}{} becomes a relative age (\eqn{a}{}). 
-The Von Bartalanffy growth equation used in this length-based YPR model is defined as:
-
-\Tabular{c}{
-\eqn{ L_a=L_{\infty }\bigg{(} 1-e^{-Ka}\bigg{)}+ L_s e^{-Ka} }{}
-}
-where \eqn{L_a}{} is length at a relative age \eqn{a}{} and \eqn{L_s}{} is length at relative age zero.\\{}\\{}
-
-
-The \bold{fishery selectivity} and \bold{maturity at length} components of the model can be defined 
-as one of \code{c("full", "plat.full", "ramp", "plat.ramp", "logit", "plat.logit")} equations. The proper 
-way to specify which function to use is by the construct of a \code{list} where the first element is the 
-name of one of the six types of function. See example, read \code{\LinkA{selectivity}{selectivity}}, or read \code{vignette("selectivity")} 
-for more details.   
-
-Alternatively, an object of class \code{'glm'} can directly be used for the \bold{fishery selectivity} and \bold{maturity at length} components. 
-The Generalized Linear Model should have  the option \code{family} set to either \code{binomial} or \code{quasibinomial} keeping link function to the 
-default value (\eqn{i.e.}{} \code{"logit"}).
-Estimated coefficients are use as follow: 
-
-\Tabular{c}{
-\eqn{y=\frac{1}{1+e^{-(\alpha+\beta x)}}}{}\\{} 
-}
-
-
-\bold{Reference points} used for result output are defined as:
-\begin{itemize}
-
-\item \bold{F.zero:}  F level when there is no fishing (F=0).
-\item \bold{F.01:}    F level where the slope of yield curve is 10\% of the slope at \code{F.zero}. 
-\item \bold{F.xx:}    F level where the MSP is at the level defined by \code{f.MSP} option. Default is 40\% (0.4).
-\item \bold{F.max:}   F level where yield is maximum.
-
-\end{itemize}
-
-
-More to come.
-\end{Details}
-%
-\begin{Value}
-\code{ypr.l} returns an object of \code{class(S4)} \code{"ypr"}. The functions \code{summary} and \code{plot} are used to respectively
-obtain a summary and a standard plot of the results.  
-
-An object of class \code{"ypr"} has the the following slots:
-
-
-\begin{ldescription}
-\item[\code{parms}] the list of parameters used in the model.
-\item[\code{base}] a \code{data.frame} containing the starting values:
-\begin{itemize}
-
-\item relative age classes
-\item length at age
-\item weight at age
-
-\end{itemize}
-
-
-\item[\code{refs}] a \code{data.frame} containing values predicted by the model for the four reference points. See details. 
-\item[\code{YPR}] a \code{data.frame} containing the results for all partial Fs.
-
-
-\end{ldescription}
-Note that to have access to each slot of an \code{"ypr"} object, one must use \code{"@"} instead of \code{"\$"}.
-\end{Value}
-%
-\begin{Author}\relax
-Benoit Bruneau
-\end{Author}
-%
-\begin{SeeAlso}\relax
-\code{\LinkA{plot.ypr}{plot.ypr}} and \code{\LinkA{plot.parms.ypr}{plot.parms.ypr}}  
-\end{SeeAlso}
-%
-\begin{Examples}
-\begin{ExampleCode}
-
-ypr.l(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), 
       l.start=72.53,last.age=25,LW=c(exp( -18.47894),3.043), F.max=2,
       F.incr.YPR=0.01, M=0.2, mat=list('full',900), f.MSP=0.4, riv.calc=F) 
 

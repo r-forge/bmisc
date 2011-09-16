@@ -5,19 +5,27 @@
 List of installed packages
 }
 \description{
-Create a text file containing the list of the packages currently installed in R.
+Adds the list of the packages currently installed in R to Rprofile.
 }
 \usage{
-pack.list(n.names=7)
+pack.list(rptofile=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{n.names}{
-Number of package names to put per line of the output text file.
+  \item{rprofile}{
+logical. Should the list of installed packages be added to the Rprofile (\code{TRUE}) or saved in a text file (\code{FALSE})
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+\bold{rprofile = \code{TRUE}}\cr
+A \code{SAVE} dialog box opens.
+
+
+\bold{rprofile = \code{TRUE}}\cr
+For Mac and Linux users, \code{.Rprofile} is either modified or created. On Windows systems, users are prompted for 
+\code{Rprofile.site} location. This File is usually in \code{"C:/Program Files/R/R-x.xx.x/etc"}. Once it's selected, it is 
+modified to include the list of packages currently installed in R.
+
 }
 \value{
 %%  ~Describe the value returned

@@ -11,8 +11,7 @@ packageStartupMessage("
   # ----------------------------------------------------------------- #
   ## bmisc comes with ABSOLUTELY NO WARRANTY;                        ##
   ## It has different functions that I have accumulated with time.   ##
-  ## I am not the author of all of them even though I have           ##
-  ## modified most of them. This is an Alpha version.                ##
+  ## This is an Alpha version.                                       ##
   # ----------------------------------------------------------------- #
   ##                                                                 ##
   ## To view the user's guides 'bmisc.pdf' or 'relation_sel.pdf',    ##

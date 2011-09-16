@@ -22,3 +22,4 @@ r.colors.default <- function(file=NULL) {
     } ,silent=T)
   graphics.off()
 }
+

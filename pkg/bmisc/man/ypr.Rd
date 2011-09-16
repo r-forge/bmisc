@@ -74,7 +74,8 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 %}
 }
 \details{
-\bold{Length-Weight relationship} can be provided either by indicating \code{c(\eqn{\alpha},\eqn{\beta})} values in a vector or by 
+\bold{LENGTH-WEIGHT RELATIONSHIP:}\cr
+Length-Weight relationship can be provided either by indicating \code{c(\eqn{\alpha},\eqn{\beta})} values in a vector or by 
 directly using an object of class \code{"\link{nls}"} or \code{"\link{lm}"}. If \eqn{\alpha} and \eqn{\beta} are estimated 
 by \code{\link{lm}}, \code{\link{log}(x, base=exp(1))} transformation should be applied to the data prior to fitting the linear model. 
 If \eqn{\alpha} and \eqn{\beta} are estimated by \code{\link{nls}}, variables should be named \bold{alpha} and \bold{beta} 
@@ -83,10 +84,10 @@ using the following equation:
 \eqn{W=\alpha L^\beta}
 }
 where \eqn{W} is weight, \eqn{L} is length, \eqn{\alpha} is the elevation of the curve, and \eqn{\beta} 
-is the steepness of the curve. Both \eqn{\alpha} and \eqn{\beta} are estimated coefficients.
+is the steepness of the curve. Both \eqn{\alpha} and \eqn{\beta} are estimated coefficients.\cr\cr
 
-
-\bold{Von Bartalanffy growth equation} parameters can be provided either by indicating \code{c(Linf,K)} values in a vector or by 
+\bold{VON BARTANLANFFY GROWTH EQUATION:}\cr
+Von Bartalanffy growth equation parameters can be provided either by indicating \code{c(Linf,K)} values in a vector or by 
 directly using an object of class \code{"\link{nls}"}. If an object resulting from \code{\link{nls}} is used, variables 
 should be named \bold{Linf} and \bold{K}. As for \bold{\eqn{t0}}, any name may be used since only \eqn{L\infty } and \eqn{K} are 
 used in this length-based YPR model because age is considered as relative. The equation used in the \code{\link{nls}} for estimating \eqn{L\infty } 
@@ -103,12 +104,12 @@ The Von Bartalanffy growth equation used in this length-based YPR model is defin
 
 \eqn{ La=L\infty ( 1-e^(-Ka))+ Ls e^(-Ka) }
 
-where \eqn{La} is length at a relative age \eqn{a} and \eqn{Ls} is length at relative age zero.
+where \eqn{La} is length at a relative age \eqn{a} and \eqn{Ls} is length at relative age zero.\cr\cr
 
-
-The \bold{fishery selectivity} and \bold{maturity at length} components of the model can be defined 
-as one of \code{c("full", "plat.full", "ramp", "plat.ramp", "logit", "plat.logit")} equations. The proper 
-way to specify which function to use is by the construct of a \code{list} where the first element is the 
+\bold{SELECTIVITY CURVES:}\cr
+The \bold{fishery selectivity}, \bold{natural mortality selectivity}, and \bold{maturity at length} components of the 
+model can be defined as one of \code{c("full", "plat.full", "ramp", "plat.ramp", "logit", "plat.logit")} equations. The 
+proper way to specify which function to use is by the construct of a \code{list} where the first element is the 
 name of one of the six types of function. See example, read \code{\link{selectivity}}, or read \code{vignette("selectivity")} 
 for more details.  
 
@@ -117,10 +118,11 @@ The Generalized Linear Model should have  the option \code{family} set to either
 default (\eqn{i.e.} \code{"logit"}).
 Estimated coefficients are use as follow: 
 \tabular{c}{
-\eqn{Mat=1/(1+e^-(\alpha+\beta L))}
+\eqn{Mat=1/(1+e^-(\alpha+\beta L))}\cr\cr
 }
 
-\bold{Reference points} used for result output are defined as follow:
+\bold{REFERENCE POINTS:}\cr
+Reference points used for result output are defined as follow:
 \itemize{
     \item \bold{F.zero:}  F level when there is no fishing (F=0).
     \item \bold{F.01:}    F level where the slope of yield curve is 10\% of the slope at \code{F.zero}. 
