@@ -9,11 +9,11 @@ Attibute stripper
 Strips an object of its attributes
 }
 \usage{
-att.strp(x)
+att.strp(obj)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{the name of an object (\code{vector, matrix, data.frame, array or list})}
+  \item{obj}{the name of an object (\code{vector, matrix, data.frame, array or list})}
 }
 \details{
 This function strips an object of its attributes. In the case of a \code{vector}, all attributes are removed. 
@@ -24,7 +24,7 @@ all attributes of the variables are striped and only \code{c('names','row.names'
 
 }
 \value{
-returns an object of the same \code{class} as the original one.
+returns an object of the same \code{class} as \code{obj}.
 }
 \references{
 

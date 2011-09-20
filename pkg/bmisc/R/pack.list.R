@@ -12,12 +12,20 @@
 #################################################################################
 
 
-pack.list <- function( rprofile=FALSE)
+pack.list <- function( rprofile=FALSE, silent=FALSE)
 {
     n.names=7
     library(utils)
     libs=installed.packages()[, 'Package']
     libs=att.strp(libs)
+    
+    repos=options("repos")
+    if(is.null(repos) | is.na(repos)){
+        op="options(repos=c('http://cran.skazkaforyou.com/','http://www.benoitr.comze.com/R/','http://download.walware.de/rj-0.5','http://www.stats.ox.ac.uk/pub/RWin/')) "
+    }else{
+        op=paste("options(repos=",paste(repos),")",sep="")
+    }
+
     
     if(rprofile){
         if (.Platform$OS.type== "unix") {sdir=file.path("~/.Rprofile")}
@@ -47,12 +55,7 @@ pack.list <- function( rprofile=FALSE)
         pack[1]=paste("necessary <- c(",pack[1], sep="")
         pack[length(pack)]=paste(pack[length(pack)],")",sep="")
         
-        repos=options("repos")
-        if(is.null(repos) | is.na(repos)){
-            op="options(repos=c('http://cran.skazkaforyou.com/','http://www.benoitr.comze.com/R/','http://www.stats.ox.ac.uk/pub/RWin/')) "
-        }else{
-            op=paste("options(repos=",paste(repos),")",sep="")
-        }
+
         
         t1="## DEFINE REPOSITORIES"
         t2="## LIST OF NECESSARY PACKAGES"

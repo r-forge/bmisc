@@ -1,19 +1,27 @@
 Errbar <- function (x,y,...) UseMethod("Errbar")
 
-Errbar.default <- function(x,y,xinf=NULL,xsup=NULL,yinf=NULL,ysup=NULL,yCI=NULL, xCI=NULL,color="black", cap=0.05, ...){
+Errbar.default <- function( x, y, 
+                            xinf=NULL, 
+                            xsup=NULL, 
+                            yinf=NULL, 
+                            ysup=NULL, 
+                            xint=NULL,
+                            yint=NULL, 
+                            color="black", 
+                            cap=0.05, ...){
      x=as.numeric(x)
      y=as.numeric(y)
-    if(!is.null(yCI) | !is.null(xCI)){  
-  	 if (!is.null(yCI)){
-        arrows(x,y,x,y+(yCI/2),angle=90,length=.05,code=2,col=color,...)
-        arrows(x,y,x,y-(yCI/2),angle=90,length=.05,code=2,col=color,...)} 
-      if (!is.null(xCI)){
-        arrows(x,y,x+(xCI/2),y,angle=90,length=.05,code=2,col=color,...)
-        arrows(x,y,x-(xCI/2),y,angle=90,length=.05,code=2,col=color,...)}
+    if(!is.null(yint) | !is.null(xint)){  
+  	 if (!is.null(yint)){
+        arrows(x,y,x,y+(yint/2),angle=90,length=.05,code=2,col=color,...)
+        arrows(x,y,x,y-(yint/2),angle=90,length=.05,code=2,col=color,...)} 
+      if (!is.null(xint)){
+        arrows(x,y,x+(xint/2),y,angle=90,length=.05,code=2,col=color,...)
+        arrows(x,y,x-(xint/2),y,angle=90,length=.05,code=2,col=color,...)}
      } 
       
       
-    if((!is.null(yCI) | !is.null(xCI)) & (!is.null(yinf) | !is.null(ysup) | !is.null(xinf) | !is.null(xsup))){
+    if((!is.null(yint) | !is.null(xint)) & (!is.null(yinf) | !is.null(ysup) | !is.null(xinf) | !is.null(xsup))){
       stop("The confidence interval method has priority over individually defined methods. see ?Errbar")}
 
 

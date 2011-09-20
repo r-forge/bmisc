@@ -3,14 +3,14 @@
 \alias{Errbar}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-error bars
+Error Bars
 }
 \description{
 Adds error bars on a plot
 }
 \usage{
-Errbar(x, y, xinf=NULL, xsup=NULL, yinf=NULL, ysup=NULL, yCI=NULL,
-       xCI=NULL, cap=0.05,\dots)
+Errbar(x, y, xinf=NULL, xsup=NULL, yinf=NULL, ysup=NULL, xint=NULL,
+       xint=NULL, cap=0.05,\dots)
 }
 
 \arguments{
@@ -24,16 +24,16 @@ Errbar(x, y, xinf=NULL, xsup=NULL, yinf=NULL, ysup=NULL, yCI=NULL,
   \item{yinf, ysup}{numeric vectors containing the upper (ysup) and/or lower (yinf)
         limit of the confidence interval for y-axis values.
   }
-  \item{xCI}{numeric vectors containing the confidence intervals for x-axis values.
+  \item{xint}{numeric vectors containing the confidence intervals for x-axis values.
   }
-  \item{yCI}{numeric vectors containing the confidence intervals for y-axis values.
+  \item{yint}{numeric vectors containing the confidence intervals for y-axis values.
   }
   \item{\dots}{additional graphical arguments (\code{\link{par}}) such as \code{col, lty, lwd}
                and/or arguments for \code{\link{arrows}} .
 }
 }
 \details{
-If \code{xCI} and/or \code{yCI} are defined, individually defined limits (ie. \code{xinf, xsup, yinf, ysup}) are not used.
+If \code{xint} and/or \code{yint} are defined, individually defined limits (ie. \code{xinf, xsup, yinf, ysup}) are not used.
 }
 
 \references{
@@ -59,17 +59,17 @@ yci <- runif(10)
 xci <- runif(10)
 
 plot(x,y, ylim=c(min(y-yci),max(y+yci)))
-Errbar( x, y, yCI=yci)
+Errbar( x, y, yint=yci)
 
 plot(x,y, xlim=c(min(x-xci),max(x+xci)))
-Errbar( x, y, xCI=xci )
+Errbar( x, y, xint=xci )
 
 plot(x,y, ylim=c(min(y-yci),max(y+yci)), xlim=c(min(x-xci),max(x+xci)))
-Errbar( x, y, yCI=yci, xCI=xci )
+Errbar( x, y, yint=yci, xint=xci )
 
 # Gives an Error message
-#plot(x,y, ylim=c(min(y-yci),max(y+yci)))  ## adds the yCI and gives
-#Errbar( x, y, ysup=1, yCI=yci)            ## an error message for the ysup
+#plot(x,y, ylim=c(min(y-yci),max(y+yci)))  ## adds the yint and gives
+#Errbar( x, y, ysup=1, yint=yci)            ## an error message for the ysup
 
 }
 

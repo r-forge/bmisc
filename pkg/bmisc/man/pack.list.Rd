@@ -5,26 +5,26 @@
 List of installed packages
 }
 \description{
-Adds the list of the packages currently installed in R to Rprofile.
+Creates a character vector of currently installed packages and prints it to either a text file or directly into Rprofile file.
 }
 \usage{
-pack.list(rptofile=FALSE)
+pack.list(rprofile=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{rprofile}{
-logical. Should the list of installed packages be added to the Rprofile (\code{TRUE}) or saved in a text file (\code{FALSE})
+logical. Should vector of currently installed packages be added to the Rprofile (\code{TRUE}) or saved in a text file (\code{FALSE})
 }
 }
 \details{
-\bold{rprofile = \code{TRUE}}\cr
+\bold{rprofile = \code{FALSE}}\cr
 A \code{SAVE} dialog box opens.
 
 
 \bold{rprofile = \code{TRUE}}\cr
 For Mac and Linux users, \code{.Rprofile} is either modified or created. On Windows systems, users are prompted for 
-\code{Rprofile.site} location. This File is usually in \code{"C:/Program Files/R/R-x.xx.x/etc"}. Once it's selected, it is 
-modified to include the list of packages currently installed in R.
+\code{Rprofile.site} location. This File is usually in \code{"C:/Program Files/R/R-x.xx.x/etc"}. Once it's selected, 
+the file is modified to include the list of packages currently installed in R.
 
 }
 \value{
@@ -47,9 +47,9 @@ Benoit Bruneau
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-
+\code{\link{Startup}}
 }
 \examples{
 pack.list()
-pack.list(5)
+
 }

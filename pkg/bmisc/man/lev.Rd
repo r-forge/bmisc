@@ -6,13 +6,13 @@
 Levene type tests
 }
 \description{
-Tests heteroscedasticity after an Anova
+Testing for homoscedasticity after an ANOVA.
 }
 \usage{
 lev(y, ...)
-\method{lev}{formula}(y, data=NULL,  ...)
-\method{lev}{lm}(y, ...)
-\method{lev}{default}(y, group, data=NULL , trim.alpha = 0.1, type="abs",...)
+\method{lev}{lm}(y, trim.alpha=0.1, type=c("abs","sq"))
+\method{lev}{formula}(y, data, trim.alpha=0.1, type=c("abs","sq"))
+\method{lev}{default}(y, group, data=NULL, trim.alpha=0.1, type=c("abs","sq"))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,13 +20,11 @@ lev(y, ...)
       class object for the \code{lm} method or \code{formula}
       class object for the \code{formula} methode. If \code{y}
       is a linear-model object or a formula, the variables on the right-hand-side
-      of the model must all be factors and must be completely crossed. See details.}
-   \item{group}{for the default method, factor (concatenated factor when multiple factors). See details.}
-   \item{data}{\code{\link{data.frame}} where the dependant variable and the factor(s) are}
-   \item{trim.alpha}{Alpha level (percentiles) trimming the data on which the mean will be evaluated}
-   \item{type}{Type of transformation made on the residuals. Either "abs" for absolute values or "sq" for sqared values}
-   \item{...}{arguments to be passed down, e.g., \code{data} for the
-     \code{formula} method or other options such as \code{type} and \code{trim.alpha}.}
+      of the model must all be factors and must be completely crossed.}
+   \item{group}{for the default method, factor (concatenated factor when multiple factors).}
+   \item{data}{\code{\link{data.frame}} containing the dependant variable and the factor(s).}
+   \item{trim.alpha}{Alpha level (percentiles) trimming the data on which the mean will be evaluated.}
+   \item{type}{Type of transformation made on the residuals. Either "abs" for absolute values or "sq" for squared values}
 }
 \details{
 When using the \code{lm} method, \code{data} doesn't need to be defined. When using the
@@ -35,7 +33,7 @@ When using the \code{lm} method, \code{data} doesn't need to be defined. When us
 
 When group is manually defined in the default method, use \code{paste(x,y,z)} or\\*
 \code{interaction(x,y,z)}form where\code{"x"}, \code{"y"} and \code{"z"}
-are the factors. There is no restrictions on the number of factors.
+are the factors. 
 
 O'Brien's (1981) performs test for equality of variances within each group:
 based on transforming each observation in relation to its group variance
@@ -44,19 +42,29 @@ transformed scores (for which the group mean is equal to the variance of the
 original observations). The procedure is recognised to be robust against
 violations of normality (unlike F-max).
 
-
+More to come.
 }
 \value{
+ \code{lev} returns an object of \code{class(S4)} \code{"lev"}.
+ 
+ An object of class \code{"ypr"} has the the following slots:
+ 
+\item{statistics}{statistics for each test.}
+\item{p.value}{p-value for each test.}
+\item{residuals}{residuals for each test (r-scores for O'Briens test.}
 
-\item{Model}{The model}
-\item{Levene}{Results for Levene's test}
-\item{LeveneTrimMean}{Results for Levene's test on the trimmed mean}
-\item{Brown.Forsythe}{Results for Brown-Forsythe's test}
-\item{OBrien}{Results for O'Brien's test}
 
 }
 \references{
-%% ~put references to the literature/web site here ~
+Brown, Morton B. and Alan B. Forsythe  (1974). Robust Tests for Equality of Variances, J. Am. Statistical Assoc., 69, 364–367.
+
+Fligner, Michael A. and Timothy J. Killeen (1976). Distribution-free two sample tests for scale. J. Am. Statistical Assoc., 71: 210-213.
+
+Levene, Howard (1960). "Robust tests for equality of variances". In Ingram Olkin, Harold Hotelling, et alia. Stanford University Press. pp. 278–292.
+
+O’Brien, R.G. (1981). A simple test for variance effects in experimental designs. Psychological Bulletin, 89, 570–574.
+
+Conover, William J., Johnson, Mark E., and Myrle M. Johnson (1981). A comparative study of tests for homogeneity of variances, with applications to the outer continental shelf bidding data. Technometrics 23, 351–361. 
 }
 \author{
 %%  ~~who you are~~
@@ -68,7 +76,7 @@ violations of normality (unlike F-max).
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{leveneTest}} from \code{{car}}
+\code{\link{ligner.test}}
 }
 \examples{
 z=data.frame( yy=c(rep("c",50),rep("d",50)),

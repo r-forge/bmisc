@@ -1,12 +1,11 @@
 \name{n}
 
 \alias{n}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Sample size (n)
+Sample size
 }
 \description{
-Gives n without NA's
+Gives sample size (n) without NA's
 }
 \usage{
 n(x)
@@ -44,6 +43,8 @@ Vector (numeric or character)
 }
 \examples{
 x= rep(c(rnorm(30,20,5),NA),3)
-n(x)
+
+length(x)   ### 93
+n(x)        ### 90
 }
 

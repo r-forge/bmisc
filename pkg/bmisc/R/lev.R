@@ -6,15 +6,16 @@ lev <- function (y,data=NULL,...) {
     
 }
 
-lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", form=NULL, ...)
+lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", form=NULL)
 {
     try(if(!is.null(data)) {detach(data)}, silent=TRUE)
     try(if(!is.null(data)) {attach(data)}, silent=TRUE)
     if (!is.numeric(y))
         stop(deparse(substitute(y)), " is not a numeric variable")
     call=match.call()
-    DNAME = paste(deparse(substitute(y)), "~",deparse(substitute(group)))
-    DATA = deparse(substitute(data))
+    FORM =formula(paste(deparse(substitute(y)), "~",deparse(substitute(group))))
+    environment(FORM)=.GlobalEnv
+
     
     if ( trim.alpha >= 0.5) {
         stop("trim.alpha value of 0 to 0.5 should be provided for the trim.mean option")
@@ -32,7 +33,6 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
     
     group <- as.factor(group)
     
-    data <- structure(list(data.name = DATA), class = "htest")
     
     means <- tapply(y[is.na(y)==FALSE], group[is.na(y)==FALSE], mean)
     switch(type,
@@ -44,8 +44,8 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
     p.value = Anova(lm(resp.mean ~ group,contrasts=list(group=contr.sum)), type="III")[2, 4]
     STATISTIC = statistic
     names(STATISTIC) = "F.value"
-    Meval <- structure(list(statistic = STATISTIC, p.value = p.value,
-                    method = METHOD), class = "htest")
+    Meval <- list(statistic = STATISTIC, p.value = p.value,
+                    method = METHOD)
     
     
     meds <- tapply(y[is.na(y)==FALSE], group[is.na(y)==FALSE], median)
@@ -58,8 +58,8 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
     p.value = Anova(lm(resp.med ~ group,contrasts=list(group=contr.sum)), type="III")[2, 4]
     STATISTIC = statistic
     names(STATISTIC) = "F.value"
-    Medval <- structure(list(statistic = STATISTIC, p.value = p.value,
-                    method = METHOD), class = "htest")
+    Medval <- list(statistic = STATISTIC, p.value = p.value,
+                    method = METHOD)
     
     
     trimmed.mean <- function(y) mean(y, trim = trim.alpha)
@@ -74,8 +74,8 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
     p.value = Anova(lm(resp.trim.mean ~ group,contrasts=list(group=contr.sum)), type="III")[2, 4]
     STATISTIC = statistic
     names(STATISTIC) = "F.value"
-    Tmeanval <- structure(list(statistic = STATISTIC, p.value = p.value,
-                    method = METHOD), class = "htest")
+    Tmeanval <- list(statistic = STATISTIC, p.value = p.value,
+                    method = METHOD)
     
     
     grouppn <- tapply(y,group,n)
@@ -88,54 +88,43 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
     p.value = Anova(lm(r ~ group,contrasts=list(group=contr.sum)), type="III")[2, 4]
     STATISTIC = statistic
     names(STATISTIC) = "F.value"
-    Oval <- structure(list(statistic = STATISTIC, p.value = p.value,
-                    method = METHOD), class = "htest")
+    Oval <- list(statistic = STATISTIC, p.value = p.value,
+                    method = METHOD)
     
-    STATISTIC=fligner.test(x=y,g=group)[[1]]
-    names(STATISTIC)="Chi-Squared"
-    p.value =fligner.test(x=y,g=group)[[3]]
-    METHOD = "Fligner-Killeen test of homogeneity of variances"
-    Fl=structure(list(statistic = STATISTIC, p.value = p.value, method = METHOD), class = "htest")
+  
     
     try(if(!is.null(data)) {detach(data)} ,silent=TRUE)
     
-    PVAL = c(Meval$p.value, Tmeanval$p.value, Medval$p.value,Oval$p.value, Fl$p.value)
+    PVAL = c(Meval$p.value, Tmeanval$p.value, Medval$p.value,Oval$p.value)
     names(PVAL) = c(
             "Levene                  ",
             "Levene on trimed mean   ",
             "Brown.Forsythe          ",
-            "OBrien                  ",
-            "Fligner-Killeen         ")
+            "OBrien                  ")
     
-    STATISTIC = c(Meval$statistic, Tmeanval$statistic, Medval$statistic,Oval$statistic,Fl$statistic)
+    STATISTIC = c(Meval$statistic, Tmeanval$statistic, Medval$statistic,Oval$statistic)
     names(STATISTIC) = c(
             "Levene                  ",
             "Levene on trimed mean   ",
             "Brown.Forsythe          ",
-            "OBrien                  ",
-            "Fligner-Killeen         ")
+            "OBrien                  ")
     
     datall=data.frame(lev=res.mean, lev.tr=res.trim.mean, bf=res.med, ob=r, group=group)
-	
+    
     if(is.null(form)){
-		form=formula(DNAME)
-		RVAL = new('lev',
-				formula=form,
-				statistics = STATISTIC,
-				title = "Levene-type tests",
-				p.value = PVAL,
-				data.name = DNAME,
-				residuals=datall)
-	}else{
-		RVAL = new('lev',
-				formula=form,
-				statistics = STATISTIC,
-				title = "Levene-type tests",
-				p.value = PVAL,
-				data.name = DNAME,
-				residuals=datall)
-	}
-   
+        RVAL = new('lev',
+                formula=FORM,
+                statistics = STATISTIC,
+                p.value = PVAL,
+                residuals=datall)
+    }else{
+        RVAL = new('lev',
+                formula=form,
+                statistics = STATISTIC,
+                p.value = PVAL,
+                residuals=datall)
+    }
+    
     
 #if(!is.null(form)) cat(mod)
 #if(is.null(form)) cat(dmod)
@@ -144,13 +133,13 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
     
 }
 
-lev.formula <- function(y, data=NULL, ...) {
+lev.formula <- function(formula, data=NULL, ...) {
     
-    if("y" %in% ls()==FALSE & (is.null(data) | "data" %in% ls() ==FALSE)) {stop("data hasn't been defined and needs to be")}
+    
+    if(is.null(data) ) {stop("'data' hasn't been defined and needs to be.")}
     
     data2=data
-    form <- y
-    
+    form=y
     data <- model.frame(form, data=data2)
     if (any(sapply(2:dim(data)[2], function(j) is.numeric(data[[j]])))) stop("Levene's test is not appropriate with quantitative explanatory variables.")
     y <- data[,1]
@@ -165,7 +154,7 @@ lev.formula <- function(y, data=NULL, ...) {
 
 lev.lm <- function(y, ...) {
     
-    lev.formula(y=formula(y), data=model.frame(y))
+    lev.formula(formula(y), model.frame(y))
     
 }
 
@@ -173,15 +162,13 @@ setClass("lev",
         representation(
                 formula='formula',
                 statistics ='numeric',
-                title='character',
                 p.value='numeric',
-                data.name='character',
                 residuals='data.frame')
 )
 
 setMethod("show", "lev",
         function(object){
-            cat("\nTitle:\n ", object@title, "\n", sep = "")
+            cat("\nTitle:\nLevene-type tests\n", sep = "")
             cat('\nFormula:\n')
             print(object@formula)
             cat("\nTests Result:\n")
@@ -219,15 +206,27 @@ setMethod("show", "lev",
         }
 )
 
-plot.lev=function(object){
-    par(mfrow=c(2,2))
-    vars=ncol(object@residuals)-1
-    Name=c("Levene","Robust Levene","Brown-Forsythe",
-            "O'Brien")
-    Ylab=c("residuals of mean","residuals of trimmed mean","residuals of median",
-            "r scrores")
-    for(i in seq(vars)){
-        boxplot(object@residuals[,i]~object@residuals$group,main=Name[i], ylab=Ylab[i])
+plot.lev=function(object, which=1L:4L, ylab=NULL,main=NULL, ...){
+    if(!is.numeric(which) || any(which < 1) || any(which > 4))
+        stop("'which' must be in 1:4")
+
+    if(is.null(main))
+        main=c("Levene","Robust Levene","Brown-Forsythe","O'Brien")
+    if(is.null(ylab)) 
+        ylab=c("residuals of mean","residuals of trimmed mean","residuals of median","r scrores")
+    
+    if(length(which)==1){
+        par(mfrow=c(1,1))
+    }else{
+        if(length(which)==2){
+            par(mfrow=c(1,2))
+        }else{
+            par(mfrow=c(2,2))
+        }
+    }
+
+    for(i in which){
+        boxplot(object@residuals[,i]~object@residuals$group,main=main[i], ylab=ylab[i], ...)
     }
     
     
