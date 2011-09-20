@@ -36,13 +36,13 @@ Strips an object of its attributes
 %
 \begin{Usage}
 \begin{verbatim}
-att.strp(x)
+att.strp(obj)
 \end{verbatim}
 \end{Usage}
 %
 \begin{Arguments}
 \begin{ldescription}
-\item[\code{x}] the name of an object (\code{vector, matrix, data.frame, array or list})
+\item[\code{obj}] the name of an object (\code{vector, matrix, data.frame, array or list})
 \end{ldescription}
 \end{Arguments}
 %
@@ -56,7 +56,7 @@ all attributes of the variables are striped and only \code{c('names','row.names'
 \end{Details}
 %
 \begin{Value}
-returns an object of the same \code{class} as the original one.
+returns an object of the same \code{class} as \code{obj}.
 \end{Value}
 %
 \begin{Author}\relax
@@ -352,7 +352,7 @@ day(x)
 \end{Examples}
 \newpage
 \inputencoding{utf8}
-\HeaderA{Errbar}{error bars}{Errbar}
+\HeaderA{Errbar}{Error Bars}{Errbar}
 %
 \begin{Description}\relax
 Adds error bars on a plot
@@ -360,8 +360,8 @@ Adds error bars on a plot
 %
 \begin{Usage}
 \begin{verbatim}
-Errbar(x, y, xinf=NULL, xsup=NULL, yinf=NULL, ysup=NULL, yCI=NULL,
-       xCI=NULL, cap=0.05,...)
+Errbar(x, y, xinf=NULL, xsup=NULL, yinf=NULL, ysup=NULL, xint=NULL,
+       xint=NULL, cap=0.05,...)
 \end{verbatim}
 \end{Usage}
 %
@@ -377,9 +377,9 @@ limits of the confidence interval for x-axis values.
 \item[\code{yinf, ysup}] numeric vectors containing the upper (ysup) and/or lower (yinf)
 limit of the confidence interval for y-axis values.
 
-\item[\code{xCI}] numeric vectors containing the confidence intervals for x-axis values.
+\item[\code{xint}] numeric vectors containing the confidence intervals for x-axis values.
 
-\item[\code{yCI}] numeric vectors containing the confidence intervals for y-axis values.
+\item[\code{yint}] numeric vectors containing the confidence intervals for y-axis values.
 
 \item[\code{...}] additional graphical arguments (\code{\LinkA{par}{par}}) such as \code{col, lty, lwd}
 and/or arguments for \code{\LinkA{arrows}{arrows}} .
@@ -388,7 +388,7 @@ and/or arguments for \code{\LinkA{arrows}{arrows}} .
 \end{Arguments}
 %
 \begin{Details}\relax
-If \code{xCI} and/or \code{yCI} are defined, individually defined limits (ie. \code{xinf, xsup, yinf, ysup}) are not used.
+If \code{xint} and/or \code{yint} are defined, individually defined limits (ie. \code{xinf, xsup, yinf, ysup}) are not used.
 \end{Details}
 %
 \begin{SeeAlso}\relax
@@ -404,17 +404,17 @@ yci <- runif(10)
 xci <- runif(10)
 
 plot(x,y, ylim=c(min(y-yci),max(y+yci)))
-Errbar( x, y, yCI=yci)
+Errbar( x, y, yint=yci)
 
 plot(x,y, xlim=c(min(x-xci),max(x+xci)))
-Errbar( x, y, xCI=xci )
+Errbar( x, y, xint=xci )
 
 plot(x,y, ylim=c(min(y-yci),max(y+yci)), xlim=c(min(x-xci),max(x+xci)))
-Errbar( x, y, yCI=yci, xCI=xci )
+Errbar( x, y, yint=yci, xint=xci )
 
 # Gives an Error message
-#plot(x,y, ylim=c(min(y-yci),max(y+yci)))  ## adds the yCI and gives
-#Errbar( x, y, ysup=1, yCI=yci)            ## an error message for the ysup
+#plot(x,y, ylim=c(min(y-yci),max(y+yci)))  ## adds the yint and gives
+#Errbar( x, y, ysup=1, yint=yci)            ## an error message for the ysup
 
 \end{ExampleCode}
 \end{Examples}
@@ -844,18 +844,18 @@ last(x)
 \HeaderA{lev}{Levene type tests}{lev}
 %
 \begin{Description}\relax
-Tests heteroscedasticity after an Anova
+Testing for homoscedasticity after an ANOVA.
 \end{Description}
 %
 \begin{Usage}
 \begin{verbatim}
 lev(y, ...)
-## S3 method for class 'formula'
-lev(y, data=NULL,  ...)
 ## S3 method for class 'lm'
-lev(y, ...)
+lev(y, trim.alpha=0.1, type=c("abs","sq"))
+## S3 method for class 'formula'
+lev(y, data, trim.alpha=0.1, type=c("abs","sq"))
 ## Default S3 method:
-lev(y, group, data=NULL , trim.alpha = 0.1, type="abs",...)
+lev(y, group, data=NULL, trim.alpha=0.1, type=c("abs","sq"))
 \end{verbatim}
 \end{Usage}
 %
@@ -865,13 +865,11 @@ lev(y, group, data=NULL , trim.alpha = 0.1, type="abs",...)
 class object for the \code{lm} method or \code{formula}
 class object for the \code{formula} methode. If \code{y}
 is a linear-model object or a formula, the variables on the right-hand-side
-of the model must all be factors and must be completely crossed. See details.
-\item[\code{group}] for the default method, factor (concatenated factor when multiple factors). See details.
-\item[\code{data}] \code{\LinkA{data.frame}{data.frame}} where the dependant variable and the factor(s) are
-\item[\code{trim.alpha}] Alpha level (percentiles) trimming the data on which the mean will be evaluated
-\item[\code{type}] Type of transformation made on the residuals. Either "abs" for absolute values or "sq" for sqared values
-\item[\code{...}] arguments to be passed down, e.g., \code{data} for the
-\code{formula} method or other options such as \code{type} and \code{trim.alpha}.
+of the model must all be factors and must be completely crossed.
+\item[\code{group}] for the default method, factor (concatenated factor when multiple factors).
+\item[\code{data}] \code{\LinkA{data.frame}{data.frame}} containing the dependant variable and the factor(s).
+\item[\code{trim.alpha}] Alpha level (percentiles) trimming the data on which the mean will be evaluated.
+\item[\code{type}] Type of transformation made on the residuals. Either "abs" for absolute values or "sq" for squared values
 \end{ldescription}
 \end{Arguments}
 %
@@ -880,34 +878,41 @@ When using the \code{lm} method, \code{data} doesn't need to be defined. When us
 \code{formula} or \code{default} methods, \code{data} can be defined if the data used
 is in a \code{\LinkA{data.frame}{data.frame}}.
 
-When group is manually defined in the default method, use \code{paste(x,y,z)} or\bsl{}*
+When group is manually defined in the default method, use \code{paste(x,y,z)} or\\{}
 \code{interaction(x,y,z)}form where\code{"x"}, \code{"y"} and \code{"z"}
-are the factors. There is no restrictions on the number of factors.
-
-O'Brien's (1981) performs test for equality of variances within each group:
-based on transforming each observation in relation to its group variance
-and its deviation from its group mean; and performing an ANOVA on these
-transformed scores (for which the group mean is equal to the variance of the
-original observations). The procedure is recognised to be robust against
-violations of normality (unlike F-max).
+are factors.\\{}\\{}
 
 
 \end{Details}
 %
 \begin{Value}
+\code{lev} returns an object of \code{class(S4)} \code{"lev"}.
+
+An object of class \code{"ypr"} has the the following slots:
 
 \begin{ldescription}
-\item[\code{Model}] The model
-\item[\code{Levene}] Results for Levene's test
-\item[\code{LeveneTrimMean}] Results for Levene's test on the trimmed mean
-\item[\code{Brown.Forsythe}] Results for Brown-Forsythe's test
-\item[\code{OBrien}] Results for O'Brien's test
+\item[\code{statistics}] statistics for each test.
+\item[\code{p.value}] p-value for each test.
+\item[\code{residuals}] residuals for each test (r-scores for O'Briens test.
+
 
 \end{ldescription}
 \end{Value}
 %
+\begin{References}\relax
+Brown, Morton B. and Alan B. Forsythe  (1974). Robust Tests for Equality of Variances, J. Am. Statistical Assoc., 69, 364-367.
+
+Fligner, Michael A. and Timothy J. Killeen (1976). Distribution-free two sample tests for scale. J. Am. Statistical Assoc., 71: 210-213.
+
+Levene, Howard (1960). "Robust tests for equality of variances". In Ingram Olkin, Harold Hotelling, et alia. Stanford University Press. pp. 278-292.
+
+O'Brien, R.G. (1981). A simple test for variance effects in experimental designs. Psychological Bulletin, 89, 570-574.
+
+Conover, William J., Johnson, Mark E., and Myrle M. Johnson (1981). A comparative study of tests for homogeneity of variances, with applications to the outer continental shelf bidding data. Technometrics 23, 351-361. 
+\end{References}
+%
 \begin{SeeAlso}\relax
-\code{\LinkA{leveneTest}{leveneTest}} from \code{\{car\}}
+\code{\LinkA{fligner.test}{fligner.test}}
 \end{SeeAlso}
 %
 \begin{Examples}
@@ -1228,10 +1233,10 @@ mse(mod)
 \end{Examples}
 \newpage
 \inputencoding{utf8}
-\HeaderA{n}{Sample size (n)}{n}
+\HeaderA{n}{Sample size}{n}
 %
 \begin{Description}\relax
-Gives n without NA's
+Gives sample size (n) without NA's
 \end{Description}
 %
 \begin{Usage}
@@ -1251,7 +1256,9 @@ Vector (numeric or character)
 \begin{Examples}
 \begin{ExampleCode}
 x= rep(c(rnorm(30,20,5),NA),3)
-n(x)
+
+length(x)   ### 93
+n(x)        ### 90
 \end{ExampleCode}
 \end{Examples}
 \newpage
@@ -1569,32 +1576,32 @@ round((pN.a / p.adj)[1:20, ] , 4)
 \HeaderA{pack.list}{List of installed packages}{pack.list}
 %
 \begin{Description}\relax
-Adds the list of the packages currently installed in R to Rprofile.
+Creates a character vector of currently installed packages and prints it to either a text file or directly into Rprofile file.
 \end{Description}
 %
 \begin{Usage}
 \begin{verbatim}
-pack.list(rptofile=FALSE)
+pack.list(rprofile=FALSE)
 \end{verbatim}
 \end{Usage}
 %
 \begin{Arguments}
 \begin{ldescription}
 \item[\code{rprofile}] 
-logical. Should the list of installed packages be added to the Rprofile (\code{TRUE}) or saved in a text file (\code{FALSE})
+logical. Should vector of currently installed packages be added to the Rprofile (\code{TRUE}) or saved in a text file (\code{FALSE})
 
 \end{ldescription}
 \end{Arguments}
 %
 \begin{Details}\relax
-\bold{rprofile = \code{TRUE}}\\{}
+\bold{rprofile = \code{FALSE}}\\{}
 A \code{SAVE} dialog box opens.
 
 
 \bold{rprofile = \code{TRUE}}\\{}
 For Mac and Linux users, \code{.Rprofile} is either modified or created. On Windows systems, users are prompted for 
-\code{Rprofile.site} location. This File is usually in \code{"C:/Program Files/R/R-x.xx.x/etc"}. Once it's selected, it is 
-modified to include the list of packages currently installed in R.
+\code{Rprofile.site} location. This File is usually in \code{"C:/Program Files/R/R-x.xx.x/etc"}. Once it's selected, 
+the file is modified to include the list of packages currently installed in R.
 
 \end{Details}
 %
@@ -1602,10 +1609,14 @@ modified to include the list of packages currently installed in R.
 Benoit Bruneau
 \end{Author}
 %
+\begin{SeeAlso}\relax
+\code{\LinkA{Startup}{Startup}}
+\end{SeeAlso}
+%
 \begin{Examples}
 \begin{ExampleCode}
 pack.list()
-pack.list(5)
+
 \end{ExampleCode}
 \end{Examples}
 \newpage
@@ -1704,6 +1715,53 @@ performance(expr, samples = 1, gcFirst = TRUE)
 \begin{Examples}
 \begin{ExampleCode}
 # will soon be available
+\end{ExampleCode}
+\end{Examples}
+\newpage
+\inputencoding{utf8}
+\HeaderA{plot.lev}{Plot Diagnostics for an \code{lev} Object}{plot.lev}
+%
+\begin{Description}\relax
+Four boxplots (selectable by \code{which}) are available.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+plot(obj, which=1L:4L, ...)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] an object of class \code{'lev'} resulting from a calls to \code{\LinkA{lev}{lev}}.
+
+\item[\code{which}] if a subset of the plots is required, specify a subset of the numbers 1:4:
+\begin{itemize}
+
+\item \code{1} : residuals of mean (Levene)
+\item \code{2} : residuals of trimmed mean (Robust Levene)
+\item \code{3} : residuals of median (Brown-Forsythe)
+\item \code{3} : r scores (O'Brien)
+
+\end{itemize}
+
+
+\item[\code{...}] arguments to be passed to \code{\LinkA{boxplot}{boxplot}}.
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Examples}
+\begin{ExampleCode}
+z=data.frame( yy=c(rep("c",50),rep("d",50)),
+        x=c(rnorm(50),rnorm(50,10)),
+        s=rep(c(rep("a",25),rep("b",25)),2),
+        qq=rep(c(rep("w",10),rep("t",10)),5))
+
+mod=lm(x~yy*qq*s, data=z)
+res=lev(mod)
+
+plot(res)
 \end{ExampleCode}
 \end{Examples}
 \newpage
