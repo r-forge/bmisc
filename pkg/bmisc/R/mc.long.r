@@ -45,12 +45,12 @@ mc.long.default = function(y, group,data=NULL, p.adjust.method="holm", column=NU
     stop("'p.adjust.method' should be the indicated.  See ?P.adjust")
   }
  
-    zz=as.data.frame((pairwise.t.test(y,group, p.adjust.method="none",...))$p.value)
-#    zz[lower.tri(zz, TRUE)] <- p.adjust(p=zz[lower.tri(zz, TRUE)],method =p.adjust.method ,...)
+    p.t=as.data.frame((pairwise.t.test(y,group, p.adjust.method="none",...))$p.value)
+#    p.t[lower.tri(p.t, TRUE)] <- p.adjust(p=p.t[lower.tri(p.t, TRUE)],method =p.adjust.method ,...)
 #   }
 #   if(!is.null(n)){
-#    zz=as.data.frame((pairwise.t.test(y,group, p.adjust.method="none", ...))$p.value)
-#    zz[lower.tri(zz, TRUE)] <- p.adjust(p=zz[lower.tri(zz, TRUE)],method =p.adjust.method,n=n ,...)
+#    p.t=as.data.frame((pairwise.t.test(y,group, p.adjust.method="none", ...))$p.value)
+#    p.t[lower.tri(p.t, TRUE)] <- p.adjust(p=p.t[lower.tri(p.t, TRUE)],method =p.adjust.method,n=n ,...)
 #   }
 
   
@@ -69,9 +69,9 @@ mc.long.default = function(y, group,data=NULL, p.adjust.method="holm", column=NU
   nm=length(a)
 
   for (i in 1:nm){
-    res$p.value[i]= zz[rownames(zz)==res$b[i],names(zz)==res$a[i]]
-    res$estimate[i]=mean.diff[rownames(zz)==res$b[i],names(zz)==res$a[i]]
-    res$se[i]=se.diff[rownames(zz)==res$b[i],names(zz)==res$a[i]]
+    res$p.value[i]= p.t[rownames(p.t)==res$b[i],names(p.t)==res$a[i]]
+    res$estimate[i]=mean.diff[rownames(p.t)==res$b[i],names(p.t)==res$a[i]]
+    res$se[i]=se.diff[rownames(p.t)==res$b[i],names(p.t)==res$a[i]]
   }
 
 
@@ -147,22 +147,3 @@ mc.long.lm <- function(y, ...) {
 
 }
 
-
-
-#
-#
-#
-#tt=data.frame(pairwise.t.test(x,group)$p.value)
-#res=tt[lower.tri(tt, diag=T) == TRUE]
-#cp=vector()
-#for(i in 1:dim(tt)[2]){
-#    tp=rownames(tt[!is.na(tt[,i]),])
-#    cp=c(cp,tp)
-#    }
-#cp1=vector()
-#for(i in 1:dim(tt)[2]){
-#    tp=rep(colnames(tt)[i],n(tt[,i]) )
-#    cp1=c(cp1,tp)
-#    }
-#    
-#data.frame(cp,cp1,res)
