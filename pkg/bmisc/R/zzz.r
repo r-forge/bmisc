@@ -3,6 +3,7 @@
 
 pkg_info <- utils::sessionInfo( package=pkgname )$otherPkgs[[ pkgname ]]
 pkg_date <- strsplit( pkg_info$Packaged, " " )[[1]][1]
+v.name=as.data.frame(vignette(package = "bmisc")$results)$Item
 packageStartupMessage("
   #####################################################################
   ##-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-##
@@ -14,8 +15,8 @@ packageStartupMessage("
   ## This is an Alpha version.                                       ##
   # ----------------------------------------------------------------- #
   ##                                                                 ##
-  ## To view the user's guides 'bmisc.pdf' or 'relation_sel.pdf',    ##
-  ## type vignette(\"bmisc\") or vignette(\"relation_sel\").             ##
+  ## Type vignette(\"",v.name[1],"\") or vignette(\"",v.name[2],"\")",rep(" ",31-sum(nchar(v.name))),"##
+  ## to view the user's guides.                                      ##
   ## This package is still under construction.                       ##
   ##                                                                 ##
   ## Packaged on ",pkg_date,"                                         ##

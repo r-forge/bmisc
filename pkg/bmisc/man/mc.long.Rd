@@ -9,10 +9,10 @@ Calculate pairwise T tests between group levels with corrections for multiple te
 }
 \usage{
 mc.long(y, ...)
-\method{mc.long}{formula}( y, data=NULL, ...)
+\method{mc.long}{formula}( y, data=NULL, subset, ...)
 \method{mc.long}{lm}( y, ...)
-\method{mc.long}{default}(y, group,data=NULL, p.adjust.method="holm",
-        column=NULL, digits=NULL, silent=FALSE, ...)
+\method{mc.long}{default}(y, group, data=NULL, p.adjust.method="holm",
+        column=NULL, digits=NULL, subset, silent=FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -25,8 +25,9 @@ mc.long(y, ...)
   \item{p.adjust.method}{method for adjusting p values. Default is Holm's method. (see \code{\link{P.adjust}}) }
   \item{column}{new names for the factor(s); this is optional }
   \item{digits}{controls the number of digits for the presented results presented}
-  \item{silent }{a logical variable indicating whether to indicate the general \code{warning} \code{(FALSE)} or not \code{(TRUE)}.}
-  \item{\dots}{additional arguments to pass to \code{\link{P.adjust}}, \code{\link{pairwise.t.test}} and/or \code{\link{t.test}}. }
+  \item{subset}{logical expression indicating elements to keep: missing values are taken as false.}
+  \item{silent}{a logical variable indicating whether to indicate the general \code{warning} \code{(FALSE)} or not \code{(TRUE)}.}
+  \item{\dots}{additional arguments to pass to \code{\link{p.adjust}}, \code{\link{pairwise.t.test}} and/or \code{\link{t.test}}. }
 }
 \details{
 When making multiple t tests for all combinations, the \code{n} option of
