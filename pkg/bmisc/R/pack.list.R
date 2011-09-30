@@ -1,7 +1,7 @@
 #################################################################################
 ##-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-##
 ##                                                                             ##
-##      Creates a list (txt file) of all packages installed                    ##
+##      Creates a list of all packages installed                               ##
 ##           - Usefull for Rprofile.site (windows) or .Rprofile (Mac)          ##
 ##                                                                             ##
 ##                                                                             ##
@@ -28,8 +28,16 @@ pack.list <- function(rprofile=FALSE)
         
         
         if(rprofile){
-                if (.Platform$OS.type== "unix") {sdir=file.path("~/.Rprofile")}
-                if (.Platform$OS.type=="windows") {sdir=choose.files(default = "C:/Program Files/R", caption = "Select files 'Rprofile.site' in 'R/R-x.xx.x/etc' folder")}
+                sdir=vector()
+                if (.Platform$OS.type== "unix") {
+                        sdir=file.path("~/.Rprofile")
+                }
+                if (.Platform$OS.type=="windows") {
+                        sdir=choose.files(default = "C:/Program Files/R/Rprofile.site", 
+                                caption = "Select files 'Rprofile.site' in 'R/R-x.xx.x/etc' folder",
+                                filters = matrix(c("Rprofile (*.site)", "*.site"), ncol=2), 
+                                multi = FALSE)
+                }                
                 
                 sel=seq(1,n(libs),n.names)
                 pack=vector()
@@ -87,8 +95,8 @@ pack.list <- function(rprofile=FALSE)
                         writeLines(text, fileConn) 
                 }
                 close(fileConn)
-                
-               warning(paste("'",sdir,"' has been updated.",sep=''),call. = FALSE)
+                if(sdir=="")stop("Operation canceled by user.", call. = FALSE)
+                warning(paste("'",sdir,"' has been updated.",sep=''),call. = FALSE)
                 
         }else{    
                 sel=seq(n.names,n(libs),n.names)
@@ -103,17 +111,22 @@ pack.list <- function(rprofile=FALSE)
                 t2="## INSTALL NECESSARY PACKAGES"
                 inst="library(utils,quietly = T,warn.conflicts =F)\ninstalled <- necessary %in% installed.packages()[,'Package']\nif (length(necessary[!installed]) >=1)\n    install.packages(necessary[!installed])"
                 packs=paste(t1,"\n",pack,"\n\n",t2,"\n",inst,sep="")
+                fil=vector()
                 if (.Platform$OS.type== "unix") {
                         fil=tclvalue(tkgetSaveFile(title='Save File',initialdir ='~/',initialfile = "List of installed R packages.txt", filetypes = "{{txt files} {.txt}} {{All files} .*}"))
                 }
                 if (.Platform$OS.type=="windows") {
-                        fil=choose.files(default="C:/List of installed R packages.txt", caption = "Save File")
+                        fil=choose.files(default="C:/List of installed R packages.txt", 
+                                caption = "Save File",
+                                filters = matrix(c("Text (*.txt)", "*.txt"), ncol=2), 
+                                multi = FALSE)
                 }
                 
-                
+                if(fil=="")stop("Operation canceled by user.", call. = FALSE)
                 write(packs,file=fil)
                 warning(paste("'",fil, "' has been created.", sep=''),call. = FALSE)
         }
 }
+
 
 
