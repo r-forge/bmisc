@@ -23,7 +23,7 @@ A \code{SAVE} dialog box opens.
 
 \bold{rprofile = \code{TRUE}}\cr
 For Mac and Linux users, \code{.Rprofile} is either modified or created. On Windows systems, users are prompted for 
-\code{Rprofile.site} location. This File is usually in \code{"C:/Program Files/R/R-x.xx.x/etc"}. Once it's selected, 
+\code{Rprofile.site} location. This file is usually in \code{"C:/Program Files/R/R-x.xx.x/etc"}. Once it's selected, 
 the file is modified to include the list of packages currently installed in R.
 
 }
@@ -47,9 +47,10 @@ Benoit Bruneau
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{Startup}}
+\code{\link{Startup}} explains what happens when R starts.
 }
 \examples{
 pack.list()
+pack.list(rprofile=T)
 
 }
