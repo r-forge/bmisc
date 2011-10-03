@@ -1,5 +1,5 @@
 \name{bmisc}
-
+\alias{bmisc-package}
 \alias{bmisc}
 \docType{package}
 \title{Miscellaneous functions}
@@ -18,7 +18,7 @@ Type: \tab Package\cr
 Version: \tab 0.2-13\cr
 Date: \tab 20-09-2011\cr
 License: \tab LGPL >= 3.0\cr
-
+LazyLoad: \tab yes\cr
 }      }
 
 \author{

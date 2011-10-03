@@ -12,4 +12,5 @@ Repository: R-Forge
 Repository/R-Forge/Project: bmisc
 Repository/R-Forge/Revision: 110
 Packaged: 20-09-2011;
+LazyLoad: yes
 
