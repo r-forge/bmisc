@@ -8,4 +8,5 @@ Maintainer: Benoit Bruneau <benoit.bruneau1@gmail.com>
 Depends: bmisc
 Description: For now, this is a length based Yield Per Recruit (YPR) model.
 License: LGPL >= 3.0
+Packaged: 20-09-2011;
 LazyLoad: yes
