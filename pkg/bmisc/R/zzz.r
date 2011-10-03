@@ -15,8 +15,7 @@ packageStartupMessage("
   ## This is an Alpha version.                                       ##
   # ----------------------------------------------------------------- #
   ##                                                                 ##
-  ## Type vignette(\"",v.name[1],"\") or vignette(\"",v.name[2],"\")",rep(" ",31-sum(nchar(v.name))),"##
-  ## to view the user's guides.                                      ##
+  ## Type vignette(\"bmisc\") to view the user's guides.               ##
   ## This package is still under construction.                       ##
   ##                                                                 ##
   ## Packaged on ",pkg_date,"                                         ##
