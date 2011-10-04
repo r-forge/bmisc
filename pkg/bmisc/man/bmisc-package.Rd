@@ -1,5 +1,4 @@
 \name{bmisc}
-\alias{bmisc-package}
 \alias{bmisc}
 \docType{package}
 \title{Miscellaneous functions}
@@ -16,7 +15,7 @@ For pdf version of the help, write \code{vignette("bmisc")}.
 Package: \tab bmisc\cr
 Type: \tab Package\cr
 Version: \tab 0.2-13\cr
-Date: \tab 20-09-2011\cr
+Date: \tab 2011-10-03\cr
 License: \tab LGPL >= 3.0\cr
 LazyLoad: \tab yes\cr
 }      }

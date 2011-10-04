@@ -3,7 +3,6 @@
 \usepackage{makeidx}
 \usepackage[utf8,latin1]{inputenc}
 \makeindex{}
-\usepackage{Sweave}
 \begin{document}
 \chapter*{}
 \begin{center}
@@ -14,7 +13,7 @@
 \raggedright{}
 \item[Type]\AsIs{Package}
 \item[Title]\AsIs{Miscellaneous functions}
-\item[Version]\AsIs{0.2-12}
+\item[Version]\AsIs{0.2-13}
 \item[Author]\AsIs{Benoit Bruneau}
 \item[Maintainer]\AsIs{Benoit Bruneau }\email{benoit.bruneau1@gmail.com}\AsIs{}
 \item[URL]\AsIs{}\url{http://r-forge.r-project.org/projects/bmisc/}\AsIs{}
@@ -23,7 +22,8 @@
 \item[License]\AsIs{LGPL >= 3.0}
 \item[Repository]\AsIs{R-Forge}
 \item[Repository/R-Forge/Project]\AsIs{bmisc}
-\item[Repository/R-Forge/Revision]\AsIs{95}
+\item[Repository/R-Forge/Revision]\AsIs{114}
+\item[LazyLoad]\AsIs{yes}
 \end{description}
 \Rdcontents{\R{} topics documented:}
 \newpage
@@ -155,10 +155,10 @@ This package has different functions that I have accumulated with time. This is 
 \Tabular{ll}{
 Package: & bmisc\\{}
 Type: & Package\\{}
-Version: & 0.2-12\\{}
-Date: & 30-08-2011\\{}
+Version: & 0.2-13\\{}
+Date: & 2011-10-03\\{}
 License: & LGPL >= 3.0\\{}
-
+LazyLoad: & yes\\{}
 }      
 \end{Format}
 %
@@ -441,16 +441,18 @@ Finds the parameters of a logistic curve for given inflection points.
 %
 \begin{Usage}
 \begin{verbatim}
-find.beta(minv, maxv,prob=NULL, prop=0.1, beta=0.1, fast=TRUE)
+find.beta(beta=0.5, minv, maxv, prop=0.01)
 \end{verbatim}
 \end{Usage}
 %
 \begin{Arguments}
 \begin{ldescription}
+\item[\code{beta}] stating value of beta. Default is \code{0.5}.
 \item[\code{minv}] the minimum value on the abscissa is the first inflection point.
 \item[\code{maxv}] the maximum value on the abscissa is the second inflection point.
 \item[\code{prop}] the proportion of the instantaneous slope at 50\% probability that should be used to define the position of the inflection points of the curve. Default is \code{0.01}.
-\item[\code{beta}] stating value of beta. Default is \code{0.5}.
+
+
 \end{ldescription}
 \end{Arguments}
 %
@@ -459,10 +461,9 @@ A logistic curve is defined by:
 
 
 \Tabular{c}{
-\eqn{y=1/(1+e^(-(\alpha+\beta x))) < == > 1/(1+e^(-\beta(x-x50)))}{}
+\eqn{y=1/(1+e^{-(\alpha+\beta x)}) < == > 1/(1+e^{-\beta(x-x_{50})})}{}
 }
-Depending on the sign of \eqn{\beta}{}, the curve will be negative or positive.\\{}\\{}
-Use \code{vignette("bmisc")} for a better presentation of the equations.  
+Depending on the sign of \eqn{\beta}{}, the curve will be negative or positive.
 \end{Details}
 %
 \begin{Value}
@@ -1121,12 +1122,12 @@ Calculate pairwise T tests between group levels with corrections for multiple te
 \begin{verbatim}
 mc.long(y, ...)
 ## S3 method for class 'formula'
-mc.long( y, data=NULL, ...)
+mc.long( y, data=NULL, subset, ...)
 ## S3 method for class 'lm'
 mc.long( y, ...)
 ## Default S3 method:
-mc.long(y, group,data=NULL, p.adjust.method="holm",
-        column=NULL, digits=NULL, silent=FALSE, ...)
+mc.long(y, group, data=NULL, p.adjust.method="holm",
+        column=NULL, digits=NULL, subset, silent=FALSE, ...)
 \end{verbatim}
 \end{Usage}
 %
@@ -1141,8 +1142,9 @@ must be completely crossed.
 \item[\code{p.adjust.method}] method for adjusting p values. Default is Holm's method. (see \code{\LinkA{P.adjust}{P.adjust}}) 
 \item[\code{column}] new names for the factor(s); this is optional 
 \item[\code{digits}] controls the number of digits for the presented results presented
-\item[\code{silent }] a logical variable indicating whether to indicate the general \code{warning} \code{(FALSE)} or not \code{(TRUE)}.
-\item[\code{...}] additional arguments to pass to \code{\LinkA{P.adjust}{P.adjust}}, \code{\LinkA{pairwise.t.test}{pairwise.t.test}} and/or \code{\LinkA{t.test}{t.test}}. 
+\item[\code{subset}] logical expression indicating elements to keep: missing values are taken as false.
+\item[\code{silent}] a logical variable indicating whether to indicate the general \code{warning} \code{(FALSE)} or not \code{(TRUE)}.
+\item[\code{...}] additional arguments to pass to \code{\LinkA{p.adjust}{p.adjust}}, \code{\LinkA{pairwise.t.test}{pairwise.t.test}} and/or \code{\LinkA{t.test}{t.test}}. 
 \end{ldescription}
 \end{Arguments}
 %
@@ -1273,7 +1275,7 @@ D'Agostino Skewness, Anscombe-Glynn Kurtosis and D'Agostino-Pearson normality te
 \begin{Usage}
 \begin{verbatim}
 ## Default S3 method:
- norm.test(norm.test(x, title=NULL, sk=c("G1","b1","mc"), type))
+ plot(norm.test(x, title=NULL, type=c("G1","b1","mc")))
 \end{verbatim}
 \end{Usage}
 %
@@ -1302,14 +1304,14 @@ gives \code{"glm" "lm"}. The \code{type} of residuals can be defined. It general
 \code{c("working", "response", "deviance", "pearson", "partial")}.
 
 D'Agostino-Pearson's test is more appropriate for analysing a vector with
-duplicate values in it. The more duplicate values in a vector, the more
+duplicate values in it. The more there are duplicate values, the more
 Shapiro-Wilk will be far from correctly testing the \eqn{H0}{} hypothesis.
 
-Given samples from a population, the equation for the sample skewness \eqn{g1}{}
-is a biased estimator of the population skewness. The use of \eqn{G1}{} or \eqn{b1}{} is advisable.
+Given samples from a population, the equation for the sample skewness \eqn{g_1}{}
+is a biased estimator of the population skewness. The use of \eqn{G_1}{} or \eqn{b_1}{} is advisable.
 For large samples, the various skewness estimates yield similar results. For small
-normal distributed samples, \eqn{b1}{} is less biased than \eqn{G1}{}.
-However, for small non-normal distributed samples, \eqn{G1}{} is less biased than \eqn{b1}{}.
+normal distributed samples, \eqn{b_1}{} is less biased than \eqn{G_1}{}.
+However, for small non-normal distributed samples, \eqn{G_1}{} is less biased than \eqn{b_1}{}.
 These two skewness estimate can be sensitive to outliers in the data (contaminated data).
 Therefore, the medcouple \code{\LinkA{mc}{mc}} is also an option in \code{type}. It has a good
 performance on uncontaminated data and is robust on contaminated data.
@@ -1321,10 +1323,9 @@ For more information on medcouple, please read references in \code{\LinkA{mc}{mc
 
 
 \Tabular{c}{
-\eqn{g1=m3 / m2^(3/2)}{}
+\eqn{g_1=\frac{m_3}{m_2^{3/2}}}{}
 }
-
-where \eqn{m3}{} is the sample third central moment, and \eqn{m2}{} is the sample variance.\\{}
+where \eqn{m_3}{} is the sample third central moment, and \eqn{m_2}{} is the sample variance.\\{}
 
 \end{itemize}
 
@@ -1335,13 +1336,14 @@ where \eqn{m3}{} is the sample third central moment, and \eqn{m2}{} is the sampl
 
 
 \Tabular{c}{
-\eqn{G1=g1 * [k3/(k2^(3/2))] = g1 * [sqrt{n(n-1)} / (n-2)]}{}
+\eqn{G_1=g_1 \frac{k_3}{k_2^{3/2}} = g_1 \frac{\sqrt{n(n-1)}}{n-2}}{}
 }
-
-where \eqn{k3}{} is the unique symmetric unbiased estimator of the third
-cumulant and \eqn{k2}{} is the symmetric unbiased estimator of the second cumulant.\\{}
+where \eqn{k_3}{} is the unique symmetric unbiased estimator of the third 
+cumulant and \eqn{k_2}{} is the symmetric unbiased estimator of the second cumulant.\\{}
 
 \end{itemize}
+   
+
 
 
 \begin{itemize}
@@ -1349,10 +1351,11 @@ cumulant and \eqn{k2}{} is the symmetric unbiased estimator of the second cumula
 \item Definition used in MINITAB and BMDP:
 
 \Tabular{c}{
-\eqn{b1=m3 / s^3 = g1 ((n-1)/n)^(3/2)}{}
+\eqn{b_1=\frac{m_3}{s^3} = g_1 \big{(}\frac{n-1}{n}\big{)}^{3/2}}{}
 }
 
 \end{itemize}
+
 
 
 
@@ -1371,10 +1374,6 @@ An S4 object of class 'norm' containig the following components:
 \end{ldescription}
 \end{Value}
 %
-\begin{Author}\relax
-Benoit Bruneau
-\end{Author}
-%
 \begin{References}\relax
 D. N. Joanes and C. A. Gill (1998),
 Comparing measures of sample skewness and kurtosis.
@@ -1391,10 +1390,6 @@ A Robust Measure of Skewness;
 \emph{JCGS} \bold{13} (4), 996--1017.
 
 \end{References}
-%
-\begin{SeeAlso}\relax
-\code{\LinkA{residuals}{residuals}}, \code{\LinkA{residuals.lm}{residuals.lm}}, \code{\LinkA{residuals.glm}{residuals.glm}}, and \code{\LinkA{residuals.gam}{residuals.gam}}
-\end{SeeAlso}
 %
 \begin{Examples}
 \begin{ExampleCode}
@@ -1600,7 +1595,7 @@ A \code{SAVE} dialog box opens.
 
 \bold{rprofile = \code{TRUE}}\\{}
 For Mac and Linux users, \code{.Rprofile} is either modified or created. On Windows systems, users are prompted for 
-\code{Rprofile.site} location. This File is usually in \code{"C:/Program Files/R/R-x.xx.x/etc"}. Once it's selected, 
+\code{Rprofile.site} location. This file is usually in \code{"C:/Program Files/R/R-x.xx.x/etc"}. Once it's selected, 
 the file is modified to include the list of packages currently installed in R.
 
 \end{Details}
@@ -1610,12 +1605,13 @@ Benoit Bruneau
 \end{Author}
 %
 \begin{SeeAlso}\relax
-\code{\LinkA{Startup}{Startup}}
+\code{\LinkA{Startup}{Startup}} explains what happens when R starts.
 \end{SeeAlso}
 %
 \begin{Examples}
 \begin{ExampleCode}
 pack.list()
+pack.list(rprofile=T)
 
 \end{ExampleCode}
 \end{Examples}
@@ -1771,7 +1767,7 @@ plot(res)
 \begin{Usage}
 \begin{verbatim}
 plot.logit(object, se.pred=TRUE, leg=TRUE, ref=TRUE, range.x=c("data","full"), 
-         warn.val=TRUE, ylab="Probabilit<c3><a9>",xlab="Longueur <c3><a0> la fourche (mm)",
+         warn.val=TRUE, ylab="ProbabilitC)",xlab="Longueur C  la fourche (mm)",
          main=NULL, enc.utf8=FALSE)
 \end{verbatim}
 \end{Usage}
@@ -1809,64 +1805,6 @@ plotting characters with accents.
 \begin{Author}\relax
 Benoit Bruneau
 \end{Author}
-\newpage
-\inputencoding{utf8}
-\HeaderA{plot.ypr}{Standard Yield per Recruit plot.}{plot.ypr}
-%
-\begin{Description}\relax
-Yield per Recruit and Spawning Stock Biomass per Recruit are plotted with standard reference points. 
-\end{Description}
-%
-\begin{Usage}
-\begin{verbatim}
-## S4 method for signature 'ypr'
-plot(object, main, ylab.ypr, ylab.ssb, xlab, 
-                     col.ypr, col.ssb, ref, legend)
-\end{verbatim}
-\end{Usage}
-%
-\begin{Arguments}
-\begin{ldescription}
-\item[\code{object}] an object of class \code{"ypr"} resulting from a
-call to \code{\LinkA{ypr.l}{ypr.l}}
-
-\item[\code{main}] main title for the graph
-
-\item[\code{ylab.ypr}] a label for the YPR \code{y} axis
-
-\item[\code{ylab.ssb}] a label for the SSB/R \code{y} axis
-
-\item[\code{xlab}] a label for the YPR \code{x} axis.
-
-\item[\code{col.ypr}] the color of the the color of the YPR line.
-
-\item[\code{col.ssb}] the color of the the color of the SSB/R line.
-
-\item[\code{ref}] logical; if \code{TRUE}, standard reference points are added to the plot.
-
-\item[\code{legend}] logical; if \code{TRUE}, a legend is added in the \code{'topright'} corner of the plot.
-
-\end{ldescription}
-\end{Arguments}
-%
-\begin{Details}\relax
-More to come.
-\end{Details}
-%
-\begin{SeeAlso}\relax
-\code{\LinkA{ypr.l}{ypr.l}}
-\end{SeeAlso}
-%
-\begin{Examples}
-\begin{ExampleCode}
-ypr.mod = ypr.l(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), 
-                l.start=72.53,last.age=25,LW=c(exp( -18.47894),3.043), F.max=2,
-                F.incr.YPR=0.01, M=0.2, mat=list('full',900), f.MSP=0.4, riv.calc=F)  
-
-plot(ypr.mod)
-
-\end{ExampleCode}
-\end{Examples}
 \newpage
 \inputencoding{utf8}
 \HeaderA{QQplot}{QQplot}{QQplot}
@@ -2276,76 +2214,6 @@ se(x)
 \end{Examples}
 \newpage
 \inputencoding{utf8}
-\HeaderA{selectivity}{Selectivity functions}{selectivity}
-\aliasA{const.sel}{selectivity}{const.sel}
-\aliasA{full.sel}{selectivity}{full.sel}
-\aliasA{logit.sel}{selectivity}{logit.sel}
-\aliasA{mod.logit.sel}{selectivity}{mod.logit.sel}
-\aliasA{plat.full.sel}{selectivity}{plat.full.sel}
-\aliasA{plat.logit.sel}{selectivity}{plat.logit.sel}
-\aliasA{plat.ramp.sel}{selectivity}{plat.ramp.sel}
-\aliasA{ramp.sel}{selectivity}{ramp.sel}
-%
-\begin{Description}\relax
-These selectivity functions are called by \code{\LinkA{ypr}{ypr}()}. They estimate probabilities [0,1] for a given functional shape and a given number of inflection points .
-\end{Description}
-%
-\begin{Usage}
-\begin{verbatim}
-const.sel(x)
-full.sel(x, infl1, pos=TRUE)
-plat.full.sel(x, infl1, infl2, pos=TRUE)
-ramp.sel(x, infl1, infl2, pos=TRUE)
-plat.ramp.sel(x, infl1, infl2, infl3, infl4, pos=TRUE)
-logit.sel(x, infl1, infl2, pos=TRUE, ...)
-plat.logit.sel(x, infl1, infl2, pos=TRUE, ...)
-mod.logit.sel(x, alpha, beta)
-\end{verbatim}
-\end{Usage}
-%
-\begin{Arguments}
-\begin{ldescription}
-\item[\code{x}] a numeric vector for which probabilities are to be estimated.
-
-\item[\code{infl1 to infl4}] numeric value of the inflection point(s).
-
-\item[\code{pos}] logical. Indicates if the trend at the beginning is positive  (\code{TRUE}) or negative (\code{FALSE})
-
-\item[\code{...}] arguments to be passed to \code{\LinkA{find.beta}{find.beta}()}
-
-\end{ldescription}
-\end{Arguments}
-%
-\begin{Details}\relax
-More to come.
-\end{Details}
-%
-\begin{SeeAlso}\relax
-\code{\LinkA{ypr}{ypr}}, \code{\LinkA{find.beta}{find.beta}}
-\end{SeeAlso}
-%
-\begin{Examples}
-\begin{ExampleCode}
-
-library(bmisc)
-
-x=0:1000
-
-plot(full.sel(infl1=600,x=0:1000,lv=0,uv=1), ylim=c(0,1), type='l', lwd=3)
-
-plot(plat.full.sel(infl1=300, infl2=800,x=x,lv=c(0.4), uv=0.9, neg=F) ~ x, ylim=c(0,1), type='l', lwd=3)
-
-plot(ramp.sel(200,600,x=0:1000, lv=0.1,uv=1, neg=T), ylim=c(0,1), type='l', lwd=3)
-
-plot(plat.ramp.sel(infl1=100,infl2=300,infl3=600,infl4=800,x=0:1000, lv=c(0.3,0.1), uv=c(0.7,0.5), neg=F), ylim=c(0,1), type='l', lwd=3)
-
-plot(logit.sel(infl1=300,infl2=500,x=0:1000, lv=0.5, uv=1, neg=T), ylim=c(0,1), type='l', lwd=3)
-
-plot(plat.logit.sel(infl1=200,infl2=400,infl3=600,infl4=800,x=0:1000, lv=c(0.2,0.8)), ylim=c(0,1), type='l', lwd=3)
-\end{ExampleCode}
-\end{Examples}
-\newpage
-\inputencoding{utf8}
 \HeaderA{show.North}{North arrow for a map}{show.North}
 %
 \begin{Description}\relax
@@ -2444,38 +2312,6 @@ sort.vdf(z)                 ### Gives an error message
 sort.vdf(z,by= ~ +x)        ### Sort (z) by a column (+x)
 sort.vdf(z,by= ~ +x +y)     ### Sort (z) by two column (+x and then +y)
 sort.vdf(z,by= ~ +x -y)     ### Sort (z) by two column (+x and then -y)
-\end{ExampleCode}
-\end{Examples}
-\newpage
-\inputencoding{utf8}
-\HeaderA{summary.ypr}{Summarizing the results of YPR models.}{summary.ypr}
-%
-\begin{Description}\relax
-Summary for an object of class \code{"ypr"}.
-\end{Description}
-%
-\begin{Usage}
-\begin{verbatim}
-## S4 method for signature 'ypr'
-summary(object)
-\end{verbatim}
-\end{Usage}
-%
-\begin{Arguments}
-\begin{ldescription}
-\item[\code{object}] an object of class \code{"ypr"} resulting from a
-call to \code{\LinkA{ypr.l}{ypr.l}}.
-
-\end{ldescription}
-\end{Arguments}
-%
-\begin{Examples}
-\begin{ExampleCode}
-ypr.mod = ypr.l(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), 
-                l.start=72.53,last.age=25,LW=c(exp( -18.47894),3.043), F.max=2,
-                F.incr.YPR=0.01, M=0.2, mat=list('full',900), f.MSP=0.4, riv.calc=F)  
-
-summary(ypr.mod)
 \end{ExampleCode}
 \end{Examples}
 \newpage
@@ -2666,212 +2502,6 @@ dated <-as.Date(c("2006-05-18","2006-05-07","2006-04-23",
                   
 week.num(dated, "monday")
 week.num(dated)
-\end{ExampleCode}
-\end{Examples}
-\newpage
-\inputencoding{utf8}
-\HeaderA{ypr}{Length Based Yield Per Recruit }{ypr}
-%
-\begin{Description}\relax
-Length based Yield Per Recruit model is define by fishery selectivity and life history parameters related to length. 
-
-
-\end{Description}
-%
-\begin{Usage}
-\begin{verbatim}
- ypr(LW, vonB, l.start, last.age, age.step=1, Fsel.type, 
-       F.max=2,F.incr.YPR=0.0001, Mat.l,  M=0.2, f.MSP=0.4, 
-       F.f=0, M.f=0.5, riv.calc=FALSE)
-
-\end{verbatim}
-\end{Usage}
-%
-\begin{Arguments}
-\begin{ldescription}
-\item[\code{LW}] one of:
-\begin{itemize}
-
-\item a vector containing \code{c(\eqn{\alpha}{},\eqn{\beta}{})} from length-weight curve. See `Details'. 
-\item an object of class \code{"\LinkA{nls}{nls}"} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated. See `Details'.        
-
-\end{itemize}
-
-
-\item[\code{vonB}] one of:
-\begin{itemize}
-
-\item a vector containing \code{c(Linf,K)} from von Bertalanffy grotwh curve.
-\item an object of class \code{"\LinkA{glm}{glm}"} in which eqnLinf and eqnK were estimated.      
-
-\end{itemize}
-
-
-\item[\code{l.start}] length at the starting age
-
-\item[\code{last.age}] last age to be considered in the model
-
-\item[\code{age.step}] steps used to generate ages. Default is \code{1}.
-
-
-\item[\code{Fsel.type}] fishing selectivity can be defined as one of:
-\begin{itemize}
-
-\item a list containing the type of fishery selectivity and the values needed for the function related to the type.
-\item an object of class \code{"\LinkA{glm}{glm}"} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated by a logistic regression.        
-
-\end{itemize}
-
-
-\item[\code{fish.lim}] the minimum legal catch length.
-
-\item[\code{prop.surv}] a function that defines the proportion of fish (< \code{fish.lim}) that will survive after being released back into the water (discarded by-catch).
-
-\item[\code{F.max}] maximum value of instantaneous rate of fishing mortality (\code{F}). Default is 2.
-
-\item[\code{F.incr.YPR}] increment for generating the \code{F} values to be used for YPR calculation. Default is 0.0001.
-
-\item[\code{Mat}] Maturity can be defined by one of:
-\begin{itemize}
-
-\item a list containing the type of maturity at length definition and the values needed for the function related to the type.
-\item an object of class \code{"\LinkA{glm}{glm}"} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated by a logistic regression.       
-
-\end{itemize}
-
-
-\item[\code{Msel.type}] natural mortality selectivity can be defined as one of:
-\begin{itemize}
-
-\item a list containing the type of natural mortality selectivity and the values needed for the function related to the type. 
-\item an object of class \code{"\LinkA{glm}{glm}"} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated by a logistic regression.       
-
-\end{itemize}
-
-
-\item[\code{M}] instantaneous rate of natural mortality (\code{M}). Default is 0.2.
-
-\item[\code{f.MSP}] reference point defined as the fraction of maximum spawning potential. Default is 0.4.
-
-
-
-
-
-
-
-\end{ldescription}
-\end{Arguments}
-%
-\begin{Details}\relax
-\bold{LENGTH-WEIGHT RELATIONSHIP:}\\{}
-Length-Weight relationship can be provided either by indicating \code{c(\eqn{\alpha}{},\eqn{\beta}{})} values in a vector or by 
-directly using an object of class \code{"\LinkA{nls}{nls}"} or \code{"\LinkA{lm}{lm}"}. If \eqn{\alpha}{} and \eqn{\beta}{} are estimated 
-by \code{\LinkA{lm}{lm}}, \code{\LinkA{log}{log}(x, base=exp(1))} transformation should be applied to the data prior to fitting the linear model. 
-If \eqn{\alpha}{} and \eqn{\beta}{} are estimated by \code{\LinkA{nls}{nls}}, variables should be named \bold{alpha} and \bold{beta} 
-using the following equation:
-
-\Tabular{c}{
-\eqn{W=\alpha L^\beta}{}
-}
-where \eqn{W}{} is weight, \eqn{L}{} is length, \eqn{\alpha}{} is the elevation of the curve, and \eqn{\beta}{} 
-is the steepness of the curve. Both \eqn{\alpha}{} and \eqn{\beta}{} are estimated coefficients.\\{}\\{}
-
-\bold{VON BARTANLANFFY GROWTH EQUATION:}\\{}
-Von Bartalanffy growth equation parameters can be provided either by indicating \code{c(Linf,K)} values in a vector or by 
-directly using an object of class \code{"\LinkA{nls}{nls}"}. If an object resulting from \code{\LinkA{nls}{nls}} is used, variables 
-should be named \bold{Linf} and \bold{K}. As for \bold{\eqn{t0}{}}, any name may be used since only \eqn{L\infty }{} and \eqn{K}{} are 
-used in this length-based YPR model because age is considered as relative. The equation used in the \code{\LinkA{nls}{nls}} for estimating \eqn{L\infty }{} 
-and \eqn{K}{} should be the following one:
-
-\eqn{ Lt=L\infty ( 1-e^(-K (t-t0))) }{}
-
-where \eqn{Lt}{} is length-at-age \eqn{t}{}, \eqn{L\infty}{} is the asymptotic average maximum length, 
-\eqn{K}{} is a growth rate coefficient determinant of how quick the maximum is attained, and \eqn{t0}{} 
-is the hypothetical age at length zero.
-
-As stated above, since this length-based YPR model uses relative age, \eqn{t-t0}{} becomes a relative age (\eqn{a}{}). 
-The Von Bartalanffy growth equation used in this length-based YPR model is defined as:
-
-\eqn{ La=L\infty ( 1-e^(-Ka))+ Ls e^(-Ka) }{}
-
-where \eqn{La}{} is length at a relative age \eqn{a}{} and \eqn{Ls}{} is length at relative age zero.\\{}\\{}
-
-\bold{SELECTIVITY CURVES:}\\{}
-The \bold{fishery selectivity}, \bold{natural mortality selectivity}, and \bold{maturity at length} components of the 
-model can be defined as one of \code{c("full", "plat.full", "ramp", "plat.ramp", "logit", "plat.logit")} equations. The 
-proper way to specify which function to use is by the construct of a \code{list} where the first element is the 
-name of one of the six types of function. See example, read \code{\LinkA{selectivity}{selectivity}}, or read \code{vignette("selectivity")} 
-for more details.  
-
-Alternatively, an object of class \code{"glm"} can directly be used for the \bold{fishery selectivity} and \bold{maturity at length} components. 
-The Generalized Linear Model should have  the option \code{family} set to either \code{binomial} or \code{quasibinomial} keeping link function to the 
-default (\eqn{i.e.}{} \code{"logit"}).
-Estimated coefficients are use as follow: 
-
-\Tabular{c}{
-\eqn{Mat=1/(1+e^-(\alpha+\beta L))}{}\\{}\\{}
-}
-
-\bold{REFERENCE POINTS:}\\{}
-Reference points used for result output are defined as follow:
-\begin{itemize}
-
-\item \bold{F.zero:}  F level when there is no fishing (F=0).
-\item \bold{F.01:}    F level where the slope of yield curve is 10\% of the slope at \code{F.zero}. 
-\item \bold{F.xx:}    F level where the MSP is at the level defined by \code{f.MSP} option. Default is 40\% (0.4).
-\item \bold{F.max:}   F level where yield is maximum.
-
-\end{itemize}
-
-
-
-Use \code{vignette("bmisc")} for a better presentation of the equations.  
-
-More to come.
-\end{Details}
-%
-\begin{Value}
-\code{ypr} returns an object of \code{class(S4)} \code{"ypr"}. The functions \code{summary} and \code{plot} are used to respectively
-obtain a summary and a standard plot of the results.  
-
-An object of class \code{"ypr"} has the the following slots:
-
-
-\begin{ldescription}
-\item[\code{parms}] the list of parameters used in the model.
-\item[\code{base}] a \code{data.frame} containing the starting values:
-\begin{itemize}
-
-\item relative age classes
-\item length at age
-\item weight at age
-
-\end{itemize}
-
-
-\item[\code{refs}] a \code{data.frame} containing values predicted by the model for the four reference points. See details. 
-\item[\code{YPR}] a \code{data.frame} containing the results for all partial Fs.
-
-
-\end{ldescription}
-Note that to have access to each slot of an \code{"ypr"} object, one must use \code{"@"} instead of \code{"\$"}.
-\end{Value}
-%
-\begin{Author}\relax
-Benoit Bruneau
-\end{Author}
-%
-\begin{SeeAlso}\relax
-\code{\LinkA{plot.ypr}{plot.ypr}} and \code{\LinkA{plot.parms.ypr}{plot.parms.ypr}}  
-\end{SeeAlso}
-%
-\begin{Examples}
-\begin{ExampleCode}
-
-ypr(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), 
-      l.start=72.53,last.age=25,LW=c(exp( -18.47894),3.043), F.max=2,
-      F.incr.YPR=0.01, M=0.2, mat=list('full',900), f.MSP=0.4, riv.calc=F) 
-
 \end{ExampleCode}
 \end{Examples}
 \printindex{}

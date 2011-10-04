@@ -10,7 +10,7 @@ Depends: car, lattice, zoo, robustbase, methods, tcltk
 License: LGPL >= 3.0
 Repository: R-Forge
 Repository/R-Forge/Project: bmisc
-Repository/R-Forge/Revision: 110
-Packaged: 20-09-2011;
+Repository/R-Forge/Revision: 115
+Packaged: 2011-10-03;
 LazyLoad: yes
 
