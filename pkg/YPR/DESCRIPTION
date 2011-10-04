@@ -6,7 +6,7 @@ Date: 2011-10-03
 Author: Benoit Bruneau
 Maintainer: Benoit Bruneau <benoit.bruneau1@gmail.com>
 Depends: bmisc
-Description: For now, this is a length based Yield Per Recruit (YPR) model.
+Description: This is a length-based Yield Per Recruit (YPR) model. It will soon include a weight-based YPR component.
 License: LGPL >= 3.0
 Packaged: 20-09-2011;
 LazyLoad: yes
