@@ -11,9 +11,8 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 }
 \usage{
  ypr(LW, vonB, l.start, last.age, age.step=1, Fsel.type, 
-       F.max=2,F.incr.YPR=0.0001, Mat.l,  M=0.2, f.MSP=0.4, 
-       F.f=0, M.f=0.5, riv.calc=FALSE)
-
+       F.max=2,F.incr.YPR=0.0001, Mat,  M=0.2, f.MSP=0.4)%, 
+       %F.f=0, M.f=0.5, riv.calc=FALSE)
 }
 
 \arguments{
@@ -86,6 +85,7 @@ using the following equation:
 where \eqn{W} is weight, \eqn{L} is length, \eqn{\alpha} is the elevation of the curve, and \eqn{\beta} 
 is the steepness of the curve. Both \eqn{\alpha} and \eqn{\beta} are estimated coefficients.\cr\cr
 
+
 \bold{VON BARTANLANFFY GROWTH EQUATION:}\cr
 Von Bartalanffy growth equation parameters can be provided either by indicating \code{c(Linf,K)} values in a vector or by 
 directly using an object of class \code{"\link{nls}"}. If an object resulting from \code{\link{nls}} is used, variables 
@@ -93,18 +93,20 @@ should be named \bold{Linf} and \bold{K}. As for \bold{\eqn{t0}}, any name may b
 used in this length-based YPR model because age is considered as relative. The equation used in the \code{\link{nls}} for estimating \eqn{L\infty } 
 and \eqn{K} should be the following one:
 
-\eqn{ Lt=L\infty ( 1-e^(-K (t-t0))) }
-
+\tabular{c}{
+\eqn{ L_t=L_{\infty }\bigg{(} 1-e^{-K (t-t_0)}\bigg{)} }
+}
 where \eqn{Lt} is length-at-age \eqn{t}, \eqn{L\infty} is the asymptotic average maximum length, 
 \eqn{K} is a growth rate coefficient determinant of how quick the maximum is attained, and \eqn{t0} 
 is the hypothetical age at length zero.
 
 As stated above, since this length-based YPR model uses relative age, \eqn{t-t0} becomes a relative age (\eqn{a}). 
 The Von Bartalanffy growth equation used in this length-based YPR model is defined as:
+\tabular{c}{
+\eqn{ L_a=L_{\infty }\bigg{(} 1-e^{-Ka}\bigg{)}+ L_s e^{-Ka} }
+}
+where \eqn{L_a} is length at a relative age \eqn{a} and \eqn{L_s} is length at relative age zero.\cr\cr
 
-\eqn{ La=L\infty ( 1-e^(-Ka))+ Ls e^(-Ka) }
-
-where \eqn{La} is length at a relative age \eqn{a} and \eqn{Ls} is length at relative age zero.\cr\cr
 
 \bold{SELECTIVITY CURVES:}\cr
 The \bold{fishery selectivity}, \bold{natural mortality selectivity}, and \bold{maturity at length} components of the 
@@ -118,7 +120,7 @@ The Generalized Linear Model should have  the option \code{family} set to either
 default (\eqn{i.e.} \code{"logit"}).
 Estimated coefficients are use as follow: 
 \tabular{c}{
-\eqn{Mat=1/(1+e^-(\alpha+\beta L))}\cr\cr
+\eqn{y=\frac{1}{1+e^{-(\alpha+\beta x)}}}\cr\cr 
 }
 
 \bold{REFERENCE POINTS:}\cr
@@ -130,12 +132,10 @@ Reference points used for result output are defined as follow:
     \item \bold{F.max:}   F level where yield is maximum.
 }
 
+Use \code{vignette("YPR")} for a better presentation of the equations.      
 
-Use \code{vignette("bmisc")} for a better presentation of the equations.  
-  
-More to come.
 }
-\value{
+\value{  
   \code{ypr} returns an object of \code{class(S4)} \code{"ypr"}. The functions \code{summary}, \code{plot.sel.ypr}, and \code{plot} are used to respectively
   obtain a summary, plots for selectivity curves used, and a standard YPR plot of the results.  
   
@@ -171,32 +171,31 @@ Diane Archambault
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{plot.ypr}} and \code{\link{plot.parms.ypr}}  
+\code{\link{plot.logit}}, \code{\link{plot.ypr}} and \code{\link{plot.parms.ypr}}  
 }
 \examples{
 
 surv=function(x){
-	p=x
-	p[x<910]=0.8
-	p[x>=910]=0.2
-	p
+    p=x
+    p[x<910]=0.8
+    p[x>=910]=0.2
+    p
 }
 
 ypr(vonB=c(1564.5508, 0.1206),  
-		LW=c(0.000000009434 , 3.042974620048),
-		l.start=241.86,
-		last.age=14,
-		age.step=1,
-    prop.surv=surv,
-		fish.lim=1000,
-		Fsel.type=list(type="ramp",infl1=650,infl2=900, lv=c(0,0.2)),
-		F.max=2, 
-		F.incr.YPR=0.0001,
-		Msel.type=list(type="ramp", infl1=400, infl2=600, lv=0.5, pos=F), 
-		M=0.2, 
-		Mat=list(type="ramp",infl1=700, infl2=900),
-		f.MSP=0.4) 
-
+        LW=c(0.000000009434 , 3.042974620048),
+        l.start=241.86,
+        last.age=14,
+        age.step=1,
+        prop.surv=surv,
+        fish.lim=1000,
+        Fsel.type=list(type="ramp",infl1=650,infl2=900, lv=c(0,0.2)),
+        F.max=2, 
+        F.incr.YPR=0.0001,
+        Msel.type=list(type="ramp", infl1=400, infl2=600, lv=0.5, pos=F), 
+        M=0.2, 
+        Mat=list(type="ramp",infl1=700, infl2=900),
+        f.MSP=0.4) 
 
 }
 
