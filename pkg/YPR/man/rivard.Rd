@@ -30,7 +30,8 @@ More to come.  Will be adding interpolation for spawning season.
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Benoit Bruneau
+François Grégoire
 }
 \note{
 %%  ~~further notes~~

@@ -161,6 +161,8 @@ More to come.
 }
 \author{
 Benoit Bruneau
+François Grégoire
+Diane Archambault
 }
 \note{
 %%  ~~further notes~~

@@ -29,7 +29,7 @@ Summary for an object of class \code{"ypr"}.
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Benoit Bruneau
 }
 \note{
 %%  ~~further notes~~

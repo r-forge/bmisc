@@ -55,7 +55,7 @@ Reference points used for result output are defined as follow:
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Benoit Bruneau
 }
 \note{
 %%  ~~further notes~~
