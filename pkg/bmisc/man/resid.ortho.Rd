@@ -2,13 +2,14 @@
 \alias{resid.ortho}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Orthogonal residuals
+Orthogonal/perpendicular residuals
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Calculation of orthogonal/perpendicular residuals after using lmodel2.
 }
 \usage{
-xxx( data ,  ,  ,  )
+\method{resid.ortho}{default}(slope, intercept, data)
+\method{resid.ortho}{lmodel2}(object,type="RMA")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
