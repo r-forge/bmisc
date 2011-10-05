@@ -19,8 +19,8 @@ LazyLoad: \tab yes\cr
 
 }
 \author{
-Benoit Bruneau
-François Grégoire
+Benoit Bruneau,\cr
+François Grégoire and\cr
 Diane Archambault
 
 Maintainer: Benoit Bruneau <benoit.bruneau1@gmail.com>
