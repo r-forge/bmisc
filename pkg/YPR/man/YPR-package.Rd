@@ -20,7 +20,7 @@ LazyLoad: \tab yes\cr
 }
 \author{
 Benoit Bruneau
-FranÃ§ois GrÃ©goire
+François Grégoire
 Diane Archambault
 
 Maintainer: Benoit Bruneau <benoit.bruneau1@gmail.com>

@@ -31,7 +31,7 @@ More to come.  Will be adding interpolation for spawning season.
 }
 \author{
 Benoit Bruneau
-FranÃ§ois GrÃ©goire
+François Grégoire
 }
 \note{
 %%  ~~further notes~~

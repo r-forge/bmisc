@@ -161,7 +161,7 @@ Use \code{vignette("YPR")} for a better presentation of the equations.
 }
 \author{
 Benoit Bruneau
-FranÃ§ois GrÃ©goire
+François Grégoire
 Diane Archambault
 }
 \note{
