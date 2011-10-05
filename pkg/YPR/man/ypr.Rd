@@ -160,8 +160,8 @@ Use \code{vignette("YPR")} for a better presentation of the equations.
 %% ~put references to the literature/web site here ~
 }
 \author{
-Benoit Bruneau
-François Grégoire
+Benoit Bruneau,\cr
+François Grégoire and\cr
 Diane Archambault
 }
 \note{
