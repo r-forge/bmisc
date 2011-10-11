@@ -10,14 +10,14 @@ packageStartupMessage("
   ## YPR ",pkg_info$Version,rep(" ",60-nchar(pkg_info$Version)),"##
   ##                                                                 ##
   # ----------------------------------------------------------------- #
-  ## YPR comes with ABSOLUTELY NO WARRANTY;                        ##
+  ## YPR comes with ABSOLUTELY NO WARRANTY;                          ##
   ## It has different functions for Yield Per Recruit evaluation. It ##
   ## is length based only for now but will also include weight-based ##
   ## model estimation in very soon.                                  ##
   ## This is an Alpha version.                                       ##
   # ----------------------------------------------------------------- #
   ##                                                                 ##
-  ## Type vignette(\"YPR\") to view the user's guides.               ##
+  ## Type vignette(\"YPR\") to view the user's guides.                 ##
   ## This package is still under construction.                       ##
   ##                                                                 ##
   ## Packaged on ",pkg_date,"                                         ##

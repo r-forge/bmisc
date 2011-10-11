@@ -19,8 +19,10 @@
 \usepackage{verbatim}
 \usepackage{amssymb, amsmath}
 \usepackage{wrapfig}
-\usepackage{hyperref}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=red,bookmarks=true]{hyperref} % Hyperlink capabilities, should load last
 \usepackage[all]{hypcap}
+\usepackage{atbegshi}
+\usepackage{tikz}
 
 
 \begin{document}
