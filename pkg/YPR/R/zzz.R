@@ -17,7 +17,8 @@ packageStartupMessage("
   ## This is an Alpha version.                                       ##
   # ----------------------------------------------------------------- #
   ##                                                                 ##
-  ## Type vignette(\"YPR\") to view the user's guides.                 ##
+  ## Type vignette(\"YPR\") or vignette(\"selectivity\")                 ##
+  ## to view the user's guides.                                      ##
   ## This package is still under construction.                       ##
   ##                                                                 ##
   ## Packaged on ",pkg_date,"                                         ##
@@ -28,4 +29,4 @@ packageStartupMessage("
 
 }
 
-?saveplot
+
