@@ -42,18 +42,27 @@ pack.list <- function(rprofile=FALSE)
                 sel=seq(1,n(libs),n.names)
                 pack=vector()
                 for(i in sel){
-                        
+
                         if(i >=sel[2]){
-                                packs=paste("               '",libs[i],"',", sep="")
+                                if(i==length(libs)){
+                                        packs=paste("               '",libs[i],"'", sep="")     
+                                }else{
+                                        packs=paste("               '",libs[i],"',", sep="")
+                                }
+                                
                         }else{
                                 packs=paste("'",libs[i],"',", sep="")
+                                
+                                
                         }
                         
-                        for(j in (i+1):min(c((i+n.names-1),length(libs))) ) {
-                                if(j!=length(libs)){
-                                        packs=paste(packs,"'",libs[j],"',",sep="")  
-                                }else{
-                                        packs=paste(packs,"'",libs[j],"'",sep="") 
+                        if(i!=length(libs)){
+                                for(j in (i+1):min(c((i+n.names-1),length(libs))) ) {
+                                        if(j!=length(libs)){
+                                                packs=paste(packs,"'",libs[j],"',",sep="")  
+                                        }else{
+                                                packs=paste(packs,"'",libs[j],"'",sep="") 
+                                        }
                                 }
                         }
                         pack=c(pack,packs)
