@@ -9,6 +9,8 @@ lev <- function (y,data=NULL,...) {
 lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", form=NULL)
 {
     try(if(!is.null(data)) {detach(data)}, silent=TRUE)
+    try(if(!is.null(data)) {detach(data)}, silent=TRUE)
+    try(if(!is.null(data)) {detach(data)}, silent=TRUE)
     try(if(!is.null(data)) {attach(data)}, silent=TRUE)
     if (!is.numeric(y))
         stop(deparse(substitute(y)), " is not a numeric variable")
@@ -133,14 +135,11 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
     
 }
 
-lev.formula <- function(formula, data=NULL, ...) {
-    
+lev.formula <- function(y, data=NULL, ...) {
     
     if(is.null(data) ) {stop("'data' hasn't been defined and needs to be.")}
-    
-    data2=data
+
     form=y
-    data <- model.frame(form, data=data2)
     if (any(sapply(2:dim(data)[2], function(j) is.numeric(data[[j]])))) stop("Levene's test is not appropriate with quantitative explanatory variables.")
     y <- data[,1]
     if(dim(data)[2]==2){ group <- data[,2]
@@ -152,9 +151,10 @@ lev.formula <- function(formula, data=NULL, ...) {
     lev.default(y=y,group=group, trim.alpha = 0.1, type="abs",form=form)
 }
 
-lev.lm <- function(y, ...) {
-    
-    lev.formula(formula(y), model.frame(y))
+lev.lm <- function(mod, ...) {
+    mod.dat=model.frame(mod)
+	mod.dat[,2:ncol(mod.dat)]=as.factor(mod.dat[,2:ncol(mod.dat)])
+    lev.formula(formula(mod),mod.dat)
     
 }
 
