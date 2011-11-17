@@ -153,7 +153,7 @@ mc.long.formula = function(formula,  data = parent.frame(), ..., subset)
         y <- mf[[response]]
         xn <- varnames[-response]
         group=interaction(mf[xn])
-        list.op=list(y=y, group=group,column=xn, dots)
+        list.op=list(y=y, group=group,column=xn, ...)
         do.call("mc.long", list.op)
         
 }
@@ -167,4 +167,5 @@ mc.long.lm <- function(y, subset=NULL, ...) {
         do.call("mc.long.formula", list.op)
 
 }
+
 

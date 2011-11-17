@@ -58,7 +58,7 @@ When \code{group} is manually defined, use \code{\link{paste}(x,y,z)} or
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{P.adjust}}, \code{\link{pairwise.t.test}}, \code{\link{pair.diff}}, \code{\link{DTK.test}}, \code{\link{TukeyHSD}} and \code{\link{glht}}
+\code{\link{p.adjust}}, \code{\link{pairwise.t.test}}, \code{\link{pair.diff}}, \code{\link{DTK.test}}, \code{\link{TukeyHSD}} and \code{\link{glht}}
 }
 \examples{
 
