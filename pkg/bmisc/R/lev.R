@@ -1,7 +1,6 @@
 lev <- function (y,data=NULL,...) {
     if(!is.null(data)) {attach(data)}
     UseMethod("lev")
-    
     if(!is.null(data)) {detach(data)}
     
 }
