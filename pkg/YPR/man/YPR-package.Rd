@@ -12,7 +12,7 @@ This is a length-based Yield Per Recruit (YPR) model. It will soon include a wei
 Package: \tab YPR\cr
 Type: \tab Package\cr
 Version: \tab 0.1-1\cr
-Date: \tab 2011-10-03\cr
+Date: \tab 2011-11-18\cr
 License: \tab LGPL >= 3.0\cr
 LazyLoad: \tab yes\cr
 }
