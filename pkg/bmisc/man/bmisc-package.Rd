@@ -14,8 +14,8 @@ For pdf version of the help, write \code{vignette("bmisc")}.
 \tabular{ll}{
 Package: \tab bmisc\cr
 Type: \tab Package\cr
-Version: \tab 0.2-13\cr
-Date: \tab 2011-10-03\cr
+Version: \tab 0.2-14\cr
+Date: \tab 2011-11-18\cr
 License: \tab LGPL >= 3.0\cr
 LazyLoad: \tab yes\cr
 }      }

@@ -1,7 +1,7 @@
 Package: bmisc
 Type: Package
 Title: Miscellaneous functions
-Version: 0.2-13
+Version: 0.2-14
 Author: Benoit Bruneau
 Maintainer: Benoit Bruneau <benoit.bruneau1@gmail.com>
 URL: http://r-forge.r-project.org/projects/bmisc/
@@ -11,6 +11,6 @@ License: LGPL >= 3.0
 Repository: R-Forge
 Repository/R-Forge/Project: bmisc
 Repository/R-Forge/Revision: 115
-Packaged: 2011-10-03;
+Packaged: 2011-11-18;
 LazyLoad: yes
 

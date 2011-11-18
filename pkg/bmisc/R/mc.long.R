@@ -120,7 +120,7 @@ mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL,
 
 
 
-mc.long.formula = function(formula,  data = parent.frame(), ..., subset)
+mc.long.formula = function(formula,  data = parent.frame(), ...)
 {       
         try(detach(data), silent=T)
         
@@ -134,19 +134,6 @@ mc.long.formula = function(formula,  data = parent.frame(), ..., subset)
         m <- as.call(c(as.list(m), list(na.action = NULL)))
         mf <- eval(m, eframe)
         
-        if (!missing(subset)) {
-                s <- eval(m$subset, data, eframe)
-                ## need the number of points before subsetting
-                if(!missing(data)) {
-                        l <- nrow(data)
-                } else {
-                        mtmp <- m
-                        mtmp$subset <- NULL
-                        l <- nrow(eval(mtmp, eframe))
-                }
-                dosub <- function(x) if (length(x) == l) x[s] else x
-                dots <- lapply(dots, dosub)
-        }
         response <- attr(attr(mf, "terms"), "response")
         
         varnames <- names(mf)
@@ -154,18 +141,22 @@ mc.long.formula = function(formula,  data = parent.frame(), ..., subset)
         xn <- varnames[-response]
         group=interaction(mf[xn])
         list.op=list(y=y, group=group,column=xn, ...)
-        do.call("mc.long", list.op)
+        list.op
+        #do.call("mc.long.default", list.op)
         
 }
 
-mc.long.lm <- function(y, subset=NULL, ...) {
+mc.long.lm <- function(object, subset=NULL, ...) {
         try(detach(data), silent=T)
-        dat=model.frame(y)
+        dat=model.frame(object)
         m <- match.call(expand.dots = FALSE)
-        form=formula(y)
-        list.op=list(form,data=dat, subset=m$subset,...)
+        form=formula(object)
+        list.op=list(form,data=dat,...)
+        list.op
         do.call("mc.long.formula", list.op)
 
 }
+
+
 
 

@@ -5,36 +5,33 @@ lev <- function (y,data=NULL,...) {
     
 }
 
-lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", form=NULL)
+lev.default <-  function (y,  group, data,  trim.alpha = 0.1, type="abs", form,...)
 {
-    try(if(!is.null(data)) {detach(data)}, silent=TRUE)
-    try(if(!is.null(data)) {detach(data)}, silent=TRUE)
-    try(if(!is.null(data)) {detach(data)}, silent=TRUE)
-    try(if(!is.null(data)) {attach(data)}, silent=TRUE)
-    if (!is.numeric(y))
-        stop(deparse(substitute(y)), " is not a numeric variable")
-    call=match.call()
-    FORM =formula(paste(deparse(substitute(y)), "~",deparse(substitute(group))))
-    environment(FORM)=.GlobalEnv
+    try(if(!missing(data)) {detach(data)}, silent=TRUE)
+    try(if(!missing(data)) {detach(data)}, silent=TRUE)
+    try(if(!missing(data)) {detach(data)}, silent=TRUE)
+    try(if(!missing(data)) {attach(data)}, silent=TRUE)
 
     
+    if (!is.numeric(y))
+        stop(deparse(substitute(y)), " is not a numeric variable")
+     call=match.call()
+    if(missing(form)) form =formula(paste(deparse(substitute(y)), "~",deparse(substitute(group))))
+
+
     if ( trim.alpha >= 0.5) {
         stop("trim.alpha value of 0 to 0.5 should be provided for the trim.mean option")
     }
-    
+
     test=NULL
     test=deparse(substitute(group))
     test=substr(test[1],1,1)
     if(!is.null(test) & length(test)==0 ){
         stop(deparse(substitute(group)), " should be the concatenation of the factors levels. Use 'paste()' or 'interaction()'.")
     }
-    
-    mod=paste("\nModel: ",deparse(form),"\n", sep="")
-    dmod=paste("\nModel: ",deparse(substitute(y))," ~ ", deparse(substitute(group)), sep="")
-    
+
     group <- as.factor(group)
-    
-    
+
     means <- tapply(y[is.na(y)==FALSE], group[is.na(y)==FALSE], mean)
     switch(type,
             abs = resp.mean <- abs(y - means[group]),
@@ -47,8 +44,8 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
     names(STATISTIC) = "F.value"
     Meval <- list(statistic = STATISTIC, p.value = p.value,
                     method = METHOD)
-    
-    
+
+
     meds <- tapply(y[is.na(y)==FALSE], group[is.na(y)==FALSE], median)
     switch(type,
             abs = resp.med <- abs(y - meds[group]),
@@ -61,15 +58,15 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
     names(STATISTIC) = "F.value"
     Medval <- list(statistic = STATISTIC, p.value = p.value,
                     method = METHOD)
-    
-    
+
+
     trimmed.mean <- function(y) mean(y, trim = trim.alpha)
     trim.means <- tapply(y[is.na(y)==FALSE], group[is.na(y)==FALSE], trimmed.mean)
     switch(type,
             abs = resp.trim.mean <- abs(y - trim.means[group]),
             sq  = resp.trim.mean <- (y - trim.means[group])^2)
     res.trim.mean=y - trim.means[group]
-    
+
     statistic = Anova(lm(resp.trim.mean ~ group,contrasts=list(group=contr.sum)), type="III")[2, 3]
     METHOD = "Modified Robust Levene-type test based on the absolute deviations from the trimmed mean. It eliminates outliers."
     p.value = Anova(lm(resp.trim.mean ~ group,contrasts=list(group=contr.sum)), type="III")[2, 4]
@@ -77,10 +74,10 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
     names(STATISTIC) = "F.value"
     Tmeanval <- list(statistic = STATISTIC, p.value = p.value,
                     method = METHOD)
-    
-    
+
+
     grouppn <- tapply(y,group,n)
-    meds <- tapply(y, group, median)        
+    meds <- tapply(y, group, median)
     num=ifelse(grouppn[group]-2 > 0, ( (grouppn[group]-1.5)*grouppn[group]*((y-means[group])**2) - 0.5*tapply((y-means[group])**2,group,sum)[group] )    ,NA)
     den= (grouppn[group]-1)*(grouppn[group]-2)
     r=num/den
@@ -91,30 +88,30 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
     names(STATISTIC) = "F.value"
     Oval <- list(statistic = STATISTIC, p.value = p.value,
                     method = METHOD)
-    
-  
-    
+
+
+
     try(if(!is.null(data)) {detach(data)} ,silent=TRUE)
-    
+
     PVAL = c(Meval$p.value, Tmeanval$p.value, Medval$p.value,Oval$p.value)
     names(PVAL) = c(
             "Levene                  ",
             "Levene on trimed mean   ",
             "Brown.Forsythe          ",
             "OBrien                  ")
-    
+
     STATISTIC = c(Meval$statistic, Tmeanval$statistic, Medval$statistic,Oval$statistic)
     names(STATISTIC) = c(
             "Levene                  ",
             "Levene on trimed mean   ",
             "Brown.Forsythe          ",
             "OBrien                  ")
-    
+
     datall=data.frame(lev=res.mean, lev.tr=res.trim.mean, bf=res.med, ob=r, group=group)
-    
+
     if(is.null(form)){
         RVAL = new('lev',
-                formula=FORM,
+                formula=form,
                 statistics = STATISTIC,
                 p.value = PVAL,
                 residuals=datall)
@@ -125,37 +122,52 @@ lev.default <-  function (y,  group, data=NULL,  trim.alpha = 0.1, type="abs", f
                 p.value = PVAL,
                 residuals=datall)
     }
-    
-    
-#if(!is.null(form)) cat(mod)
-#if(is.null(form)) cat(dmod)
-    
+
+
     RVAL
     
 }
 
-lev.formula <- function(y, data=NULL, ...) {
+lev.formula <- function(formula, data=NULL,...) {
     
-    if(is.null(data) ) {stop("'data' hasn't been defined and needs to be.")}
+        try(detach(data), silent=T)
 
-    form=y
-    if (any(sapply(2:dim(data)[2], function(j) is.numeric(data[[j]])))) stop("Levene's test is not appropriate with quantitative explanatory variables.")
-    y <- data[,1]
-    if(dim(data)[2]==2){ group <- data[,2]
-    }else{
-        if (length(grep("\\+ | \\| | \\^ | \\:",form))>0) stop("Model must be completely crossed formula only.")
-        group <- interaction(data[,2:dim(data)[2]])
-    }
-    
-    lev.default(y=y,group=group, trim.alpha = 0.1, type="abs",form=form)
+        m <- match.call(expand.dots = FALSE)
+        eframe <- parent.frame()
+        if (is.matrix(md <- eval(m$data, eframe)))
+                m$data <- md <- as.data.frame(data)
+        dots <- lapply(m$..., eval, md, eframe)
+        m$... <- NULL
+
+        m[[1L]] <- as.name("model.frame")
+        m <- as.call(c(as.list(m), list(na.action = NULL)))
+        mf <- eval(m, eframe)
+        form=formula(mf)
+        environment(form)=.GlobalEnv
+        
+        response <- attr(attr(mf, "terms"), "response")
+        varnames <- names(mf)
+        y <- mf[[response]]
+        xn <- varnames[-response]
+        group=interaction(mf[xn])
+        list.op=list(y=y, group=group,form=form, ...)
+        #list.op
+        do.call("lev", list.op)
+
 }
+
+
 
 lev.lm <- function(mod, ...) {
     mod.dat=model.frame(mod)
-	mod.dat[,2:ncol(mod.dat)]=as.factor(mod.dat[,2:ncol(mod.dat)])
+    for(i in 2:ncol(mod.dat)){
+	     mod.dat[,i]=as.factor(mod.dat[,i])
+	  }
     lev.formula(formula(mod),mod.dat)
     
 }
+
+
 
 setClass("lev",
         representation(

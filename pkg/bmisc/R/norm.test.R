@@ -15,17 +15,16 @@
 
 norm.test <- function (x,...) UseMethod("norm.test")
 
-norm.test.default <-  function(x, title = NULL, sk=c("G1","b1","mc"), comment=TRUE ){   
+norm.test.default <-  function(x, title, sk=c("G1","b1","mc"), comment=TRUE, DNAME ){
     
     
     # Data Set Name:
+    if(missing(DNAME)) DNAME <- paste(deparse(substitute(x), 500), collapse="\n")
     sk<- match.arg(sk)
-    DNAME <- paste(deparse(substitute(x), 500), collapse="\n")
     
     # ConvertTO VECTOR:
     x = as.vector(x)
 
-    
     # Tests:
     ans = NA
     lill = .lil.test(x)
@@ -60,7 +59,7 @@ norm.test.default <-  function(x, title = NULL, sk=c("G1","b1","mc"), comment=TR
     
         
     # Title:
-    if (is.null(title)) title = paste("Normality Tests on", DNAME)
+    if (missing(title)) title = paste("Normality Tests on", DNAME)
         
     if(comment){
         mess= "\n If p_value is greater than 0.05, difference between 
@@ -351,12 +350,15 @@ res
 }
 
 norm.test.lm <-  function(mod,type=c("working", "response", "deviance", "pearson","partial"),...){
-    
+    DNAME=deparse(substitute(mod))
     type <- match.arg(type)
     x=residuals(mod, type=type)
-    norm.test.default(x,...)
+    list.op=list(x=x,DNAME=DNAME,...)
+    do.call("norm.test.default",list.op)
+
     
 }
+
 
 
 # ------------------------------------------------------------------------------
@@ -378,7 +380,7 @@ setMethod("show", "norm",
             #Title
             #cat("\nTitle:\n ", object@title, "\n", sep = "")
             
-            #cat("\nTests Result:\n", sep = "")
+            cat("  P VALUE:\n")
             
             #p-value
             if (!is.null(object@p.value)) {
