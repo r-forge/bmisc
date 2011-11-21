@@ -1,23 +1,25 @@
-lev <- function (y,data=NULL,...) {
-    if(!is.null(data)) {attach(data)}
+lev <- function (y,data,...) {
+    #if(!is.null(data)) {attach(data)}
     UseMethod("lev")
-    if(!is.null(data)) {detach(data)}
+    #if(!is.null(data)) {detach(data)}
     
 }
 
 lev.default <-  function (y,  group, data,  trim.alpha = 0.1, type="abs", form,...)
 {
-    try(if(!missing(data)) {detach(data)}, silent=TRUE)
-    try(if(!missing(data)) {detach(data)}, silent=TRUE)
-    try(if(!missing(data)) {detach(data)}, silent=TRUE)
+    #try(if(!missing(data)) {detach(data)}, silent=TRUE)
+#    try(if(!missing(data)) {detach(data)}, silent=TRUE)
+#    try(if(!missing(data)) {detach(data)}, silent=TRUE)
     try(if(!missing(data)) {attach(data)}, silent=TRUE)
 
     
     if (!is.numeric(y))
         stop(deparse(substitute(y)), " is not a numeric variable")
      call=match.call()
-    if(missing(form)) form =formula(paste(deparse(substitute(y)), "~",deparse(substitute(group))))
-
+    if(missing(form)){
+     form =formula(paste(deparse(substitute(y)), "~",deparse(substitute(group))))
+     environment(form)=.GlobalEnv
+    }
 
     if ( trim.alpha >= 0.5) {
         stop("trim.alpha value of 0 to 0.5 should be provided for the trim.mean option")
@@ -128,9 +130,9 @@ lev.default <-  function (y,  group, data,  trim.alpha = 0.1, type="abs", form,.
     
 }
 
-lev.formula <- function(formula, data=NULL,...) {
+lev.formula <- function(formula, data = parent.frame(),...) {
     
-        try(detach(data), silent=T)
+        #try(detach(data), silent=T)
 
         m <- match.call(expand.dots = FALSE)
         eframe <- parent.frame()

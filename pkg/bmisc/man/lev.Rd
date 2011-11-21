@@ -85,7 +85,7 @@ lev(y=x, group= paste(yy,qq,s), data=z, type="sq")
 
 lev(y=x, group= interaction(yy,qq,s), data=z)
 
-lev(y=formula, data=z)
+lev(formula, data=z)
 lev(mod)
 
 }

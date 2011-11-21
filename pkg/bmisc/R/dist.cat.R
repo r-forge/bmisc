@@ -1,4 +1,4 @@
-dist.age <- function(formula, data,boxp=TRUE, densp=TRUE, histp=FALSE,n.level=NULL,cex.stat=0.8,
+dist.cat <- function(formula, data,boxp=TRUE, densp=TRUE, histp=FALSE,n.level=NULL,cex.stat=0.8,
         lpos=c("right","left"),save.fig=FALSE, fty=c('wmf','png'),file=NULL,xlab, ylab,stats=F,  ... )
 {
 
@@ -11,6 +11,13 @@ dist.age <- function(formula, data,boxp=TRUE, densp=TRUE, histp=FALSE,n.level=NU
     c.b=which(names(data)==vars[2])
 
     yval=list(unique(data[,c.a]))
+    if(!is.numeric(yval)){
+       ytest=TRUE
+       yval2=yval
+       yval=list(as.numeric(as.factor(yval[[1]])))
+       y=as.numeric(as.factor(data[,vars[1]]))
+    }
+
     n.vec=1
     if(!is.null(n.level)){
         yval1=min(yval[[1]]):max(yval[[1]])
@@ -44,22 +51,37 @@ dist.age <- function(formula, data,boxp=TRUE, densp=TRUE, histp=FALSE,n.level=NU
         if(save.fig & is.null(file)){stop("The 'file' option must be spcefied when 'save.file' is TRUERUE. See ?distrib.")}
         if(save.fig & fty=="wmf"){win.metafile(filename=paste(j,file, sep=''),width=11, height=8.5, restoreConsole = TRUE)}
         if(save.fig & fty=="png"){png(filename=paste(j,file, sep=''),width=11, height=8.5,units ="in", res=150, restoreConsole = TRUE)}
-
-        ylim=c(min(yval[[j]],na.rm=TRUE),max(yval[[j]],na.rm=TRUE)+0.9)
+        if(ytest){
+           ylim=c(min(yval[[j]],na.rm=TRUE),max(yval[[j]],na.rm=TRUE)+0.9)
+        }else{
+           ylim=c(min(yval[[j]],na.rm=TRUE),max(yval[[j]],na.rm=TRUE)+0.9)
+        }
         if(missing(ylab)){ylab=names(data)[c.a]}
         if(missing(xlab)){xlab=names(data)[c.b]}
 
-        plot(1, type='n',xlim=xlim,ylim=ylim,xaxt='n', yaxt='n',xlab=xlab, ylab=ylab,...)
+        plot(1, type='n',xlim=xlim,ylim=ylim,xaxt='n', yaxt='n',xlab=xlab, ylab=ylab)
         limit=par('usr')
         abline(v=ceiling(seq(xlim[1],xlim[2],100)), col='gray')
-        axis(side=1,at=seq(0,10000,100),... )
-        axis(side=2,at=ylim[1]:ylim[2], las=2, ...)
+        axis(side=1,at=seq(0,10000,100))
+        if(ytest){
+        axis(side=2,at=yval[[1]], labels=yval2[[1]], las=2)
+        }else{
+        axis(side=2,at=ylim[1]:ylim[2], las=2)
+        }
 
-        yseq=yval[[j]][!is.na(yval[[j]])]
+        yseq=sort(yval[[j]][!is.na(yval[[j]])])
         for(i in yseq){
             abline(h=i,col='gray')
+            
+            if(ytest){
+            sel=which(y==i)
+            long=data[c.b][y==i,]
+            }else{
             long=data[c.b][data[c.a]==i]
+            }
 
+
+            
             if(n(long)<2) points(y=i,x=long)
 
             if(n(long)>1){

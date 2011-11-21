@@ -1,17 +1,18 @@
 mc.long <- function (y,data, ...) {
-        try(attach(data),silent=TRUE)
+        #try(attach(data),silent=TRUE)
         UseMethod("mc.long")
 
 }
 
 
 
-mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL, silent=FALSE, ..., subset ) {
+mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL, silent=FALSE,sources, ... ) {
+       if(!missing(data)) {attach(data)}
 
         test=deparse(substitute(group))
         test=substr(test[1],1,1)
         
-        if(test=="s"){
+        if(test=="s" | missing(sources)){
                 test=NULL
         }else{
                 column1=as.vector(strsplit(deparse(substitute(group)), ", ")[[1]])
@@ -20,36 +21,22 @@ mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL,
                         column1[1]=substr(column1[1],7,nchar(column1[1]))
                 }else{
                         if(test=="i"){
-                                column1[1]=substr(column1[1],13,nchar(column1[1]))   
+                                column1[1]=substr(column1[1],13,nchar(column1[1]))
                         }else{
-                                stop("Use 'paste' or 'interaction' for 'group'. See ?mc.long for examples on how to define 'group'")  
+                                stop("Use 'paste' or 'interaction' for 'group'. See ?mc.long for examples on how to define 'group'")
                         }
                 }
-                column1[ngr]=substr(column1[ngr],1,nchar(column1[ngr])-1) 
-                
+                column1[ngr]=substr(column1[ngr],1,nchar(column1[ngr])-1)
+
                 if (!missing(data)){
-                        if(!missing(subset)) {
-                                m <- match.call(expand.dots = FALSE)
-                                eframe <- parent.frame()
-                                s <- eval(m$subset, data, eframe)
-                                data=data[s,]
                                 y.name=deparse(substitute(y))
                                 y=data[[y.name]]
                                 group <- interaction(data[column1])
-                                group=as.factor(as.character(group))
-                        }else{
-                                y.name=deparse(substitute(y))
-                                y=data[[y.name]]
-                                group <- interaction(data[column1])  
-                        }
-                                
-                        
-                        
                 }
-                
+
                 if (!is.numeric(y)) {
                         stop(y.name, " is not a numeric variable.")
-                }    
+                }
         }
         
         
@@ -58,11 +45,8 @@ mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL,
         }
         
         
-        if(is.null(p.adjust.method) | is.na(p.adjust.method)){
-                p.adjust.method="holm"
-        }
         
-        p.t=as.data.frame((pairwise.t.test(y,group, p.adjust.method="none",...))$p.value)
+        p.t=as.data.frame((pairwise.t.test(y,group, p.adjust.method="none"))$p.value)
         
         pair=pair.diff.default(y,group)
         mean.diff= data.frame(pair[[1]])
@@ -94,7 +78,8 @@ mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL,
                 }
         }
         
-        try(detach(data), silent=T)
+        if(!missing(data)) try(detach(data), silent=T)
+        
         if(!is.null(column)){
                 colnames(res)[6:dim(res)[2]]= c(column, paste(column,1,sep="."))
         }
@@ -114,6 +99,7 @@ mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL,
 
         res.out
 
+
         
         
 }
@@ -121,9 +107,7 @@ mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL,
 
 
 mc.long.formula = function(formula,  data = parent.frame(), ...)
-{       
-        try(detach(data), silent=T)
-        
+{
         m <- match.call(expand.dots = FALSE)
         eframe <- parent.frame()
         if (is.matrix(md <- eval(m$data, eframe)))
@@ -140,23 +124,21 @@ mc.long.formula = function(formula,  data = parent.frame(), ...)
         y <- mf[[response]]
         xn <- varnames[-response]
         group=interaction(mf[xn])
-        list.op=list(y=y, group=group,column=xn, ...)
-        list.op
-        #do.call("mc.long.default", list.op)
+        list.op=list(y=y, group=group,column=xn,sources="form", ...)
+        #list.op
+        do.call("mc.long.default", list.op)
         
 }
 
-mc.long.lm <- function(object, subset=NULL, ...) {
-        try(detach(data), silent=T)
+mc.long.lm <- function(object, ...) {
+        #try(detach(data), silent=T)
         dat=model.frame(object)
         m <- match.call(expand.dots = FALSE)
-        form=formula(object)
-        list.op=list(form,data=dat,...)
-        list.op
+        formula=formula(object)
+        list.op=list(formula,data=dat,...)
+        #list.op
         do.call("mc.long.formula", list.op)
 
 }
-
-
 
 
