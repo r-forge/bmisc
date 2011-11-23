@@ -9,9 +9,9 @@ Levene type tests
 Testing for homoscedasticity after an ANOVA.
 }
 \usage{
-lev(y, ...)
-\method{lev}{lm}(object, trim.alpha=0.1, type=c("abs","sq"))
-\method{lev}{formula}(formula, data, trim.alpha=0.1, type=c("abs","sq"))
+
+\method{lev}{lm}(object, ...)
+\method{lev}{formula}(formula, data, ...)
 \method{lev}{default}(y, group, data=NULL, trim.alpha=0.1, type=c("abs","sq"))
 }
 %- maybe also 'usage' for other objects documented here.

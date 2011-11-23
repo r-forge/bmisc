@@ -8,7 +8,7 @@
 Calculate pairwise T tests between group levels with corrections for multiple testing presented in long format
 }
 \usage{
-mc.long(y, ...)
+
 \method{mc.long}{formula}( formula, data, ...)
 \method{mc.long}{lm}( object, ...)
 \method{mc.long}{default}(y, group, data, p.adjust.method="holm",
