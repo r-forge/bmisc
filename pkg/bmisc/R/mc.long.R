@@ -4,7 +4,7 @@ mc.long <- function (y,data, ...) {
 
 }
 
-mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL, silent=FALSE, source="default", ... ) {
+mc.long.default = function( y, group, data, p.adjust.method="holm", column, silent=FALSE, source="default", ... ) {
 
         test=deparse(substitute(group))
         test=substr(test[1],1,1)
@@ -37,7 +37,7 @@ mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL,
         }
         
         
-        if(is.null(column)){
+        if(missing(column)){
                 column=column1
         }
         
