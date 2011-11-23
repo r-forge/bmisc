@@ -1,18 +1,15 @@
 mc.long <- function (y,data, ...) {
-        #try(attach(data),silent=TRUE)
+        if( !missing(data)) {attach(data)}
         UseMethod("mc.long")
 
 }
 
-
-
-mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL, silent=FALSE,sources, ... ) {
-       if(!missing(data)) {attach(data)}
+mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL, silent=FALSE, source="default", ... ) {
 
         test=deparse(substitute(group))
         test=substr(test[1],1,1)
         
-        if(test=="s" | missing(sources)){
+        if(test=="s" | source=="form"){
                 test=NULL
         }else{
                 column1=as.vector(strsplit(deparse(substitute(group)), ", ")[[1]])
@@ -46,7 +43,7 @@ mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL,
         
         
         
-        p.t=as.data.frame((pairwise.t.test(y,group, p.adjust.method="none"))$p.value)
+        p.t=as.data.frame((pairwise.t.test(y,group, p.adjust.method="none",...))$p.value)
         
         pair=pair.diff.default(y,group)
         mean.diff= data.frame(pair[[1]])
@@ -106,8 +103,9 @@ mc.long.default = function( y, group, data, p.adjust.method="holm", column=NULL,
 
 
 
-mc.long.formula = function(formula,  data = parent.frame(), ...)
-{
+mc.long.formula = function(formula,  data, ...){
+        if(!missing(data)) try(detach(data),silent=T)
+        if(missing(data)) stop("'data' must be defined")
         m <- match.call(expand.dots = FALSE)
         eframe <- parent.frame()
         if (is.matrix(md <- eval(m$data, eframe)))
@@ -118,20 +116,20 @@ mc.long.formula = function(formula,  data = parent.frame(), ...)
         m <- as.call(c(as.list(m), list(na.action = NULL)))
         mf <- eval(m, eframe)
         
+
+
         response <- attr(attr(mf, "terms"), "response")
-        
         varnames <- names(mf)
         y <- mf[[response]]
         xn <- varnames[-response]
         group=interaction(mf[xn])
-        list.op=list(y=y, group=group,column=xn,sources="form", ...)
+        list.op=list(y=y, group=group,column=xn,source="form", ...)
         #list.op
         do.call("mc.long.default", list.op)
         
 }
 
 mc.long.lm <- function(object, ...) {
-        #try(detach(data), silent=T)
         dat=model.frame(object)
         m <- match.call(expand.dots = FALSE)
         formula=formula(object)

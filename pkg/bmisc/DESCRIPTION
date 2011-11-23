@@ -1,16 +1,17 @@
 Package: bmisc
 Type: Package
-Title: Miscellaneous functions
+Title: Ben's Miscellaneous functions
 Version: 0.2-14
 Author: Benoit Bruneau
 Maintainer: Benoit Bruneau <benoit.bruneau1@gmail.com>
-URL: http://r-forge.r-project.org/projects/bmisc/
-Description: This package has different functions that I have accumulated with time. This is the Alpha version.
+URL: http://benoitr.comze.com/R/
+Description: This package has different functions that I have accumulated with time. It is an Alpha version.
 Depends: car, lattice, zoo, robustbase, methods, tcltk
 License: LGPL >= 3.0
 Repository: R-Forge
 Repository/R-Forge/Project: bmisc
 Repository/R-Forge/Revision: 115
 Packaged: 2011-11-18;
+Date: 2011-11-18;
 LazyLoad: yes
 

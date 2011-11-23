@@ -1,25 +1,46 @@
 lev <- function (y,data,...) {
-    #if(!is.null(data)) {attach(data)}
+    if( !missing(data)) {attach(data)}
     UseMethod("lev")
     #if(!is.null(data)) {detach(data)}
     
 }
 
-lev.default <-  function (y,  group, data,  trim.alpha = 0.1, type="abs", form,...)
-{
-    #try(if(!missing(data)) {detach(data)}, silent=TRUE)
-#    try(if(!missing(data)) {detach(data)}, silent=TRUE)
-#    try(if(!missing(data)) {detach(data)}, silent=TRUE)
-    try(if(!missing(data)) {attach(data)}, silent=TRUE)
 
+lev.default <-  function (y,  group, data,  trim.alpha = 0.1, type="abs", form,source="default", ...)
+{
+    test=deparse(substitute(group))
+    test=substr(test[1],1,1)
     
     if (!is.numeric(y))
         stop(deparse(substitute(y)), " is not a numeric variable")
-     call=match.call()
+    call=match.call()
+    
+    if(test=="s" | source=="form"){
+                test=NULL
+        }else{
+                vars1=as.vector(strsplit(deparse(substitute(group)), ", ")[[1]])
+                nvars=length(vars1)
+                if(test=="p"){
+                        vars1[1]=substr(vars1[1],7,nchar(vars1[1]))
+                }else{
+                        if(test=="i"){
+                                vars1[1]=substr(vars1[1],13,nchar(vars1[1]))
+                        }else{
+                                stop("Use 'paste' or 'interaction' for 'group'. See ?mc.long for examples on how to define 'group'")
+                        }
+                }
+                vars1[nvars]=substr(vars1[nvars],1,nchar(vars1[nvars])-1)
+                vars=vars1[1]
+                for (i in 2:nvars) vars=paste(vars,"*",vars1[i],sep="")
+                    
+                
+
+        }
     if(missing(form)){
-     form =formula(paste(deparse(substitute(y)), "~",deparse(substitute(group))))
+     form =formula(paste(deparse(substitute(y)), "~",vars))
      environment(form)=.GlobalEnv
     }
+
 
     if ( trim.alpha >= 0.5) {
         stop("trim.alpha value of 0 to 0.5 should be provided for the trim.mean option")
@@ -127,47 +148,56 @@ lev.default <-  function (y,  group, data,  trim.alpha = 0.1, type="abs", form,.
 
 
     RVAL
-    
+
 }
 
-lev.formula <- function(formula, data = parent.frame(),...) {
-    
-        #try(detach(data), silent=T)
-
+lev.formula <- function(formula, data,...) {
+        if(!missing(data)) try(detach(data),silent=T)
+        if(missing(data)) stop("'data' must be defined")
         m <- match.call(expand.dots = FALSE)
         eframe <- parent.frame()
         if (is.matrix(md <- eval(m$data, eframe)))
                 m$data <- md <- as.data.frame(data)
         dots <- lapply(m$..., eval, md, eframe)
         m$... <- NULL
-
         m[[1L]] <- as.name("model.frame")
         m <- as.call(c(as.list(m), list(na.action = NULL)))
         mf <- eval(m, eframe)
+
         form=formula(mf)
-        environment(form)=.GlobalEnv
-        
+        vars1=all.vars(form)
+        nvars=n(vars1)
+        vars=vars1[2]
+        for (i in 3:nvars) vars=paste(vars,"*",vars1[i],sep="")
+        form=as.formula(paste(vars1[1],"~",vars,sep=""), env=.GlobalEnv)
+
         response <- attr(attr(mf, "terms"), "response")
         varnames <- names(mf)
-        y <- mf[[response]]
+        dep <- mf[[response]]
         xn <- varnames[-response]
-        group=interaction(mf[xn])
-        list.op=list(y=y, group=group,form=form, ...)
-        #list.op
-        do.call("lev", list.op)
+        groups=interaction(mf[xn])
+        list.op=list(y=dep, group=groups,form=form,source="form", ...)
+        list.op
+        do.call("lev.default", list.op)
 
 }
 
 
 
-lev.lm <- function(mod, ...) {
-    mod.dat=model.frame(mod)
-    for(i in 2:ncol(mod.dat)){
-	     mod.dat[,i]=as.factor(mod.dat[,i])
-	  }
-    lev.formula(formula(mod),mod.dat)
-    
+lev.lm <- function(object,...) {
+    dat=model.frame(object)
+    m <- match.call(expand.dots = FALSE)
+    vars1=all.vars(formula(object))
+    nvars=n(vars1)
+    vars=vars1[2]
+    for (i in 3:nvars) vars=paste(vars,"*",vars1[i],sep="")
+    formula=as.formula(paste(vars1[1],"~",vars,sep=""), env=.GlobalEnv)
+    list.op=list(formula,data=dat,...)
+	  #list.op
+    do.call("lev.formula", list.op)
+
 }
+
 
 
 
@@ -185,7 +215,7 @@ setMethod("show", "lev",
             cat('\nFormula:\n')
             print(object@formula)
             cat("\nTests Result:\n")
-            
+
             if (!is.null(object@statistics)) {
                 statistics = object@statistics
                 Names = names(statistics)
@@ -197,7 +227,7 @@ setMethod("show", "lev",
                     }
                 }
             }
-            
+
             if (!is.null(object@p.value)) {
                 pval = object@p.value
                 Names = names(pval)
@@ -215,7 +245,7 @@ setMethod("show", "lev",
                     }
                 }
             }
-            
+
         }
 )
 
@@ -225,9 +255,9 @@ plot.lev=function(object, which=1L:4L, ylab=NULL,main=NULL, ...){
 
     if(is.null(main))
         main=c("Levene","Robust Levene","Brown-Forsythe","O'Brien")
-    if(is.null(ylab)) 
+    if(is.null(ylab))
         ylab=c("residuals of mean","residuals of trimmed mean","residuals of median","r scrores")
-    
+
     if(length(which)==1){
         par(mfrow=c(1,1))
     }else{
@@ -241,8 +271,8 @@ plot.lev=function(object, which=1L:4L, ylab=NULL,main=NULL, ...){
     for(i in which){
         boxplot(object@residuals[,i]~object@residuals$group,main=main[i], ylab=ylab[i], ...)
     }
-    
-    
+
+
 }
 
 

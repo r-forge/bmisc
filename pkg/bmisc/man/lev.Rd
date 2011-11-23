@@ -10,17 +10,15 @@ Testing for homoscedasticity after an ANOVA.
 }
 \usage{
 lev(y, ...)
-\method{lev}{lm}(y, trim.alpha=0.1, type=c("abs","sq"))
-\method{lev}{formula}(y, data, trim.alpha=0.1, type=c("abs","sq"))
+\method{lev}{lm}(object, trim.alpha=0.1, type=c("abs","sq"))
+\method{lev}{formula}(formula, data, trim.alpha=0.1, type=c("abs","sq"))
 \method{lev}{default}(y, group, data=NULL, trim.alpha=0.1, type=c("abs","sq"))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-   \item{y}{response variable for the \code{default} method, \code{lm}
-      class object for the \code{lm} method or \code{formula}
-      class object for the \code{formula} methode. If \code{y}
-      is a linear-model object or a formula, the variables on the right-hand-side
-      of the model must all be factors and must be completely crossed.}
+   \item{y}{response variable when using default S3 method.}
+   \item{object}{\code{lm} object when using S3 method for class 'lm'.}
+   \item{formula}{a \code{formula} when using S3 method for class 'formula'.}
    \item{group}{for the default method, factor (concatenated factor when multiple factors).}
    \item{data}{\code{\link{data.frame}} containing the dependant variable and the factor(s).}
    \item{trim.alpha}{Alpha level (percentiles) trimming the data on which the mean will be evaluated.}
@@ -60,7 +58,7 @@ O'Brien, R.G. (1981). A simple test for variance effects in experimental designs
 Conover, William J., Johnson, Mark E., and Myrle M. Johnson (1981). A comparative study of tests for homogeneity of variances, with applications to the outer continental shelf bidding data. Technometrics 23, 351-361. 
 }
 \author{
-%%  ~~who you are~~
+Benoit Bruneau
 }
 \note{
 %%  ~~further notes~~
@@ -72,10 +70,10 @@ Conover, William J., Johnson, Mark E., and Myrle M. Johnson (1981). A comparativ
 \code{\link{fligner.test}}
 }
 \examples{
-z=data.frame( yy=c(rep("c",50),rep("d",50)),
+z=data.frame( yy=as.factor(c(rep("c",50),rep("d",50))),
               x=c(rnorm(50),rnorm(50,10)),
-              s=rep(c(rep("a",25),rep("b",25)),2),
-              qq=rep(c(rep("w",10),rep("t",10)),5))
+              s=as.factor(rep(c(rep("a",25),rep("b",25)),2)),
+              qq=as.factor(rep(c(rep("w",10),rep("t",10)),5)))
 
 mod=lm(x~yy*qq*s, data=z)
 formula= x~yy*qq*s

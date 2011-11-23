@@ -9,22 +9,20 @@ Calculate pairwise T tests between group levels with corrections for multiple te
 }
 \usage{
 mc.long(y, ...)
-\method{mc.long}{formula}( y, data=NULL, ...)
-\method{mc.long}{lm}( y, ...)
-\method{mc.long}{default}(y, group, data=NULL, p.adjust.method="holm",
-        column=NULL, digits=NULL, silent=FALSE, ...)
+\method{mc.long}{formula}( formula, data, ...)
+\method{mc.long}{lm}( object, ...)
+\method{mc.long}{default}(y, group, data, p.adjust.method="holm",
+        column, silent=FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{y}{response variable for the default method, or \code{lm} or
-  \code{\link{formula}} object. If \code{y} is a linear-model object or a formula,
-  the variables on the right-hand-side of the model must all be factors and
-  must be completely crossed.}
+  \item{y}{response variable when using default S3 method.}
+  \item{object}{\code{lm} object when using S3 method for class 'lm'.}
+  \item{formula}{a \code{formula} when using S3 method for class 'formula'.}
   \item{group}{for the default method, factor (concatenated factor when multiple factors). See details.}
   \item{data}{\code{\link{data.frame}} where the dependant variable and the factor(s) are}
-  \item{p.adjust.method}{method for adjusting p values. Default is Holm's method. (see \code{\link{P.adjust}}) }
-  \item{column}{new names for the factor(s); this is optional }
-  \item{digits}{controls the number of digits for the presented results presented}
+  \item{p.adjust.method}{method for adjusting p values. Default is Holm's method. (see \code{\link{p.adjust}}) }
+  \item{column}{new names for the factor(s); this is optional}
   \item{silent}{a logical variable indicating whether to indicate the general \code{warning} \code{(FALSE)} or not \code{(TRUE)}.}
   \item{\dots}{additional arguments to pass to \code{\link{p.adjust}}, \code{\link{pairwise.t.test}} and/or \code{\link{t.test}}. }
 }
@@ -61,24 +59,22 @@ When \code{group} is manually defined, use \code{\link{paste}(x,y,z)} or
 }
 \examples{
 
-z=data.frame( yy=c(rep("c",50),rep("d",50)),
+z=data.frame( yy=as.factor(c(rep("c",50),rep("d",50))),
               x=c(rnorm(50),rnorm(50,10)),
-              s=rep(c(rep("a",25),rep("b",25)),2),
-              qq=rep(c(rep("w",10),rep("t",10)),5))
+              s=as.factor(rep(c(rep("a",25),rep("b",25)),2)),
+              qq=as.factor(rep(c(rep("w",10),rep("t",10)),5)))
 
 mod=lm(x~yy*qq*s, data=z)
 formula= x~yy*qq*s
 
 mc.long(y=x, group= paste(yy,qq,s), data=z)
-mc.long(y=x, group= paste(yy,qq,s), data=z, p.adjust.method="sidak")
-mc.long(y=x, group= paste(yy,qq,s), data=z, p.adjust.method="sidak", n=15)
+mc.long(y=x, group= paste(yy,qq,s), data=z, p.adjust.method="none")
+mc.long(y=x, group= paste(yy,qq,s), data=z, p.adjust.method="holm")
 mc.long(y=x, group= interaction(yy,qq,s), data=z)
 
-mc.long(y=formula, data=z)
+mc.long(formula, data=z)
 
 mc.long(mod)
-
-res <- mc.long(mod)   #### results are put in "res" object.
 
 }
 
