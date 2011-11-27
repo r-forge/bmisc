@@ -23,8 +23,8 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     cl.LW=class(LW)
     
     age=seq(0,last.age,by=age.step)
-    age=as.integer(age*1000000)
-    age=age/1000000
+    #age=as.integer(age*1000000)
+    #age=age/1000000
     switch(cl.vb,
             numeric= {
                 names(vonB)=c("Linf","K")
@@ -66,8 +66,8 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
 
     
     F.i=seq(0,F.max, by=F.incr.YPR)
-    F.i=as.integer( F.i*1000000)
-    F.i=F.i/1000000
+    #F.i=as.integer( F.i*1000000)
+    #F.i=F.i/1000000
     n.F=n(F.i)
     
     ##############################################################################
@@ -110,7 +110,7 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     Z1=colSums(Z, na.rm=TRUE)
     
     n.stock= mat.frame
-    n.stock[1,]=1
+    n.stock[1,]=age.step
     for(i in 1:(n(F.sel)-1)){
         n.stock[i+1,]=n.stock[i,]*exp(-Z[i,])
     }
@@ -124,6 +124,7 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     n.catch=F./(F.+M)* n.stock*(1-exp(-Z))
     n.catch[1,]=NA
     n.catch1=colSums(n.catch, na.rm=TRUE)
+    
     
     pds.catch=n.stock
     pds.catch=sweep(n.catch,MARGIN=1,YPR$p.age,"*")
@@ -277,7 +278,8 @@ plot.ypr<-
                 col.ypr='blue',
                 col.ssb='red', 
                 ref=TRUE,
-                legend=TRUE){
+                legend=TRUE,
+                ylim){
     
     
     YPR=object@YPR
@@ -285,7 +287,9 @@ plot.ypr<-
     
     par(mar=c(5,4,4,4.1))
     col.lines=c(gray(0.4),gray(0),gray(0.6))
+
     ylim1=c(0,max(YPR$ypr)*1.1)
+    if(!missing(ylim)) ylim1=ylim
     ylim2=c(0,max(YPR$ssb)*1.1)
     plot(YPR$ypr~YPR$F  ,main=main,ylim=ylim1, 
             ylab=ylab.ypr,xlab=xlab,type='l', lwd=3, col=col.ypr, las=1)

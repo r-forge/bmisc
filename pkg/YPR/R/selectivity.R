@@ -17,8 +17,10 @@
     cl.sel=class(sel.type)[1]
     if(cl.sel=="function")cl.sel="fct"
     if(!(cl.sel %in% c("NULL","fct", "list", "glm"))) stop(paste(NAME," should be an object of class c('NULL', 'function', 'list','glm'). Read help('ypr')."))
-    if(cl.sel=="list" & !(sel.type[[1]] %in% c("const","full","plat.full","ramp","plat.ramp","logit","plat.logit","mod.logit"))){
+    if(cl.sel=="list"){
+     if(!(sel.type[[1]] %in% c("const","full","plat.full","ramp","plat.ramp","logit","plat.logit","mod.logit"))){
         stop(paste(NAME,"is a list. The fist value of this list should be one of\n  c('const','full','plat.full','ramp','plat.ramp','logit','plat.logit','mod.logit').\n\nRead help('ypr')."))
+    }
     }
     switch(cl.sel,
             fct = .sel<-sel.type(x),
