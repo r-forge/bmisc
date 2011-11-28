@@ -23,8 +23,8 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     cl.LW=class(LW)
     
     age=seq(0,last.age,by=age.step)
-    #age=as.integer(age*1000000)
-    #age=age/1000000
+    age=as.integer(age*1000000)
+    age=age/1000000
     switch(cl.vb,
             numeric= {
                 names(vonB)=c("Linf","K")
@@ -66,8 +66,8 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
 
     
     F.i=seq(0,F.max, by=F.incr.YPR)
-    #F.i=as.integer( F.i*1000000)
-    #F.i=F.i/1000000
+    F.i=as.integer( F.i*1000000)
+    F.i=F.i/1000000
     n.F=n(F.i)
     
     ##############################################################################
@@ -96,11 +96,12 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     }
     
     ##############################################################################
-    ##                          Matrices des calculs                            ##
+    ##                                 Calculations                             ##
     ##############################################################################
     
     mat.frame=matrix(ncol=n.F, nrow=n(F.sel))
     
+    ###  Mortality  ###
     F.=matrix(rep(F.sel,n.F),ncol=n.F, nrow=n(F.sel))
     F.=sweep(F.,MARGIN=2,F.i,`*`)
     
@@ -109,42 +110,49 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     
     Z1=colSums(Z, na.rm=TRUE)
     
+    ###  Stock size  ###
     n.stock= mat.frame
     n.stock[1,]=age.step
     for(i in 1:(n(F.sel)-1)){
-        n.stock[i+1,]=n.stock[i,]*exp(-Z[i,])
+        n.stock[i+1,]=n.stock[i,]*exp(-age.step*Z[i,])
     }
     n.stock1=colSums(n.stock, na.rm=TRUE)
     
+    ###  Biomass  ###
     pds.stock=sweep(n.stock,MARGIN=1,YPR$p.age,FUN="*")
     pds.stock1=colSums(pds.stock, na.rm=TRUE)
-    
     pds.stock.moy=pds.stock1/n.stock1
     
-    n.catch=F./(F.+M)* n.stock*(1-exp(-Z))
+    ###  Catches  ###
+    n.catch=F./(F.+M)* n.stock*(1-exp(-age.step*Z))
     n.catch[1,]=NA
     n.catch1=colSums(n.catch, na.rm=TRUE)
     
-    
+    ###  Catch weight  ###
     pds.catch=n.stock
     pds.catch=sweep(n.catch,MARGIN=1,YPR$p.age,"*")
-    pds.catch1=colSums(pds.catch, na.rm=TRUE)
+    pds.catch1=colSums(pds.catch, na.rm=TRUE)*(1/age.step)
     
-    
+    ###  Spawning Stock size  ###
     ssn=sweep(n.stock,MARGIN=1,mat,FUN="*")
     ssn1=colSums(ssn, na.rm=TRUE)
     
+    ###  Spawning Stock biomass  ###
     ssb=sweep(ssn,MARGIN=1,YPR$p.age,"*")
     ssb1=colSums(ssb, na.rm=TRUE)
     
+    ###  Maximum Spawning Potential  ###
     msp1=ssb1/max(ssb1)*100
     
+    ###  Average length  ###
     l.moy=sweep(n.stock,MARGIN=1,YPR$l.age,"*")
     l.moy1=colSums(l.moy, na.rm=TRUE)/n.stock1
-    
+
+    ###  Average weight  ###
     p.moy=sweep(n.stock,MARGIN=1,YPR$p.age,"*")
     p.moy1=colSums(p.moy, na.rm=TRUE)/n.stock1
-    
+
+    ###  Average age  ###
     age.moy=sweep(n.stock,MARGIN=1,YPR$age,"*")
     age.moy1=colSums(age.moy, na.rm=TRUE)/n.stock1
     
