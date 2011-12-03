@@ -25,7 +25,7 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
   \item{vonB}{one of:
         \itemize{
             \item a vector containing \code{c(Linf,K)} from von Bertalanffy grotwh curve.
-            \item an object of class \code{"\link{glm}"} in which eqn{Linf} and eqn{K} were estimated.      
+            \item an object of class \code{"\link{nls}"} in which eqn{Linf} and eqn{K} were estimated.
         }
 }
   \item{l.start}{length at the starting age
@@ -182,7 +182,7 @@ surv=function(x){
     p
 }
 
-ypr(vonB=c(1564.5508, 0.1206),  
+res=ypr(vonB=c(1564.5508, 0.1206),
         LW=c(0.000000009434 , 3.042974620048),
         l.start=241.86,
         last.age=14,
@@ -195,7 +195,7 @@ ypr(vonB=c(1564.5508, 0.1206),
         Msel.type=list(type="ramp", infl1=400, infl2=600, lv=0.5, pos=F), 
         M=0.2, 
         Mat=list(type="ramp",infl1=700, infl2=900),
-        f.MSP=0.4) 
-
+        f.MSP=0.4)
+summary(res)
 }
 

@@ -63,6 +63,8 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     
 
     YPR=data.frame(age,l.age, p.age)
+    if(fish.lim>max(l.age))warning(paste("'fish.lim' (",fish.lim,") can not be higher than the length at 'last.age' (",round(max(l.age),digits=2),").
+         Decrease 'fish.lim' or increase 'last.age'.",sep=""),call.=FALSE)
 
     
     F.i=seq(0,F.max, by=F.incr.YPR)
@@ -124,6 +126,7 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     pds.stock.moy=pds.stock1/n.stock1
     
     ###  Catches  ###
+    stop("Correct catch without smaller values of fish.lim !!!")
     n.catch=F./(F.+M)* n.stock*(1-exp(-age.step*Z))
     n.catch[1,]=NA
     n.catch1=colSums(n.catch, na.rm=TRUE)
@@ -287,7 +290,10 @@ plot.ypr<-
                 col.ssb='red', 
                 ref=TRUE,
                 legend=TRUE,
-                ylim){
+                ylim1,
+                ylim2,
+                xlim,
+                add=FALSE){
     
     
     YPR=object@YPR
@@ -296,11 +302,12 @@ plot.ypr<-
     par(mar=c(5,4,4,4.1))
     col.lines=c(gray(0.4),gray(0),gray(0.6))
 
-    ylim1=c(0,max(YPR$ypr)*1.1)
-    if(!missing(ylim)) ylim1=ylim
-    ylim2=c(0,max(YPR$ssb)*1.1)
-    plot(YPR$ypr~YPR$F  ,main=main,ylim=ylim1, 
-            ylab=ylab.ypr,xlab=xlab,type='l', lwd=3, col=col.ypr, las=1)
+    if(!missing(ylim1)) {ylim1=ylim1}else{ylim1=c(0,max(YPR$ypr)*1.1)}
+    if(!missing(ylim2)) {ylim2=ylim2}else{ylim2=c(0,max(YPR$ssb)*1.1)}
+    if(!missing(xlim))  {xlim=xlim}else{xlim=range(YPR$F)}
+    plot(YPR$ypr~YPR$F  ,main=main,ylim=ylim1,
+              ylab=ylab.ypr,xlab=xlab,type='l', lwd=3, col=col.ypr, las=1)
+
     if(ref){
         for(i in 2:dim(refs)[1]){
             lines(c(-1,YPR)~c(F,F),data=refs[i,], lty=2)
