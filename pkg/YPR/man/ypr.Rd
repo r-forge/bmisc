@@ -11,7 +11,7 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 }
 \usage{
  ypr(LW, vonB, l.start, last.age, age.step=1, Fsel.type, 
-       F.max=2,F.incr.YPR=0.0001, Mat,  M=0.2, f.MSP=0.4)%, 
+       F.max=2,F.incr.YPR=0.0001, Mat,  M=0.2, F.MSP=0.4)%, 
        %F.f=0, M.f=0.5, riv.calc=FALSE)
 }
 
@@ -63,7 +63,7 @@ Length based Yield Per Recruit model is define by fishery selectivity and life h
 }
   \item{M}{instantaneous rate of natural mortality (\code{M}). Default is 0.2.
 }
-  \item{f.MSP}{reference point defined as the fraction of maximum spawning potential. Default is 0.4.
+  \item{F.MSP}{reference point defined as the fraction of maximum spawning potential. Default is 0.4.
 }
 %  \item{F.f}{fraction of instantaneous rate of fishing mortality (\code{F}) before spawning.
 %}
@@ -128,7 +128,7 @@ Reference points used for result output are defined as follow:
 \itemize{
     \item \bold{F.zero:}  F level when there is no fishing (F=0).
     \item \bold{F.01:}    F level where the slope of yield curve is 10\% of the slope at \code{F.zero}. 
-    \item \bold{F.xx:}    F level where the MSP is at the level defined by \code{f.MSP} option. Default is 40\% (0.4).
+    \item \bold{F.xx:}    F level where the MSP is at the level defined by \code{F.MSP} option. Default is 40\% (0.4).
     \item \bold{F.max:}   F level where yield is maximum.
 }
 
@@ -161,7 +161,7 @@ Use \code{vignette("YPR")} for a better presentation of the equations.
 }
 \author{
 Benoit Bruneau,\cr
-François Grégoire and\cr
+FranÃ§ois GrÃ©goire and\cr
 Diane Archambault
 }
 \note{
@@ -195,7 +195,7 @@ res=ypr(vonB=c(1564.5508, 0.1206),
         Msel.type=list(type="ramp", infl1=400, infl2=600, lv=0.5, pos=F), 
         M=0.2, 
         Mat=list(type="ramp",infl1=700, infl2=900),
-        f.MSP=0.4)
+        F.MSP=0.4)
 summary(res)
 }
 

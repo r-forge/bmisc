@@ -13,11 +13,11 @@
 
 ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.lim=NULL ,
         Fsel.type=NULL, F.max=2, F.incr.YPR=0.0001,Mat=NULL,  Msel.type=NULL, 
-        M=0.2, f.MSP=0.4){
+        M=0.2, F.MSP=0.4){
     
     parms=list(LW=LW, vonB=vonB, last.age=last.age, l.start=l.start, age.step=age.step, prop.surv=prop.surv, fish.lim=fish.lim,
             Fsel.type=Fsel.type, F.max=F.max, F.incr.YPR=F.incr.YPR, Mat=Mat,
-            Msel.type=Msel.type, M=M,  f.MSP=f.MSP)
+            Msel.type=Msel.type, M=M,  F.MSP=F.MSP)
     
     cl.vb=class(vonB)
     cl.LW=class(LW)
@@ -169,14 +169,14 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     ##############################################################################
     
     YPR.table=data.frame(F=F.i, catch.num=n.catch1, ypr=pds.catch1, stock.num=n.stock1,stock.w=pds.stock1, 
-            ssn=ssn1,ssb=ssb1,f.MSP=msp1, avr.l=l.moy1, avr.w=p.moy1, avr.age=age.moy1)
+            ssn=ssn1,ssb=ssb1,F.MSP=msp1, avr.l=l.moy1, avr.w=p.moy1, avr.age=age.moy1)
     
     
      
     ##############################################################################
     ##                     Tableau des points de references                     ##
     ##############################################################################
-    f.MSP.name=paste('F',round(f.MSP*100,digits=0),sep=".")
+    F.MSP.name=paste('F',round(F.MSP*100,digits=0),sep=".")
     ref.table=data.frame(F=NA,YPR=NA,SSB.R=NA,TBmass.R=NA, avr.L=NA, avr.wgt=NA, avr.age=NA)
     
     ### F0
@@ -198,12 +198,12 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     ref.table[2,]=c(F.i[sel2],pds.catch1[sel2], ssb1[sel2],pds.stock1[sel2], l.moy1[sel2],p.moy1[sel2],age.moy1[sel2])
     
     ### FMSP
-    sel4=which(abs(msp1-f.MSP*100)==min(abs(msp1-f.MSP*100)))
+    sel4=which(abs(msp1-F.MSP*100)==min(abs(msp1-F.MSP*100)))
     
     ref.table[4,]=c(F.i[sel4],pds.catch1[sel4], ssb1[sel4],pds.stock1[sel4], l.moy1[sel4],p.moy1[sel4],age.moy1[sel4])
 
     
-    r.names=c("F.zero","F.01","F.max",f.MSP.name)
+    r.names=c("F.zero","F.01","F.max",F.MSP.name)
     row.names(ref.table)=r.names
     
     ref.line.sel=data.frame(line.sel=c(sel2,sel4, sel3))
