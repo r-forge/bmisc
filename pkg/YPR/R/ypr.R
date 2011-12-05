@@ -344,9 +344,9 @@ plot.ypr<-
     }
 }
 
-plot.sel <- function (object) UseMethod("plot.sel")
+plot.sel <- function (object, select=c(1,2,3),leg=TRUE,...) UseMethod("plot.sel")
 
-plot.sel.ypr <- function(object, main, xlab, ylab){
+plot.sel.ypr <- function(object, main, xlab, ylab, select=c(1,2,3),leg=TRUE){
     
     if(missing(main)) main=c("Maturity\n(Mat)", "Natural Mortality Selectivity\n(Msel.type)","Fishing Selectivity\n(Fsel.type)") 
     if(missing(xlab)) xlab="Length"
@@ -382,17 +382,44 @@ plot.sel.ypr <- function(object, main, xlab, ylab){
         F.sel2=F.sel
         F.sel2[sel]=F.sel[sel]*prop.[sel]
         }
-
+    if(length(select)==3){
     par(mfrow=c(2,2))
-    plot(mat~x.dat, xlim=xlim, ylim=ylim, main=main[1], type='l', lwd=2.7, xlab=xlab, ylab=ylab)	
+    }else{
+        if(length(select)==2 & 3 %in% select){
+            par(mfrow=c(2,2))
+          }else{
+           if(length(select)==2 & !(3 %in% select)){
+           par(mfrow=c(1,2))
+           }else{
+           if(length(select)==1 & 3 == select & leg){
+           par(mfrow=c(1,2))
+           }else{
+           if(length(select)==1 & 3 !=select){
+           par(mfrow=c(1,1))
+           }else{
+           if(length(select)==1 & 3 ==select & !leg) par(mfrow=c(1,1))
+        }
+        }
+        }
+        }
+        }
+    if(1 %in% select){
+    plot(mat~x.dat, xlim=xlim, ylim=ylim, main=main[1], type='l', lwd=2.7, xlab=xlab, ylab=ylab)
+    }
+    if(2 %in% select){
     plot(M.sel~x.dat  , xlim=xlim, ylim=ylim, main=main[2], type='l', lwd=2.7, xlab=xlab, ylab=ylab)
+    }
+    if(3 %in% select){
     plot(F.sel~x.dat  , xlim=xlim, ylim=ylim, main=main[3], type='l', lwd=2.7, xlab=xlab, ylab=ylab)
     if(!is.null(object@parms$prop.surv)){
         points(F.sel2~x.dat, type='l', lwd=2.5, col='blue' )
         abline(v=object@parms$fish.lim, lwd=2.5, col="red")
+        if(leg){
         plot(1,type="n", xaxt="n",yaxt="n", xlab="", ylab="", bty="n")
         legend("topleft",col=c("red", "blue"),lty=1, lwd=3,legend=c("Minimum legal catch size","Fishing selectivity when\nconsidering survival of\nbycatch"),
                 horiz=F, bty='n', bg='white', seg.len=1)
+        }
+    }
     }
     par(mfrow=c(1,1))
 }
