@@ -126,8 +126,11 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
     pds.stock.moy=pds.stock1/n.stock1
     
     ###  Catches  ###
-    stop("Correct catch without smaller values of fish.lim !!!")
-    n.catch=F./(F.+M)* n.stock*(1-exp(-age.step*Z))
+    #stop("Correct catch without smaller values of fish.lim !!!")
+    sel2=which(YPR$l.age<fish.lim)
+    F.p=F.
+    F.p[sel,]=F.p[sel,]*0
+    n.catch=F.p/(F.+M)* n.stock*(1-exp(-age.step*Z))
     n.catch[1,]=NA
     n.catch1=colSums(n.catch, na.rm=TRUE)
     

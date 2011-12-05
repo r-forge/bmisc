@@ -62,7 +62,7 @@
                             logit= {
                                 if(all(!(c("infl1","infl2") %in% names(sel.type)))) stop("'infl1' and 'infl2' must be defined. Read help('ypr').")
                                 sel.type1=list(x=x, infl1=NULL, infl2=NULL, pos=TRUE, lv=0, uv=1 , 
-                                        prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+                                        prob=NULL, prop=0.05,beta=0.2, fast=TRUE)
                                 sel=which(names(sel.type1) %in% names(sel.type))
                                 name.sel=names(sel.type1)[sel]
                                 sel.type1[name.sel] <-sel.type[name.sel]        
@@ -70,7 +70,7 @@
                             plat.logit= {
                                 if(all(!(c("infl1","infl2", "infl3", "infl4") %in% names(sel.type)))) stop("'infl1' to 'infl4' must be defined. Read help('ypr').")
                                 sel.type1=list(x=x, infl1=NULL, infl2=NULL, infl3=NULL, infl4=NULL, pos=TRUE, lv=0, uv=1, 
-                                        prob=NULL, prop=0.1,beta=0.2, fast=TRUE)
+                                        prob=NULL, prop=0.05,beta=0.2, fast=TRUE)
                                 sel=which(names(sel.type1) %in% names(sel.type))
                                 name.sel=names(sel.type1)[sel]
                                 sel.type1[name.sel] <-sel.type[name.sel]        
@@ -207,11 +207,11 @@ plat.ramp.sel <- function(x, infl1, infl2, infl3,infl4, pos=TRUE, lv=c(0,0), uv=
 }
 
 
-logit.sel <- function(x, infl1,infl2, pos=TRUE, lv=0, uv=1,...) {
+logit.sel <- function(x, infl1,infl2, pos=TRUE, lv=0, uv=1,prop=0.05,...) {
     if(lv[1]>uv[1]){stop("'lv' should be smaller or equal to 'uv'.")}
     if(any(c(lv[1],uv[1])<0) | any(c(lv[1],uv[1])>1)){stop("Values 'lv' and 'uv' should be in [0,1].")}
     
-    res=find.beta(minv=infl1,maxv=infl2,...)
+    res=find.beta(minv=infl1,maxv=infl2,prop=prop,...)
     ajust=coef(lm(c(uv[1],lv[1])~c(1,0)))
     if(pos){
         .sel=(1/(1+exp(-res$beta*(x-res$x50))))
@@ -222,7 +222,7 @@ logit.sel <- function(x, infl1,infl2, pos=TRUE, lv=0, uv=1,...) {
     return(.sel)
 }
 
-plat.logit.sel <- function(x, infl1,infl2,infl3,infl4, pos=TRUE, lv=c(0,0), uv=c(1,1),...) {
+plat.logit.sel <- function(x, infl1,infl2,infl3,infl4, pos=TRUE, lv=c(0,0), uv=c(1,1),prop=0.05,...) {
     n.uv=n(uv)
     test=vector()
     for(i in 1:n.uv) test[i]=any(lv>uv[i])
@@ -239,8 +239,8 @@ plat.logit.sel <- function(x, infl1,infl2,infl3,infl4, pos=TRUE, lv=c(0,0), uv=c
             ajust2=coef(lm(c(uv[1],lv[2])~c(1,0)))
         }else{ajust2=coef(lm(c(uv[1],lv[1])~c(1,0)))}
         
-        res1=find.beta(minv=infl1,maxv=infl2,...)
-        res2=find.beta(minv=infl3,maxv=infl4,...)
+        res1=find.beta(minv=infl1,maxv=infl2,prop=prop,...)
+        res2=find.beta(minv=infl3,maxv=infl4,prop=prop,...)
         .sel[s1]=1/(1+exp(-res1$beta*(x[s1]-res1$x50)))
         .sel[s1]=.sel[s1]*ajust1[2]+ajust1[1]
         
@@ -252,8 +252,8 @@ plat.logit.sel <- function(x, infl1,infl2,infl3,infl4, pos=TRUE, lv=c(0,0), uv=c
             ajust2=coef(lm(c(uv[2],lv[1])~c(1,0)))
         }else{ajust2=coef(lm(c(uv[1],lv[1])~c(1,0)))}
         
-        res1=find.beta(minv=infl1,maxv=infl2,...)
-        res2=find.beta(minv=infl3,maxv=infl4,...)
+        res1=find.beta(minv=infl1,maxv=infl2,prop=prop,...)
+        res2=find.beta(minv=infl3,maxv=infl4,prop=prop,...)
         .sel[s1]=1/(1+exp(res1$beta*(x[s1]-res1$x50)))
         .sel[s1]=.sel[s1]*ajust1[2]+ajust1[1]
         
