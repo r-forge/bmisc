@@ -6,7 +6,6 @@ histplot.default <-
         main=paste("Histogram of" , DNAME),xlab=DNAME,ylab="Frequency",...)
 {
 
-    dat=residuals(mod)
     DNAME <- paste(deparse(substitute(dat), 500), collapse="\n")
 
 
@@ -20,12 +19,12 @@ histplot.default <-
     sd = sd(dat,na.rm=TRUE)
     dens=dnorm(s, mean, sd)
     ylim <- c(0,  max(hdat$density , dens))
-     ylim <- c(0,  max(hdat$counts)*1.1)
+    #ylim <- c(0,  max(hdat$counts)*1.1)
 
 
 #Graph
 
-    plot(hdat,freq=T, col=barc ,border=borc, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, main=main)
+    plot(hdat,freq=F, col=barc ,border=borc, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, main=main)
     abline(h = par("usr")[3], col = "black")
 
     if(box) {box()}
@@ -35,7 +34,7 @@ histplot.default <-
                 sd = sd(dat,na.rm=TRUE)
                 xlim2 = range(hdat$breaks)
                 s = seq(xlim2[1], xlim2[2], length = 201)
-                lines(s, (dnorm(s, mean, sd)*2*n(dat)), lwd = 2, col = lcol)
+                lines(s, (dnorm(s, mean, sd)), lwd = 2, col = lcol)
     }
     
     if(!is.null(stat)){
@@ -69,17 +68,17 @@ histplot.default <-
 }
 
 histplot.norm=function(object,main=paste("Histogram of", object@data.name,sep=" "),xlab=object@data.name,ylab="Frequency",...){
-    histplot(object@data, main=main,xlab=xlab,ylab=ylab,... )
+    histplot.default(object@data, main=main,xlab=xlab,ylab=ylab,... )
 }
 
 histplot.lm=function(object,type="response",main="Histogram of Residuals",xlab=paste("Residuals (",type,")",sep=""),ylab="Frequency",...){
-    histplot(residuals(object), main=main,xlab=xlab,ylab=ylab,... )
+    histplot.default(residuals(object), main=main,xlab=xlab,ylab=ylab,... )
 }
 
 histplot.glm=function(object,type="deviance",main="Histogram of Residuals",xlab=paste("Residuals (",type,")",sep=""),ylab="Frequency",...){
-    histplot(residuals(object, type=type), main=main,xlab=xlab,ylab=ylab,... )
+    histplot.default(residuals(object, type=type), main=main,xlab=xlab,ylab=ylab,... )
 }
 
 histplot.gam=function(object,type="deviance",main="Histogram of Residuals",xlab=paste("Residuals (",type,")",sep=""),ylab="Frequency",...){
-    histplot(residuals(object, type=type),  main=main,xlab=xlab,ylab=ylab,... )
+    histplot.default(residuals(object, type=type),  main=main,xlab=xlab,ylab=ylab,... )
 }
