@@ -3,7 +3,7 @@ histplot <- function (dat,...) UseMethod("histplot")
 histplot.default <-
         function(dat, breaks="Sturges", barc="steelblue", borc="white", fit.norm=TRUE, lcol="brown", 
         stat=NULL, stat.lab=c("Mean","Median"), box=TRUE, rug=TRUE , 
-        main=paste("Histogram of" , DNAME),xlab=DNAME,ylab="Frequency",...)
+        main=paste("Histogram of" , DNAME),xlab=DNAME,ylab="Density",...)
 {
 
     DNAME <- paste(deparse(substitute(dat), 500), collapse="\n")
@@ -24,7 +24,7 @@ histplot.default <-
 
 #Graph
 
-    plot(hdat,freq=F, col=barc ,border=borc, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, main=main)
+    plot(hdat,freq=F, col=barc ,border=borc, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, main=main,...)
     abline(h = par("usr")[3], col = "black")
 
     if(box) {box()}
