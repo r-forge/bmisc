@@ -1,12 +1,12 @@
 Package: YPR
 Type: Package
 Title: What the package does (short line)
-Version: 0.1-1
-Date: 2011-10-03
+Version: 0.1-2
+Date: 2012-03-01
 Author: Benoit Bruneau
 Maintainer: Benoit Bruneau <benoit.bruneau1@gmail.com>
 Depends: bmisc
 Description: This is a length-based Yield Per Recruit (YPR) model. It will soon include a weight-based YPR component.
 License: LGPL >= 3.0
-Packaged: 2011-11-18;
+Packaged: 2012-03-01;
 LazyLoad: yes
