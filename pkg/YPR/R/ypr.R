@@ -133,7 +133,7 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
                 sel2=which(YPR$l.age<fish.lim)
                 F.p[sel2,]=F.p[sel2,]*0
         }
-        n.catch=F.p/Z* n.stock*(1-exp(-age.step*Z))
+        n.catch=F.p/(F.+M)* n.stock*(1-exp(-age.step*Z))
         n.catch[1,]=NA
         n.catch1=colSums(n.catch, na.rm=TRUE)
         
