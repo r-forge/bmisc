@@ -13,7 +13,7 @@
 
 ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.lim=NULL ,
         Fsel.type=NULL, F.max=2, F.incr.YPR=0.0001,Mat=NULL,  Msel.type=NULL, 
-        M=0.2, F.MSP=0.4){
+        M=NULL, F.MSP=0.4){
         
         parms=list(LW=LW, vonB=vonB, last.age=last.age, l.start=l.start, age.step=age.step, prop.surv=prop.surv, fish.lim=fish.lim,
                 Fsel.type=Fsel.type, F.max=F.max, F.incr.YPR=F.incr.YPR, Mat=Mat,
@@ -21,22 +21,48 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         
         cl.vb=class(vonB)
         cl.LW=class(LW)
+        if(cl.vb=="numeric" && all(names(vonB) %in% c("Linf","K","t0"))==FALSE ) stop(paste("When 'vonB' is a numeric vector, the names used for each value\n       should be c('Linf','K','t0') or c('Linf','K'). Current names are ",deparse(names(vonB)),".",sep=""))
+        if(cl.vb=="numeric" & length(vonB)==3){vB.test=TRUE}else{ vB.test=FALSE}
         
-        age=seq(0,last.age,by=age.step)
+        if(cl.vb=="nls"){
+        coeffs=coef(vonB)
+        Linf=coeffs[names(coeffs)=="Linf"]
+        K=coeffs[names(coeffs)=="K"]
+        t0=coeffs[names(coeffs)=="t0"]
+        age.1=(log(-l.min.f/Linf+1)/-K)+ t0
+        }else{
+        if(class(vonB)=="numeric" & vB.test){
+        Linf=vonB[names(vonB)=="Linf"]
+        K=vonB[names(vonB)=="K"]
+        t0=vonB[names(vonB)=="t0"]
+        age.1=(log(-l.min.f/Linf+1)/-K)+ t0
+        }else{
+        age.1=0
+        }
+        }
+        
+        age=seq(age.1,last.age+age.1,by=age.step)
         age=as.integer(age*1000000)
         age=age/1000000
         
         switch(cl.vb,
                 numeric= {
-                        names(vonB)=c("Linf","K")
+                        if(vB.test){
+                        #names(vonB)=c("Linf","K","t0")
+                        l.age<-vonB[1]*(1-exp(-vonB[2]*(age-t0))) #+ l.start*exp(-vonB[2]*age)
+                        }
+                        if(!vB.test){
+                        #names(vonB)=c("Linf","K","t0")
                         l.age<-vonB[1]*(1-exp(-vonB[2]*age)) + l.start*exp(-vonB[2]*age)
+                        }
                 },
                 nls={
-                        coeffs<-coef(vonB)
-                        Linf=coeffs[names(coeffs)=="Linf"]
-                        K=coeffs[names(coeffs)=="K"]
-                        vonB=c(Linf, K) 
-                        l.age<-Linf*(1-exp(-K*age)) + l.start*exp(-K*age)
+                        #coeffs<-coef(vonB)
+#                        Linf=coeffs[names(coeffs)=="Linf"]
+#                        K=coeffs[names(coeffs)=="K"]
+#                        t0=coeffs[names(coeffs)=="t0"]
+#                        vonB=c(Linf, K) 
+                        l.age<-Linf*(1-exp(-K*(age-t0))) #+ l.start*exp(-K*age)
                 }
         )
         
@@ -81,7 +107,7 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         ##############################################################################
         ##                                  Msel.type                               ##
         ##############################################################################
-        M.sel=.selectivity(Msel.type,YPR$l.age)
+        if(!is.null(M))M.sel=.selectivity(Msel.type,YPR$l.age)
         
         ##############################################################################
         ##                             F selectivity                                ##
@@ -108,10 +134,17 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         F.=matrix(rep(F.sel,n.F),ncol=n.F, nrow=n(F.sel))
         F.=sweep(F.,MARGIN=2,F.i,`*`)
         
-        M.all=M*M.sel
+        if(!is.null(M)){
+            M.all=M*M.sel
+        }else{
+            M.all=m.cw(k=K,t0=t0,data=YPR)
+        }
+
         Z=sweep(F.,MARGIN=1,M.all,`+`)
-        
         Z1=colSums(Z, na.rm=TRUE)
+        
+        YPR$Mt=M.all
+        YPR$F.sel=F.sel
         
         ###  Stock size  ###
         n.stock= mat.frame
@@ -428,3 +461,23 @@ plot.sel.ypr <- function(object, main, xlab, ylab, select=c(1,2,3),leg=TRUE){
 }
 
 
+m.cw=function(k,t0,data){
+   t= data$age
+     
+   mt1=k/(1-exp(-k*(t-t0)))
+   
+   tm=-(1/k)*log(abs(1-exp(k*t0)))+t0
+   sel=which(data$age<tm)
+   sel2=which(data$age>=tm)
+   
+   a0=1-exp(-k*(tm-t0))
+   a1=k*exp(-k*(tm-t0))
+   a2=-(1/2*k^2)*exp(-k*(tm-t0))
+
+   mt2=k/(a0+(a1*(t-tm))+(a2*(t-tm)^2))
+   
+   #mmt=data
+   Mt=c(mt1[sel],mt2[sel2])
+   
+   Mt
+}
