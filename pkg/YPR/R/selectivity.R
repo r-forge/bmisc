@@ -219,7 +219,7 @@ logit.sel <- function(x, infl1,infl2, pos=TRUE, lv=0, uv=1,prop=0.05,...) {
                 .sel=1/(1+exp(res$beta*(x-res$x50)))
         }
         .sel=.sel*ajust[2]+ajust[1]
-        return(.sel)
+        return(res)
 }
 
 plat.logit.sel <- function(x, infl1,infl2,infl3,infl4, pos=TRUE, lv=c(0,0), uv=c(1,1),prop=0.05,...) {

@@ -112,7 +112,7 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         ##############################################################################
         ##                             F selectivity                                ##
         ##############################################################################
-        F.sel=.selectivity(Fsel.type,YPR$l.age)
+        F.sel=.selectivity(sel.type=Fsel.type,YPR$l.age)
         
         ##############################################################################
         ##                             FISHERMEN selectivity                        ##
