@@ -13,14 +13,22 @@
 
 ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.lim=NULL ,
         Fsel.type=NULL, F.max=2, F.incr.YPR=0.0001,Mat=NULL,  Msel.type=NULL, 
-        M=NULL, F.MSP=0.4){
+        M=0.2, F.MSP=0.4){
         
         parms=list(LW=LW, vonB=vonB, last.age=last.age, l.start=l.start, age.step=age.step, prop.surv=prop.surv, fish.lim=fish.lim,
                 Fsel.type=Fsel.type, F.max=F.max, F.incr.YPR=F.incr.YPR, Mat=Mat,
                 Msel.type=Msel.type, M=M,  F.MSP=F.MSP)
         
+        
         cl.vb=class(vonB)
         cl.LW=class(LW)
+        cl.M=class(M)
+        
+        cl.vb=match.arg(cl.vb,c("numeric","nls"))
+        cl.LW=match.arg(cl.LW,c("numeric","nls","lm"))
+        if(cl.M=="character")M=match.arg(M,c("CW","PW", "J","MG"))
+        if(cl.M=="numeric" & M<0)stop("'M' can only take positive values.")
+        
         if(cl.vb=="numeric" && all(names(vonB) %in% c("Linf","K","t0"))==FALSE ) stop(paste("When 'vonB' is a numeric vector, the names used for each value\n       should be c('Linf','K','t0') or c('Linf','K'). Current names are ",deparse(names(vonB)),".",sep=""))
         if(cl.vb=="numeric" & length(vonB)==3){vB.test=TRUE}else{ vB.test=FALSE}
         
@@ -134,11 +142,16 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         F.=matrix(rep(F.sel,n.F),ncol=n.F, nrow=n(F.sel))
         F.=sweep(F.,MARGIN=2,F.i,`*`)
         
-        if(!is.null(M)){
-            M.all=M*M.sel
-        }else{
-            M.all=m.cw(k=K,t0=t0,data=YPR)
-        }
+        switch(cl.M,
+              character= switch(M,
+                                CW= {M.all=m.cw(k=K,t0=t0,data=YPR)},
+                                PW= {M.all=m.pw(data=YPR)},
+                                MG= {M.all=m.mg(data=YPR)},
+                                J=  {M.all=m.j(k=K)}
+                                ),
+              numeric= {M.all=M*M.sel}
+              )
+                                
 
         Z=sweep(F.,MARGIN=1,M.all,`+`)
         Z1=colSums(Z, na.rm=TRUE)
@@ -287,6 +300,7 @@ setMethod("summary", "ypr",
                 
                 cl.vb=class(object@parms$vonB)
                 cl.LW=class(object@parms$LW)
+                cl.M=class(object@parms$M)
                 switch(cl.vb,
                         numeric= {
                                 cat("\nvon Bartalanffy growth parameters:\n Linf=",object@parms$vonB[[1]], "  K=",object@parms$vonB[[2]] , sep = "")
@@ -309,6 +323,16 @@ setMethod("summary", "ypr",
                                 cat("\nLength-Weight curve parameters:\n log(alpha)=", coef(object@parms$LW)[[1]], "  beta=",coef(object@parms$LW)[[2]] , sep = "")
                         }
                 )
+                #M parameter
+                switch(cl.M,
+                        character= switch(M,
+                                CW= cat("\n'M' is estimated by Chen-Watanabe's (1989) age-dependent model."),
+                                PW= cat("\n'M' is estimated by Peterson-Wroblewski's (1984) model."),
+                                MG= cat("\n'M' is estimated by McGurk's (1986) model."),
+                                J=cat("\n'M is estimated by Jensen's (1996) method.")
+                                ),
+                        numeric= {M.all=M*M.sel}
+              )
                 
                 
                 # Test Results:
@@ -480,4 +504,19 @@ m.cw=function(k,t0,data){
    Mt=c(mt1[sel],mt2[sel2])
    
    Mt
+}
+
+m.pw=function(data){
+Mt=1.92*(data$p.age^(-0.25))
+Mt
+}
+
+m.mg=function(data){
+Mt=0.00526*(data$p.age^(-0.25))
+Mt
+}
+
+m.j=function(k){
+Mt=1.5*(k)
+Mt
 }
