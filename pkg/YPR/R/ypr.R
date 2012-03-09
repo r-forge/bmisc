@@ -13,7 +13,7 @@
 
 ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.lim=NULL ,
         Fsel.type=NULL, F.max=2, F.incr.YPR=0.0001,Mat=NULL,  Msel.type=NULL, 
-        M=0.2, F.MSP=0.4){
+        M=0.2, F.MSP=0.4, rivard=FALSE){
         
         parms=list(LW=LW, vonB=vonB, last.age=last.age, l.start=l.start, age.step=age.step, prop.surv=prop.surv, fish.lim=fish.lim,
                 Fsel.type=Fsel.type, F.max=F.max, F.incr.YPR=F.incr.YPR, Mat=Mat,
@@ -98,6 +98,9 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         
         
         YPR=data.frame(age,l.age, p.age)
+        if(rivard)YPR$p.age.stk=rivard(pds=data.frame(a=YPR$p.age,b=YPR$p.age))
+        
+        
         if(!is.null(fish.lim)) if(fish.lim>max(l.age))warning(paste("'fish.lim' (",fish.lim,") can not be higher than the length at 'last.age' (",round(max(l.age),digits=2),").
                                                 Decrease 'fish.lim' or increase 'last.age'.",sep=""),call.=FALSE)
         
@@ -168,7 +171,9 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         n.stock1=colSums(n.stock, na.rm=TRUE)
         
         ###  Biomass  ###
-        pds.stock=sweep(n.stock,MARGIN=1,YPR$p.age,FUN="*")
+        if(rivard){pds.stock=sweep(n.stock,MARGIN=1,YPR$p.age.stk,FUN="*")
+        }else{pds.stock=sweep(n.stock,MARGIN=1,YPR$p.age,FUN="*")}
+        
         pds.stock1=colSums(pds.stock, na.rm=TRUE)
         pds.stock.moy=pds.stock1/n.stock1
         
@@ -193,7 +198,9 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         ssn1=colSums(ssn, na.rm=TRUE)
         
         ###  Spawning Stock biomass  ###
-        ssb=sweep(ssn,MARGIN=1,YPR$p.age,"*")
+        if(rivard){ssb=sweep(ssn,MARGIN=1,YPR$p.age.stk,"*")
+        }else{ssb=sweep(ssn,MARGIN=1,YPR$p.age,"*")}
+        
         ssb1=colSums(ssb, na.rm=TRUE)
         
         ###  Maximum Spawning Potential  ###
