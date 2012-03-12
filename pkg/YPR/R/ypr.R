@@ -13,12 +13,16 @@
 
 ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.lim=NULL ,
         Fsel.type=NULL, F.max=2, F.incr.YPR=0.0001,Mat=NULL,  Msel.type=NULL, 
-        M=0.2, F.MSP=0.4, rivard=FALSE){
+        M=0.2, F.MSP=0.4, rivard=FALSE, month=NULL){
         
         parms=list(LW=LW, vonB=vonB, last.age=last.age, l.start=l.start, age.step=age.step, prop.surv=prop.surv, fish.lim=fish.lim,
                 Fsel.type=Fsel.type, F.max=F.max, F.incr.YPR=F.incr.YPR, Mat=Mat,
-                Msel.type=Msel.type, M=M,  F.MSP=F.MSP)
+                Msel.type=Msel.type, M=M,  F.MSP=F.MSP, rivard=rivard, month=month)
         
+        if(rivard & is.null(month)){
+              warning("'month' was not specified.\n   Default value (6) will be used for natural mortality (M) adjustment.")
+              month=6
+        }
         
         cl.vb=class(vonB)
         cl.LW=class(LW)
@@ -83,14 +87,14 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
                         coeffs<-coef(LW)
                         alpha=coeffs[names(coeffs)=="alpha"]
                         beta=coeffs[names(coeffs)=="beta"]
-                        LW=c(alpha,beta)
+                        LW2=c(alpha,beta)
                         p.age=alpha*l.age^beta
                 },
                 lm={
                         coeffs<-coef(LW)
                         alpha=exp(coeffs[1])
                         beta=coeffs[2]
-                        LW=c(alpha,beta)
+                        LW2=c(alpha,beta)
                         p.age=alpha*l.age^beta
                 }
         )
@@ -98,7 +102,30 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         
         
         YPR=data.frame(age,l.age, p.age)
-        if(rivard)YPR$p.age.stk=rivard(pds=data.frame(a=YPR$p.age,b=YPR$p.age))
+        if(rivard){
+              YPR$p.age.stk=rivard(pds=data.frame(a=YPR$p.age,b=YPR$p.age))[,2]
+              switch(cl.LW,
+                numeric= {
+                        names(LW)=c("alpha","beta")
+                        YPR$l.age.stk=(YPR$p.age.stk/LW[1])^(1/LW[2])
+                },
+                nls={
+                        coeffs<-coef(LW)
+                        alpha=coeffs[names(coeffs)=="alpha"]
+                        beta=coeffs[names(coeffs)=="beta"]
+                        LW2=c(alpha,beta)
+                       YPR$l.age.stk=(YPR$p.age.stk/alpha)^(1/beta)
+                },
+                lm={
+                        coeffs<-coef(LW)
+                        alpha=exp(coeffs[1])
+                        beta=coeffs[2]
+                        LW2=c(alpha,beta)
+                        YPR$l.age.stk=(YPR$p.age.stk/alpha)^(1/beta)
+                }
+              )
+        }
+
         
         
         if(!is.null(fish.lim)) if(fish.lim>max(l.age))warning(paste("'fish.lim' (",fish.lim,") can not be higher than the length at 'last.age' (",round(max(l.age),digits=2),").
@@ -164,7 +191,8 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         
         ###  Stock size  ###
         n.stock= mat.frame
-        n.stock[1,]=age.step
+        if(rivard){n.stock[1,]=age.step*exp(-((month-1)/12)*M)}else{n.stock[1,]=age.step}
+
         for(i in 1:(n(F.sel)-1)){
                 n.stock[i+1,]=n.stock[i,]*exp(-age.step*Z[i,])
         }
@@ -207,11 +235,13 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         msp1=ssb1/max(ssb1)*100
         
         ###  Average length  ###
-        l.moy=sweep(n.stock,MARGIN=1,YPR$l.age,"*")
+        if(rivard){l.moy=sweep(n.stock,MARGIN=1,YPR$l.age.stk,"*")
+        }else{l.moy=sweep(n.stock,MARGIN=1,YPR$l.age,"*")}
         l.moy1=colSums(l.moy, na.rm=TRUE)/n.stock1
         
         ###  Average weight  ###
-        p.moy=sweep(n.stock,MARGIN=1,YPR$p.age,"*")
+        if(rivard){p.moy=sweep(n.stock,MARGIN=1,YPR$p.age.stk,"*")
+        }else{p.moy=sweep(n.stock,MARGIN=1,YPR$p.age,"*")}
         p.moy1=colSums(p.moy, na.rm=TRUE)/n.stock1
         
         ###  Average age  ###
@@ -226,7 +256,7 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         
         YPR.table=data.frame(F=F.i, catch.num=n.catch1, ypr=pds.catch1, stock.num=n.stock1,stock.w=pds.stock1, 
                 ssn=ssn1,ssb=ssb1,F.MSP=msp1, avr.l=l.moy1, avr.w=p.moy1, avr.age=age.moy1)
-        
+                        
         
         
         ##############################################################################
@@ -301,7 +331,9 @@ setMethod("summary", "ypr",
                 
                 
                 # Title:
-                cat("\nTitle:\n ",title, "\n", sep = "")
+                cat(title)
+                
+                if(rivard) cat("\n -> Rivard Weights Calculation has been used.\n")
                 
                 #VonB parameters:
                 
@@ -310,10 +342,10 @@ setMethod("summary", "ypr",
                 cl.M=class(object@parms$M)
                 switch(cl.vb,
                         numeric= {
-                                cat("\nvon Bartalanffy growth parameters:\n Linf=",object@parms$vonB[[1]], "  K=",object@parms$vonB[[2]] , sep = "")
+                                cat("\n von Bartalanffy growth parameters:\n  Linf=",object@parms$vonB[[1]], "  K=",object@parms$vonB[[2]] , sep = "")
                         },
                         nls={
-                                cat("\nvon Bartalanffy growth parameters:\n Linf=", coef(object@parms$vonB)[[1]], "  K=",coef(object@parms$vonB)[[2]] , sep = "")
+                                cat("\n von Bartalanffy growth parameters:\n  Linf=", coef(object@parms$vonB)[[1]], "  K=",coef(object@parms$vonB)[[2]] , sep = "")
                         }
                 )
                 
@@ -321,24 +353,24 @@ setMethod("summary", "ypr",
                 #LW parameters:
                 switch(cl.LW,
                         numeric= {
-                                cat("\nLength-Weight curve parameters:\n log(alpha)=", log(object@parms$LW[[1]]), "  beta=",object@parms$LW[[2]] , sep = "")
+                                cat("\n Length-Weight curve parameters:\n  log(alpha)=", log(object@parms$LW[[1]]), "  beta=",object@parms$LW[[2]] , sep = "")
                         },
                         nls={
-                                cat("\nLength-Weight curve parameters:\n log(alpha)=", log(coef(object@parms$LW)[[2]]), "  beta=",coef(object@parms$LW)[[1]] , sep = "")
+                                cat("\n Length-Weight curve parameters:\n  log(alpha)=", log(coef(object@parms$LW)[[2]]), "  beta=",coef(object@parms$LW)[[1]] , sep = "")
                         },
                         lm={
-                                cat("\nLength-Weight curve parameters:\n log(alpha)=", coef(object@parms$LW)[[1]], "  beta=",coef(object@parms$LW)[[2]] , sep = "")
+                                cat("\n Length-Weight curve parameters:\n  log(alpha)=", coef(object@parms$LW)[[1]], "  beta=",coef(object@parms$LW)[[2]] , sep = "")
                         }
                 )
                 #M parameter
                 switch(cl.M,
-                        character= switch(M,
-                                CW= cat("\n'M' is estimated by Chen-Watanabe's (1989) age-dependent model."),
-                                PW= cat("\n'M' is estimated by Peterson-Wroblewski's (1984) model."),
-                                MG= cat("\n'M' is estimated by McGurk's (1986) model."),
-                                J=cat("\n'M is estimated by Jensen's (1996) method.")
+                        character= switch(object@parms$M,
+                                CW= cat("\n 'M' is estimated by Chen-Watanabe's (1989) age-dependent model."),
+                                PW= cat("\n 'M' is estimated by Peterson-Wroblewski's (1984) model."),
+                                MG= cat("\n 'M' is estimated by McGurk's (1986) model."),
+                                J=cat("\n 'M is estimated by Jensen's (1996) method.")
                                 ),
-                        numeric= {M.all=M*M.sel}
+                        numeric= {cat(paste("\n Intantaneous natural mortality:\n  M =",object@parms$M))}
               )
                 
                 
