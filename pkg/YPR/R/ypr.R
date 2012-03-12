@@ -333,7 +333,7 @@ setMethod("summary", "ypr",
                 # Title:
                 cat(title)
                 
-                if(rivard) cat("\n -> Rivard Weights Calculation has been used.\n")
+                if(object@parms$rivard) {cat("\n -> Rivard Weights Calculation has been used.\n")}else{cat("\n")}
                 
                 #VonB parameters:
                 
