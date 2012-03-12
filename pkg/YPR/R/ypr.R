@@ -159,6 +159,7 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
                 if(is.null(fish.lim))stop("'fish.lim' needs to have a values when 'prop.surv' is present. Read help('ypr.l').")
                 sel=which(YPR$l.age<fish.lim)
                 prop.=1-prop.surv(YPR$l.age)
+                if(all(0<=prop.) & all(prop.<1))stop("'prop.surv' is not a function that expresses probabilities between [0,1].")
                 F.sel[sel]=F.sel[sel]*prop.[sel]
         }
         
