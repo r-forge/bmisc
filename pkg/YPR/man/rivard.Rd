@@ -2,22 +2,23 @@
 \alias{rivard}
 
 \title{
-Rivard Weights Calculation
+Rivard Weight Calculations
 }
 \description{
 This function applies Rivard equations to mid-year weight at age data to adjust values to Jan-1 basis. 
 }
 \usage{
-rivard(pds, pred=FALSE, K=2, plus.gr=FALSE)
+rivard(data, pred=FALSE, K=2, plus.gr=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{
-%%     ~~Describe \code{fsel.type} here~~
-}
+  \item{data}{a \code{\link{data.frame}} where each column has the weight at age for of a year. There should be as much columns as there are years.}
+  \item{pred}{logical. Indicates if predictions should be made (\code{TRUE}) for year+1.}
+  \item{K}{number of years to use for averaging when \code{pred=TRUE}.}
+  \item{plus.gr}logical. Indicates if the the oldest age of each year is a plus groupe (\code{TRUE}) or not (\code{FALSE}).}  
 }
 \details{
-More to come.  Will be adding interpolation for spawning season.
+In \code{\link{ypr}}, the \code{rivard} option can do modified Rivard Weight Calculations when \code{age.step} is less than \code{1}.
 }
 \value{
 %%  ~Describe the value returned
@@ -40,12 +41,14 @@ François Grégoire
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{ypr}}
 }
 \examples{
 
-x=rnorm(30,800,10)
-rivard(data.frame("2000"=x,"2001"=x*1.2, "2002"=x*0.8,"2003"=x*0.5))
+x=1:10
+y=data.frame( y1996=x,y1997=x+0.1,y1998=x+0.5)
+
+rivard(data=y,pred=TRUE,K=2)
 
 }
 

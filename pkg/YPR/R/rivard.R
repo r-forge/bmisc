@@ -1,8 +1,8 @@
-rivard <- function(pds, pred=FALSE, K=2, plus.gr=FALSE)
+rivard <- function(data, pred=FALSE, K=2, plus.gr=FALSE)
 {
-    n.age=dim(pds)[1]
-    n.an=dim(pds)[2]
-    pds1=log(pds)
+    n.age=dim(data)[1]
+    n.an=dim(data)[2]
+    pds1=log(data)
     pds2=pds1
     
     
@@ -28,7 +28,9 @@ rivard <- function(pds, pred=FALSE, K=2, plus.gr=FALSE)
         pds3=exp(pds2)
         
         if(pred){
-            last.name=as.character((as.numeric(names(pds3)[n.an])+1))
+            if(K<=1)stop("K can not be smaller than 1. See help('rivard').")
+            if(K>n.an)stop("K can not be greater than the number of years in\n  the data.frame submitted to this function. See help('rivard').")
+            last.name="last.year+1"
             pds3$pred.next=rowMeans(pds3[,(n.an-K+1):n.an])
             names(pds3)[dim(pds3)[2]]=last.name
         }
@@ -58,6 +60,8 @@ rivard <- function(pds, pred=FALSE, K=2, plus.gr=FALSE)
         
         pds3=exp(pds2)
         if(pred){
+            if(K<=1)stop("K can not be smaller than 1. See help('rivard').")
+            if(K>n.an)stop("K can not be greater than the number of years in\n  the data.frame submitted to this function. See help('rivard').")
             last.name=as.character((as.numeric(names(pds3)[n.an])+1))
             pds3$pred.next=rowMeans(pds3[,(n.an-K+1):n.an])
             names(pds3)[dim(pds3)[2]]=last.name
