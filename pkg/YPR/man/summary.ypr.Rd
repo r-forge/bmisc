@@ -12,7 +12,7 @@ Summary for an object of class \code{"ypr"}.
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{an object of class \code{"ypr"} resulting from a
-    call to \code{\link{ypr.l}}.
+    call to \code{\link{ypr}}.
   }
 }
 \details{

@@ -15,7 +15,7 @@ rivard(data, pred=FALSE, K=2, plus.gr=FALSE)
   \item{data}{a \code{\link{data.frame}} where each column has the weight at age for of a year. There should be as much columns as there are years.}
   \item{pred}{logical. Indicates if predictions should be made (\code{TRUE}) for year+1.}
   \item{K}{number of years to use for averaging when \code{pred=TRUE}.}
-  \item{plus.gr}logical. Indicates if the the oldest age of each year is a plus groupe (\code{TRUE}) or not (\code{FALSE}).}  
+  \item{plus.gr}{logical. Indicates if the the oldest age of each year is a plus groupe (\code{TRUE}) or not (\code{FALSE}).}  
 }
 \details{
 In \code{\link{ypr}}, the \code{rivard} option can do modified Rivard Weight Calculations when \code{age.step} is less than \code{1}.

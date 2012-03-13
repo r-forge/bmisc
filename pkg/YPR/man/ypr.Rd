@@ -171,7 +171,7 @@ Diane Archambault
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{plot.logit}}, \code{\link{plot.ypr}} and \code{\link{plot.parms.ypr}}  
+\code{\link{plot.logit}}, \code{\link{plot.ypr}} and \code{\link{plot.sel.ypr}}  
 }
 \examples{
 

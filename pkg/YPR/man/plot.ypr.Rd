@@ -13,8 +13,8 @@ Yield per Recruit and Spawning Stock Biomass per Recruit are plotted with standa
 }
 
 \arguments{
-  \item{object}{an object of class \code{"ypr"} resulting from a
-    call to \code{\link{ypr.l}}
+  \item{object}{an object of class \code{ypr} resulting from a
+    call to \code{\link{ypr}}
 }
   \item{main}{main title for the graph
 }
@@ -64,7 +64,7 @@ Benoit Bruneau
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{ypr.l}}
+\code{\link{ypr}}
 }
 \examples{
 
