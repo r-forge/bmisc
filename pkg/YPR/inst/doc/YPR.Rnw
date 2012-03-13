@@ -1,0 +1,569 @@
+\documentclass[a4paper]{book}
+\usepackage[times,hyper]{Rd}
+\usepackage{makeidx}
+\usepackage[utf8,latin1]{inputenc}
+\usepackage[frenchb]{babel}
+\makeindex{}
+\begin{document}
+\chapter*{}
+\begin{center}
+{\textbf{\huge Package `YPR'}}
+\par\bigskip{\large \today}
+\end{center}
+\begin{description}
+\raggedright{}
+\item[Type]\AsIs{Package}
+\item[Title]\AsIs{What the package does (short line)}
+\item[Version]\AsIs{0.1-2}
+\item[Date]\AsIs{2012-03-01}
+\item[Author]\AsIs{Benoit Bruneau}
+\item[Maintainer]\AsIs{Benoit Bruneau }\email{benoit.bruneau1@gmail.com}\AsIs{}
+\item[Depends]\AsIs{bmisc}
+\item[Description]\AsIs{This is a length-based Yield Per Recruit (YPR) model. It will soon include a weight-based YPR component.}
+\item[License]\AsIs{LGPL >= 3.0}
+\item[LazyLoad]\AsIs{yes}
+\end{description}
+\Rdcontents{\R{} topics documented:}
+\newpage 
+\inputencoding{utf8}
+\HeaderA{plot.sel.ypr}{Plots of selectivity curves used in an \code{ypr} object}{plot.sel.ypr}
+\keyword{\textbackslash{}textasciitilde{}kwd1}{plot.sel.ypr}
+\keyword{\textbackslash{}textasciitilde{}kwd2}{plot.sel.ypr}
+%
+\begin{Usage}
+\begin{verbatim}
+plot.sel.ypr(object)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{object}] \code{ypr} object.
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
+%
+\begin{Examples}
+\begin{ExampleCode}
+ypr.mod=ypr(vonB=c(1564.5508, 0.1206),  
+		LW=c(0.000000009434 , 3.042974620048),
+		l.start=241.86,
+		last.age=14,
+		age.step=1,
+		Fsel.type=list(type="ramp",infl1=650,infl2=900, lv=c(0,0.2)),
+		F.max=2, 
+		F.incr.YPR=0.0001,
+		Msel.type=list(type="ramp", infl1=400, infl2=600, lv=0.5, pos=F), 
+		M=0.2, 
+		Mat=list(type="ramp",infl1=700, infl2=900),
+		f.MSP=0.4) 
+
+
+
+plot.sel(ypr.mod)
+\end{ExampleCode}
+\end{Examples}
+\newpage 
+\inputencoding{utf8}
+\HeaderA{plot.ypr}{Standard Yield per Recruit plot.}{plot.ypr}
+%
+\begin{Description}\relax
+Yield per Recruit and Spawning Stock Biomass per Recruit are plotted with standard reference points. 
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+## S4 method for signature 'ypr'
+plot(object, main, ylab.ypr, ylab.ssb, xlab, 
+                     col.ypr, col.ssb, ref, legend)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{object}] an object of class \code{ypr} resulting from a
+call to \code{\LinkA{ypr}{ypr}}
+
+\item[\code{main}] main title for the graph
+
+\item[\code{ylab.ypr}] a label for the YPR \code{y} axis
+
+\item[\code{ylab.ssb}] a label for the SSB/R \code{y} axis
+
+\item[\code{xlab}] a label for the YPR \code{x} axis.
+
+\item[\code{col.ypr}] the color of the the color of the YPR line.
+
+\item[\code{col.ssb}] the color of the the color of the SSB/R line.
+
+\item[\code{ref}] logical; if \code{TRUE}, standard reference points are added to the plot.
+
+\item[\code{legend}] logical; if \code{TRUE}, a legend is added in the \code{'topright'} corner of the plot.
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+
+\bold{REFERENCE POINTS:}\\{}
+Reference points used for result output are defined as follow:
+\begin{itemize}
+
+\item \bold{F.zero:}  F level when there is no fishing (F=0).
+\item \bold{F.01:}    F level where the slope of yield curve is 10\% of the slope at \code{F.zero}. 
+\item \bold{F.xx:}    F level where the MSP is at the level defined by \code{f.MSP} option. Default is 40\% (0.4).
+\item \bold{F.max:}   F level where yield is maximum.
+
+\end{itemize}
+
+\end{Details}
+%
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
+%
+\begin{SeeAlso}\relax
+\code{\LinkA{ypr}{ypr}}
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+ypr.mod=ypr(vonB=c(1564.5508, 0.1206),  
+		LW=c(0.000000009434 , 3.042974620048),
+		l.start=241.86,
+		last.age=14,
+		age.step=1,
+		Fsel.type=list(type="ramp",infl1=650,infl2=900, lv=c(0,0.2)),
+		F.max=2, 
+		F.incr.YPR=0.0001,
+		Msel.type=list(type="ramp", infl1=400, infl2=600, lv=0.5, pos=F), 
+		M=0.2, 
+		Mat=list(type="ramp",infl1=700, infl2=900),
+		f.MSP=0.4) 
+
+
+
+plot(ypr.mod)
+
+\end{ExampleCode}
+\end{Examples}
+\newpage 
+\inputencoding{utf8}
+\HeaderA{rivard}{Rivard Weight Calculations}{rivard}
+%
+\begin{Description}\relax
+This function applies Rivard equations to mid-year weight at age data to adjust values to Jan-1 basis. 
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+rivard(data, pred=FALSE, K=2, plus.gr=FALSE)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{data}] a \code{\LinkA{data.frame}{data.frame}} where each column has the weight at age for of a year. There should be as much columns as there are years.
+\item[\code{pred}] logical. Indicates if predictions should be made (\code{TRUE}) for year+1.
+\item[\code{K}] number of years to use for averaging when \code{pred=TRUE}.
+\item[\code{plus.gr}] logical. Indicates if the the oldest age of each year is a plus groupe (\code{TRUE}) or not (\code{FALSE}). 
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+In \code{\LinkA{ypr}{ypr}}, the \code{rivard} option can do modified Rivard Weight Calculations when \code{age.step} is less than \code{1}.
+\end{Details}
+%
+\begin{Author}\relax
+Benoit Bruneau and\\{}
+Frangois Grigoire
+\end{Author}
+%
+\begin{SeeAlso}\relax
+\code{\LinkA{ypr}{ypr}}
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+x=1:10
+y=data.frame( y1996=x,y1997=x+0.1,y1998=x+0.5)
+
+rivard(data=y,pred=TRUE,K=2)
+
+\end{ExampleCode}
+\end{Examples}
+\newpage 
+\inputencoding{utf8}
+\HeaderA{selectivity}{Selectivity functions}{selectivity}
+\aliasA{const.sel}{selectivity}{const.sel}
+\aliasA{full.sel}{selectivity}{full.sel}
+\aliasA{logit.sel}{selectivity}{logit.sel}
+\aliasA{mod.logit.sel}{selectivity}{mod.logit.sel}
+\aliasA{plat.full.sel}{selectivity}{plat.full.sel}
+\aliasA{plat.logit.sel}{selectivity}{plat.logit.sel}
+\aliasA{plat.ramp.sel}{selectivity}{plat.ramp.sel}
+\aliasA{ramp.sel}{selectivity}{ramp.sel}
+%
+\begin{Description}\relax
+These selectivity functions are called by \code{\LinkA{ypr}{ypr}()}. They estimate probabilities [0,1] for a given functional shape and a given number of inflection points .
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+const.sel(x)
+full.sel(x, infl1, pos=TRUE)
+plat.full.sel(x, infl1, infl2, pos=TRUE)
+ramp.sel(x, infl1, infl2, pos=TRUE)
+plat.ramp.sel(x, infl1, infl2, infl3, infl4, pos=TRUE)
+logit.sel(x, infl1, infl2, pos=TRUE, ...)
+plat.logit.sel(x, infl1, infl2, pos=TRUE, ...)
+mod.logit.sel(x, alpha, beta)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{x}] a numeric vector for which probabilities are to be estimated.
+
+\item[\code{infl1 to infl4}] numeric value of the inflection point(s).
+
+\item[\code{pos}] logical. Indicates if the trend at the beginning is positive  (\code{TRUE}) or negative (\code{FALSE})
+
+\item[\code{...}] arguments to be passed to \code{\LinkA{find.beta}{find.beta}()}
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+More to come.
+\end{Details}
+%
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
+%
+\begin{SeeAlso}\relax
+\code{\LinkA{ypr}{ypr}}, \code{\LinkA{find.beta}{find.beta}}
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library(bmisc)
+
+x=0:1000
+
+plot(full.sel(infl1=600,x=0:1000,lv=0,uv=1), ylim=c(0,1), type='l', lwd=3)
+
+plot(plat.full.sel(infl1=300, infl2=800,x=x,lv=c(0.4), uv=0.9, neg=F) ~ x, ylim=c(0,1), type='l', lwd=3)
+
+plot(ramp.sel(200,600,x=0:1000, lv=0.1,uv=1, neg=T), ylim=c(0,1), type='l', lwd=3)
+
+plot(plat.ramp.sel(infl1=100,infl2=300,infl3=600,infl4=800,x=0:1000, lv=c(0.3,0.1), uv=c(0.7,0.5), neg=F), ylim=c(0,1), type='l', lwd=3)
+
+plot(logit.sel(infl1=300,infl2=500,x=0:1000, lv=0.5, uv=1, neg=T), ylim=c(0,1), type='l', lwd=3)
+
+plot(plat.logit.sel(infl1=200,infl2=400,infl3=600,infl4=800,x=0:1000, lv=c(0.2,0.8)), ylim=c(0,1), type='l', lwd=3)
+\end{ExampleCode}
+\end{Examples}
+\newpage 
+\inputencoding{utf8}
+\HeaderA{summary.ypr}{Summarizing the results of YPR models.}{summary.ypr}
+%
+\begin{Description}\relax
+Summary for an object of class \code{"ypr"}.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+## S4 method for signature 'ypr'
+summary(object)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{object}] an object of class \code{"ypr"} resulting from a
+call to \code{\LinkA{ypr}{ypr}}.
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Author}\relax
+Benoit Bruneau
+\end{Author}
+%
+\begin{Examples}
+\begin{ExampleCode}
+ypr.mod = ypr.l(fsel.type=list("ramp",650,900), vonB=c(1564.512,0.1205765), 
+                l.start=72.53,last.age=25,LW=c(exp( -18.47894),3.043), F.max=2,
+                F.incr.YPR=0.01, M=0.2, mat=list('full',900), f.MSP=0.4, riv.calc=F)  
+
+summary(ypr.mod)
+\end{ExampleCode}
+\end{Examples}
+\newpage 
+\inputencoding{utf8}
+\HeaderA{YPR}{Yield Per Recruit (YPR) model.}{YPR}
+%
+\begin{Description}\relax
+This is a length-based Yield Per Recruit (YPR) model. It will soon include a weight-based YPR component.
+\end{Description}
+%
+\begin{Details}\relax
+
+\Tabular{ll}{
+Package: & YPR\\{}
+Type: & Package\\{}
+Version: & 0.1-2\\{}
+Date: & 2012-03-01\\{}
+License: & LGPL >= 3.0\\{}
+LazyLoad: & yes\\{}
+}
+
+\end{Details}
+%
+\begin{Author}\relax
+Benoit Bruneau,\\{}
+Frangois Grigoire and\\{}
+Diane Archambault
+
+Maintainer: Benoit Bruneau <benoit.bruneau@me.com>
+\end{Author}
+\newpage 
+\inputencoding{utf8}
+\HeaderA{ypr}{Length Based Yield Per Recruit }{ypr}
+%
+\begin{Description}\relax
+Length based Yield Per Recruit model is define by fishery selectivity and life history parameters related to length. 
+
+
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+ ypr(LW, vonB, l.start, last.age, age.step=1, Fsel.type, 
+       F.max=2,F.incr.YPR=0.0001, Mat,  M=0.2, F.MSP=0.4)
+       
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{LW}] one of:
+\begin{itemize}
+
+\item a vector containing \code{c(\eqn{\alpha}{},\eqn{\beta}{})} from length-weight curve. See `Details'. 
+\item an object of class \code{"\LinkA{nls}{nls}"} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated. See `Details'.        
+
+\end{itemize}
+
+
+\item[\code{vonB}] one of:
+\begin{itemize}
+
+\item a vector containing \code{c(Linf,K)} from von Bertalanffy grotwh curve.
+\item an object of class \code{"\LinkA{nls}{nls}"} in which eqnLinf and eqnK were estimated.
+
+\end{itemize}
+
+
+\item[\code{l.start}] length at the starting age
+
+\item[\code{last.age}] last age to be considered in the model
+
+\item[\code{age.step}] steps used to generate ages. Default is \code{1}.
+
+
+\item[\code{Fsel.type}] fishing selectivity can be defined as one of:
+\begin{itemize}
+
+\item a list containing the type of fishery selectivity and the values needed for the function related to the type.
+\item an object of class \code{"\LinkA{glm}{glm}"} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated by a logistic regression.        
+
+\end{itemize}
+
+
+\item[\code{fish.lim}] the minimum legal catch length.
+
+\item[\code{prop.surv}] a function that defines the proportion of fish (< \code{fish.lim}) that will survive after being released back into the water (discarded by-catch).
+
+\item[\code{F.max}] maximum value of instantaneous rate of fishing mortality (\code{F}). Default is 2.
+
+\item[\code{F.incr.YPR}] increment for generating the \code{F} values to be used for YPR calculation. Default is 0.0001.
+
+\item[\code{Mat}] Maturity can be defined by one of:
+\begin{itemize}
+
+\item a list containing the type of maturity at length definition and the values needed for the function related to the type.
+\item an object of class \code{"\LinkA{glm}{glm}"} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated by a logistic regression.       
+
+\end{itemize}
+
+
+\item[\code{Msel.type}] natural mortality selectivity can be defined as one of:
+\begin{itemize}
+
+\item a list containing the type of natural mortality selectivity and the values needed for the function related to the type. 
+\item an object of class \code{"\LinkA{glm}{glm}"} in which \eqn{\alpha}{} and \eqn{\beta}{} were estimated by a logistic regression.       
+
+\end{itemize}
+
+
+\item[\code{M}] instantaneous rate of natural mortality (\code{M}). Default is 0.2.
+
+\item[\code{F.MSP}] reference point defined as the fraction of maximum spawning potential. Default is 0.4.
+
+
+
+
+
+
+
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+\bold{LENGTH-WEIGHT RELATIONSHIP:}\\{}
+Length-Weight relationship can be provided either by indicating \code{c(\eqn{\alpha}{},\eqn{\beta}{})} values in a vector or by 
+directly using an object of class \code{"\LinkA{nls}{nls}"} or \code{"\LinkA{lm}{lm}"}. If \eqn{\alpha}{} and \eqn{\beta}{} are estimated 
+by \code{\LinkA{lm}{lm}}, \code{\LinkA{log}{log}(x, base=exp(1))} transformation should be applied to the data prior to fitting the linear model. 
+If \eqn{\alpha}{} and \eqn{\beta}{} are estimated by \code{\LinkA{nls}{nls}}, variables should be named \bold{alpha} and \bold{beta} 
+using the following equation:
+
+\Tabular{c}{
+\eqn{W=\alpha L^\beta}{}
+}
+where \eqn{W}{} is weight, \eqn{L}{} is length, \eqn{\alpha}{} is the elevation of the curve, and \eqn{\beta}{} 
+is the steepness of the curve. Both \eqn{\alpha}{} and \eqn{\beta}{} are estimated coefficients.\\{}\\{}
+
+
+\bold{VON BARTANLANFFY GROWTH EQUATION:}\\{}
+Von Bartalanffy growth equation parameters can be provided either by indicating \code{c(Linf,K)} values in a vector or by 
+directly using an object of class \code{"\LinkA{nls}{nls}"}. If an object resulting from \code{\LinkA{nls}{nls}} is used, variables 
+should be named \bold{Linf} and \bold{K}. As for \bold{\eqn{t0}{}}, any name may be used since only \eqn{L\infty }{} and \eqn{K}{} are 
+used in this length-based YPR model because age is considered as relative. The equation used in the \code{\LinkA{nls}{nls}} for estimating \eqn{L\infty }{} 
+and \eqn{K}{} should be the following one:
+
+
+\Tabular{c}{
+\eqn{ L_t=L_{\infty }\bigg{(} 1-e^{-K (t-t_0)}\bigg{)} }{}
+}
+where \eqn{Lt}{} is length-at-age \eqn{t}{}, \eqn{L\infty}{} is the asymptotic average maximum length, 
+\eqn{K}{} is a growth rate coefficient determinant of how quick the maximum is attained, and \eqn{t0}{} 
+is the hypothetical age at length zero.
+
+As stated above, since this length-based YPR model uses relative age, \eqn{t-t0}{} becomes a relative age (\eqn{a}{}). 
+The Von Bartalanffy growth equation used in this length-based YPR model is defined as:
+
+\Tabular{c}{
+\eqn{ L_a=L_{\infty }\bigg{(} 1-e^{-Ka}\bigg{)}+ L_s e^{-Ka} }{}
+}
+where \eqn{L_a}{} is length at a relative age \eqn{a}{} and \eqn{L_s}{} is length at relative age zero.\\{}\\{}
+
+
+\bold{SELECTIVITY CURVES:}\\{}
+The \bold{fishery selectivity}, \bold{natural mortality selectivity}, and \bold{maturity at length} components of the 
+model can be defined as one of \code{c("full", "plat.full", "ramp", "plat.ramp", "logit", "plat.logit")} equations. The 
+proper way to specify which function to use is by the construct of a \code{list} where the first element is the 
+name of one of the six types of function. See example, read \code{\LinkA{selectivity}{selectivity}}, or read \code{vignette("selectivity")} 
+for more details.  
+
+Alternatively, an object of class \code{"glm"} can directly be used for the \bold{fishery selectivity} and \bold{maturity at length} components. 
+The Generalized Linear Model should have  the option \code{family} set to either \code{binomial} or \code{quasibinomial} keeping link function to the 
+default (\eqn{i.e.}{} \code{"logit"}).
+Estimated coefficients are use as follow: 
+
+\Tabular{c}{
+\eqn{y=\frac{1}{1+e^{-(\alpha+\beta x)}}}{}\\{}\\{} 
+}
+
+\bold{REFERENCE POINTS:}\\{}
+Reference points used for result output are defined as follow:
+\begin{itemize}
+
+\item \bold{F.zero:}  F level when there is no fishing (F=0).
+\item \bold{F.01:}    F level where the slope of yield curve is 10\% of the slope at \code{F.zero}. 
+\item \bold{F.xx:}    F level where the MSP is at the level defined by \code{F.MSP} option. Default is 40\% (0.4).
+\item \bold{F.max:}   F level where yield is maximum.
+
+\end{itemize}
+
+
+Use \code{vignette("YPR")} for a better presentation of the equations.      
+
+\end{Details}
+%
+\begin{Value}
+  
+\code{ypr} returns an object of \code{class(S4)} \code{"ypr"}. The functions \code{summary}, \code{plot.sel.ypr}, and \code{plot} are used to respectively
+obtain a summary, plots for selectivity curves used, and a standard YPR plot of the results.  
+
+An object of class \code{"ypr"} has the the following slots:
+
+
+\begin{ldescription}
+\item[\code{parms}] the list of parameters used in the model.
+\item[\code{base}] a \code{data.frame} containing the starting values:
+\begin{itemize}
+
+\item relative age classes
+\item length at age
+\item weight at age
+
+\end{itemize}
+
+
+\item[\code{refs}] a \code{data.frame} containing values predicted by the model for the four reference points. See details. 
+\item[\code{YPR}] a \code{data.frame} containing the results for all partial Fs.
+
+
+\end{ldescription}
+Note that to have access to each slot of an \code{"ypr"} object, one must use \code{"@"} instead of \code{"\$"}.
+\end{Value}
+%
+\begin{Author}\relax
+Benoit Bruneau,\\{}
+FranCois GrEgoire and\\{}
+Diane Archambault
+\end{Author}
+%
+\begin{SeeAlso}\relax
+\code{\LinkA{plot.logit}{plot.logit}}, \code{\LinkA{plot.ypr}{plot.ypr}} and \code{\LinkA{plot.sel.ypr}{plot.sel.ypr}}  
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+surv=function(x){
+    p=x
+    p[x<910]=0.8
+    p[x>=910]=0.2
+    p
+}
+
+res=ypr(vonB=c(1564.5508, 0.1206),
+        LW=c(0.000000009434 , 3.042974620048),
+        l.start=241.86,
+        last.age=14,
+        age.step=1,
+        prop.surv=surv,
+        fish.lim=1000,
+        Fsel.type=list(type="ramp",infl1=650,infl2=900, lv=c(0,0.2)),
+        F.max=2, 
+        F.incr.YPR=0.0001,
+        Msel.type=list(type="ramp", infl1=400, infl2=600, lv=0.5, pos=F), 
+        M=0.2, 
+        Mat=list(type="ramp",infl1=700, infl2=900),
+        F.MSP=0.4)
+summary(res)
+\end{ExampleCode}
+\end{Examples}
+\printindex{}
+\end{document}
