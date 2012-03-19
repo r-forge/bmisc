@@ -3,7 +3,7 @@ att.strp <- function (x) UseMethod("att.strp",x)
 att.strp.default <- function(x) {
     if(!is.null(attributes(x))){
     atr <-names(attributes(x))
-    attr(x, atr) <- NULL }
+    for (i in atr) attr(x, i) <- NULL }
     return(x)
 }
 
@@ -12,7 +12,7 @@ att.strp.matrix <- function(x){
     atr <-names(attributes(x))
     sel=atr[atr %nin% c("names","row.names","na.action", "class","dim","dimnames")]
     if(!is.null(sel)){
-      if(n(sel)>=1) attr(x, sel) <- NULL }
+      if(n(sel)>=1) for(i in sel)attr(x, i) <- NULL }
     return(x)
 }
 
