@@ -20,7 +20,7 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
                 Msel.type=Msel.type, M=M,  f.MSP=f.MSP, rivard=rivard, month=month)
 
         if(rivard & is.null(month)){
-                warning("'month' was not specified.\n   Default value (6) will be used for natural mortality (M) adjustment.")
+                warning("'month' was not specified.\n   Default value (6) will be used in natural mortality (M) adjustments to stock size.",call.=F)
                 month=6
         }
 
@@ -30,27 +30,35 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
 
         cl.vb=match.arg(cl.vb,c("numeric","nls"))
         cl.LW=match.arg(cl.LW,c("numeric","nls","lm"))
-        if(cl.M=="character")M=match.arg(M,c("CW","PW", "J","MG"))
+        if(cl.M=="character")M=match.arg(M,c("CW", "J","MG"))
         if(cl.M=="numeric" & M<0)stop("'M' can only take positive values.")
 
         if(cl.vb=="numeric" && all(names(vonB) %in% c("Linf","K","t0"))==FALSE ) stop(paste("When 'vonB' is a numeric vector, the names used for each value\n       should be c('Linf','K','t0') or c('Linf','K'). Current names are ",deparse(names(vonB)),".",sep=""))
-        if(cl.vb=="numeric" & length(vonB)==3){vB.test=TRUE}else{ vB.test=FALSE}
-
-        if(cl.vb=="nls"){
+        if(cl.vb=="numeric" & length(vonB)==3){vB.test=TRUE}
+        if(cl.vb=="numeric" & length(vonB)==2){vB.test=FALSE}
+        if(cl.vb=="nls" & length(coef(vonB))==3){vB.test=TRUE}
+        if(cl.vb=="nls" & length(coef(vonB))==2){vB.test=FALSE}
+        
+        age.1=0
+        if(cl.vb=="nls"& vB.test){
                 coeffs=coef(vonB)
                 Linf=coeffs[names(coeffs)=="Linf"]
                 K=coeffs[names(coeffs)=="K"]
                 t0=coeffs[names(coeffs)=="t0"]
                 age.1=(log(-l.min.f/Linf+1)/-K)+ t0
-        }else{
-                if(class(vonB)=="numeric" & vB.test){
-                        Linf=vonB[names(vonB)=="Linf"]
-                        K=vonB[names(vonB)=="K"]
-                        t0=vonB[names(vonB)=="t0"]
-                        age.1=(log(-l.min.f/Linf+1)/-K)+ t0
-                }else{
-                        age.1=0
-                }
+        }
+        
+        if(cl.vb=="nls"& !vB.test){
+                coeffs=coef(vonB)
+                Linf=coeffs[names(coeffs)=="Linf"]
+                K=coeffs[names(coeffs)=="K"]
+        }
+        if(class(vonB)=="numeric" & vB.test){
+                Linf=vonB[names(vonB)=="Linf"]
+                K=vonB[names(vonB)=="K"]
+                t0=vonB[names(vonB)=="t0"]
+                age.1=(log(-l.min.f/Linf+1)/-K)+ t0
+
         }
 
 
@@ -72,9 +80,14 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
                                 if(rivard & age.step!=1)l.age1<-vonB[1]*(1-exp(-vonB[2]*age1)) + l.start*exp(-vonB[2]*age1)
                         }
                 },
-                nls={
-                        l.age<-Linf*(1-exp(-K*(age-t0))) #+ l.start*exp(-K*age)
-                        if(rivard & age.step!=1)l.age1<-Linf*(1-exp(-K*(age1-t0)))
+                nls={   if(vB.test){
+                          l.age<-Linf*(1-exp(-K*(age-t0)))
+                          if(rivard & age.step!=1)l.age1<-Linf*(1-exp(-K*(age1-t0)))
+                         }  
+                        if(!vB.test){
+                           l.age<-Linf*(1-exp(-K*(age)))+ (l.start*exp(-K*age))
+                           if(rivard & age.step!=1)l.age1<-Linf*(1-exp(-K*(age1)))+ l.start*exp(-K*age1)
+                         }
                 }
         )
 
@@ -84,20 +97,22 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
                         p.age=LW[1]*l.age^LW[2]
                         if(rivard & age.step!=1)p.age1=LW[1]*l.age1^LW[2]
                 },
-                nls={
-                        coeffs<-coef(LW)
-                        alpha=coeffs[names(coeffs)=="alpha"]
-                        beta=coeffs[names(coeffs)=="beta"]
-                        LW2=c(alpha,beta)
-                        p.age=alpha*l.age^beta
-                        if(rivard & age.step!=1)p.age1=alpha*l.age1^beta
-                },
+#                nls={
+#                        coeffs<-coef(LW)
+#                        
+#                        alpha=coeffs[names(coeffs)=="alpha"]
+#                        beta=coeffs[names(coeffs)=="beta"]
+#                        LW2=c(alpha,beta)
+#                        p.age=(alpha*l.age^beta)*cor
+#                        if(rivard & age.step!=1)p.age1=alpha*l.age1^beta
+#                },
                 lm={
                         coeffs<-coef(LW)
+                        cor=exp(sqrt(  (sum(residuals(LW)^2)) /(n(residuals(LW))-2))^2/2)      ### Sprugel 1983
                         alpha=exp(coeffs[1])
                         beta=coeffs[2]
                         LW2=c(alpha,beta)
-                        p.age=alpha*l.age^beta
+                        p.age=cor*alpha*(l.age^beta)
                         if(rivard & age.step!=1)p.age1=alpha*l.age1^beta
                 }
         )
@@ -162,12 +177,17 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         F.=sweep(F.,MARGIN=2,F.i,`*`)
 
         switch(cl.M,
-                character= switch(M,
-                        CW= {M.all=m.cw(k=K,t0=t0,data=YPR)},
-                        PW= {M.all=m.pw(data=YPR)},
-                        MG= {M.all=m.mg(data=YPR)},
-                        J=  {M.all=m.j(k=K)}
-                ),
+                character= {
+                        switch(M,
+                               CW= {if(!vB.test){
+                                        M.all=m.j(k=K)
+                                        parms$M="J"
+                                        warning("'M' can not be estimated by 'CW' method since vonB for relative age does not estimate 't0'.\n   'J' method has been used instead.",call.=F)
+                                        }else{M.all=m.cw(k=K,t0=t0,data=YPR)}},
+                               MG= {M.all=m.mg(data=YPR)*M.sel},
+                               J=  {M.all=m.j(k=K)*M.sel}
+                            
+                )},
                 numeric= {M.all=M*M.sel}
         )
 
@@ -183,7 +203,10 @@ ypr <- function(LW, vonB, l.start, last.age, age.step=1, prop.surv=NULL , fish.l
         n.stock2= mat.frame
         if(rivard){
             n.stock[1,]=age.step
-            n.stock2[1,]=age.step*exp(-((month-1)/12)*M)
+            switch(cl.M,
+                    character= {n.stock2[1,]=age.step*exp(-((month-1)/12)*M.all[1])},
+                    numeric=   {n.stock2[1,]=age.step*exp(-((month-1)/12)*M)}
+                    )
             }else{
             n.stock[1,]=age.step
             n.stock2[1,]=age.step
@@ -331,8 +354,6 @@ setMethod("summary", "ypr",
                 # Title:
                 cat(title)
 
-                if(object@parms$rivard & object@parms$age.step==1) {cat("\n -> Rivard Weight Calculations have been used.\n")}else{cat("\n")}
-                if(object@parms$rivard & object@parms$age.step!=1) {cat("\n -> Modified Rivard Weight Calculations have been used.\n")}else{cat("\n")}
 
                 #VonB parameters:
 
@@ -340,11 +361,17 @@ setMethod("summary", "ypr",
                 cl.LW=class(object@parms$LW)
                 cl.M=class(object@parms$M)
                 switch(cl.vb,
-                        numeric= {
-                                cat("\n von Bartalanffy growth parameters:\n  Linf=",object@parms$vonB[[1]], "  K=",object@parms$vonB[[2]] , sep = "")
+                        numeric= {if(n(object@parms$vonB)==3){
+                                      cat("\n\n - von Bartalanffy growth parameters:\n    Linf=",object@parms$vonB[[1]], "  K=",object@parms$vonB[[2]] , "  t0=",object@parms$vonB[[3]] ,sep = "")
+                                      }else{
+                                      cat("\n\n - von Bartalanffy growth parameters:\n    Linf=",object@parms$vonB[[1]], "  K=",object@parms$vonB[[2]] , sep = "")
+                                      }
                         },
-                        nls={
-                                cat("\n von Bartalanffy growth parameters:\n  Linf=", coef(object@parms$vonB)[[1]], "  K=",coef(object@parms$vonB)[[2]] , sep = "")
+                        nls=     {if(n(coef(object@parms$vonB))==3){
+                                      cat("\n\n - von Bartalanffy growth parameters:\n    Linf=", coef(object@parms$vonB)[[1]], "  K=",coef(object@parms$vonB)[[2]], "  t0=",coef(object@parms$vonB)[[3]]  , sep = "")
+                                      }else{
+                                      cat("\n\n - von Bartalanffy growth parameters:\n    Linf=", coef(object@parms$vonB)[[1]], "  K=",coef(object@parms$vonB)[[2]], sep = "")                                
+                                      }
                         }
                 )
 
@@ -352,24 +379,22 @@ setMethod("summary", "ypr",
                 #LW parameters:
                 switch(cl.LW,
                         numeric= {
-                                cat("\n Length-Weight curve parameters:\n  log(alpha)=", log(object@parms$LW[[1]]), "  beta=",object@parms$LW[[2]] , sep = "")
-                        },
-                        nls={
-                                cat("\n Length-Weight curve parameters:\n  log(alpha)=", log(coef(object@parms$LW)[[2]]), "  beta=",coef(object@parms$LW)[[1]] , sep = "")
+                                cat("\n\n - Length-Weight curve parameters:\n    log(alpha)=", log(object@parms$LW[[1]]), "  beta=",object@parms$LW[[2]],"" , sep = "")
                         },
                         lm={
-                                cat("\n Length-Weight curve parameters:\n  log(alpha)=", coef(object@parms$LW)[[1]], "  beta=",coef(object@parms$LW)[[2]] , sep = "")
+                                cat("\n\n - Length-Weight curve parameters:\n    log(alpha)=", coef(object@parms$LW)[[1]], "  beta=",coef(object@parms$LW)[[2]],"\n   >Correction for bias in log-transformed allometric function (Sprugel 1983)\n    has been used for weight estimates.", sep = "")
                         }
                 )
+                if(object@parms$rivard & object@parms$age.step==1) cat("\n   >Rivard Weight Calculations have been used.")
+                if(object@parms$rivard & object@parms$age.step!=1) cat("\n   >Modified Rivard Weight Calculations have been used.")
                 #M parameter
                 switch(cl.M,
                         character= switch(object@parms$M,
-                                CW= cat("\n 'M' is estimated by Chen-Watanabe's (1989) age-dependent model."),
-                                PW= cat("\n 'M' is estimated by Peterson-Wroblewski's (1984) model."),
-                                MG= cat("\n 'M' is estimated by McGurk's (1986) model."),
-                                J=cat("\n 'M is estimated by Jensen's (1996) method.")
+                                CW= cat("\n\n - 'M' is estimated by Chen-Watanabe's (1989) age-dependent model."),
+                                MG= cat("\n\n - 'M' is estimated by McGurk's (1986) model."),
+                                J=cat("\n\n - 'M is estimated by Jensen's (1996) method.")
                         ),
-                        numeric= {cat(paste("\n Intantaneous natural mortality:\n  M =",object@parms$M))}
+                        numeric= {cat(paste("\n\n - Intantaneous natural mortality:\n    M =",object@parms$M))}
                 )
 
 
@@ -447,23 +472,136 @@ plot.sel <- function (object, select=c(1,2,3),leg=TRUE,...) UseMethod("plot.sel"
 
 plot.sel.ypr <- function(object, main, xlab, ylab, select=c(1,2,3),leg=TRUE){
 
-        if(missing(main)) main=c("Maturity\n(Mat)", "Natural Mortality Selectivity\n(Msel.type)","Fishing Selectivity\n(Fsel.type)")
+        if(missing(main)) main=c("Maturity\n(Mat)", "Natural Mortality at length","Fishing Selectivity\n(Fsel.type)")
         if(missing(xlab)) xlab="Length"
         if(missing(ylab))  ylab="Probability"
+        
+        vonB=object@parms$vonB
+        LW=object@parms$LW
+        M=object@parms$M
+        
+        cl.vb=class(vonB)
+        cl.LW=class(LW)
+        cl.M=class(M)
+        
+        if(cl.vb=="numeric" && all(names(vonB) %in% c("Linf","K","t0"))==FALSE ) stop(paste("When 'vonB' is a numeric vector, the names used for each value\n       should be c('Linf','K','t0') or c('Linf','K'). Current names are ",deparse(names(vonB)),".",sep=""))
+        if(cl.vb=="numeric" & length(vonB)==3){vB.test=TRUE}
+        if(cl.vb=="numeric" & length(vonB)==2){vB.test=FALSE}
+        if(cl.vb=="nls" & length(coef(vonB))==3){vB.test=TRUE}
+        if(cl.vb=="nls" & length(coef(vonB))==2){vB.test=FALSE}
+        
+######   Il faut partir des age pour les données utilisé sur le graph ##########  
+        age.1=0
+        if(cl.vb=="nls"& vB.test){
+                coeffs=coef(vonB)
+                Linf=coeffs[names(coeffs)=="Linf"]
+                K=coeffs[names(coeffs)=="K"]
+                t0=coeffs[names(coeffs)=="t0"]
+                age.1=(log(-l.min.f/Linf+1)/-K)+ t0
+        }
+        
+        if(cl.vb=="nls"& !vB.test){
+                coeffs=coef(vonB)
+                Linf=coeffs[names(coeffs)=="Linf"]
+                K=coeffs[names(coeffs)=="K"]
+        }
+        if(class(vonB)=="numeric" & vB.test){
+                Linf=vonB[names(vonB)=="Linf"]
+                K=vonB[names(vonB)=="K"]
+                t0=vonB[names(vonB)=="t0"]
+                age.1=(log(-l.min.f/Linf+1)/-K)+ t0
+
+        }
 
         xlim=c(min(object@base$l.age,na.rm=T),max(object@base$l.age,na.rm=T))
-        x.dat=seq(xlim[1],xlim[2], by=(xlim[2]-xlim[1])/1000)
+        #x.dat=seq(xlim[1],xlim[2], by=(xlim[2]-xlim[1])/1000)
         ylim=c(0,1)
+        x.dat=seq(age.1,object@parms$last.age+age.1,by=0.01)
 
+
+        switch(cl.vb,
+                numeric= {
+                        if(vB.test){
+                                Linf=vonB[names(vonB)=="Linf"]
+                                K=vonB[names(vonB)=="K"]
+                                t0=vonB[names(vonB)=="t0"]
+                                x.dat2<-vonB[1]*(1-exp(-vonB[2]*(x.dat-t0))) #+ l.start*exp(-vonB[2]*x.dat)
+
+                        }
+                        if(!vB.test){
+                                Linf=vonB[names(vonB)=="Linf"]
+                                K=vonB[names(vonB)=="K"]  
+                                x.dat2<-vonB[1]*(1-exp(-vonB[2]*x.dat)) + (object@parms$l.start*exp(-vonB[2]*x.dat))
+
+                        }
+                },
+                nls={   if(vB.test){
+                                coeffs=coef(vonB)
+                                Linf=coeffs[names(coeffs)=="Linf"]
+                                K=coeffs[names(coeffs)=="K"]
+                                t0=coeffs[names(coeffs)=="t0"]                
+                                x.dat2<-Linf*(1-exp(-K*(x.dat-t0)))
+
+                         }  
+                        if(!vB.test){
+                                coeffs=coef(vonB)
+                                Linf=coeffs[names(coeffs)=="Linf"]
+                                K=coeffs[names(coeffs)=="K"]
+                                x.dat2<-Linf*(1-exp(-K*(x.dat)))+ (object@parms$l.start*exp(-K*x.dat))
+
+                         }
+                }
+        )   
+        
+        x.dat.a=x.dat
+        x.dat=x.dat2
+        
+        
+        switch(cl.LW,
+                numeric= {
+                        names(LW)=c("alpha","beta")
+                        x.dat.p=LW[1]*x.dat^LW[2]
+
+                },
+                lm={
+                        coeffs<-coef(LW)
+                        cor=exp(sqrt(  (sum(residuals(LW)^2)) /(n(residuals(LW))-2))^2/2)      ### Sprugel 1983
+                        alpha=exp(coeffs[1])
+                        beta=coeffs[2]
+                        LW2=c(alpha,beta)
+                        x.dat.p=cor*alpha*(x.dat^beta)
+
+                }
+        )
+           
+
+        
+       
         ##############################################################################
         ##                               Maturity                                   ##
         ##############################################################################
         mat=.selectivity(object@parms$Mat, x.dat)
+        #mat=object@base$Mt
 
         ##############################################################################
-        ##                                  Msel.type                               ##
+        ##                                     Mt                                   ##
         ##############################################################################
         M.sel=.selectivity(object@parms$Msel.type, x.dat)
+######### il faut faire le calcul des poids à l'âge
+        switch(cl.M,
+                character= {
+                        switch(object@parms$M,
+                               CW= {if(!vB.test){
+                                        M.all=m.j(k=K)*M.sel
+                                        parms$M="J"
+                                        warning("'M' can not be estimated by 'CW' method since vonB for relative age does not estimate 't0'.\n   'J' method has been used instead.",call.=F)
+                                        }else{M.all=m.cw(k=K,t0=t0,data=x.dat.a)}},
+                               MG= {M.all=m.mg(data=x.dat.p)*M.sel},
+                               J=  {M.all=m.j(k=K)*M.sel}
+                            
+                )},
+                numeric= {M.all=M*M.sel}
+        )
 
         ##############################################################################
         ##                             F selectivity                                ##
@@ -506,7 +644,7 @@ plot.sel.ypr <- function(object, main, xlab, ylab, select=c(1,2,3),leg=TRUE){
                 plot(mat~x.dat, xlim=xlim, ylim=ylim, main=main[1], type='l', lwd=2.7, xlab=xlab, ylab=ylab)
         }
         if(2 %in% select){
-                plot(M.sel~x.dat  , xlim=xlim, ylim=ylim, main=main[2], type='l', lwd=2.7, xlab=xlab, ylab=ylab)
+                plot(M.all~x.dat  , xlim=xlim, ylim=ylim, main=main[2], type='l', lwd=2.7, xlab=xlab, ylab=ylab)
         }
         if(3 %in% select){
                 plot(F.sel~x.dat  , xlim=xlim, ylim=ylim, main=main[3], type='l', lwd=2.7, xlab=xlab, ylab=ylab)
@@ -525,13 +663,14 @@ plot.sel.ypr <- function(object, main, xlab, ylab, select=c(1,2,3),leg=TRUE){
 
 
 m.cw=function(k,t0,data){
-        t= data$age
+        
+        if(is.data.frame(data)){t= data$age}else{t=data}
 
         mt1=k/(1-exp(-k*(t-t0)))
 
         tm=-(1/k)*log(abs(1-exp(k*t0)))+t0
-        sel=which(data$age<tm)
-        sel2=which(data$age>=tm)
+        sel=which(t<tm)
+        sel2=which(t>=tm)
 
         a0=1-exp(-k*(tm-t0))
         a1=k*exp(-k*(tm-t0))
@@ -545,13 +684,10 @@ m.cw=function(k,t0,data){
         Mt
 }
 
-m.pw=function(data){
-        Mt=1.92*(data$p.age^(-0.25))
-        Mt
-}
 
 m.mg=function(data){
-        Mt=0.00526*(data$p.age^(-0.25))
+        if(is.data.frame(data)){t= data$p.age}else{t=data}
+        Mt=0.00526*(t^(-0.25))
         Mt
 }
 
@@ -658,8 +794,15 @@ m.j=function(k){
         age=as.integer(age*1000000)
         age=age/1000000
         pds5=data.frame(age=age)
-        la=nls(l.age.stk~  Linf*(1-exp(-K*((age)-t0))), data=pds4,start=as.list(coef(vonB)),
-               nls.control(maxiter = 1000, minFactor=0.00000000001))
+        if(length(coef(vonB))==3){
+              la=nls(l.age.stk~  Linf*(1-exp(-K*((age)-t0))), data=pds4,start=as.list(coef(vonB)),
+                      nls.control(maxiter = 1000, minFactor=0.00000000001)) 
+        }
+        if(length(coef(vonB))==2){
+               la=nls(l.age.stk~  Linf*(1-exp(-K*age))+l.start*exp(-K*age), data=pds4,start=as.list(coef(vonB)),
+                      nls.control(maxiter = 1000, minFactor=0.00000000001)) 
+                      }
+        
         pds5$l.age.stk=predict(object=la,newdata=pds5)
         switch(cl.LW,
                 numeric= {
