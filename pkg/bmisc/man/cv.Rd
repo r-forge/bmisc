@@ -19,7 +19,8 @@ cv(x, na.rm=T)
 }
 }
 \details{
-The coefficient of variation (CV) is the ratio of the standard deviation to the mean.
+The coefficient of variation (CV) is the ratio of the standard deviation to the mean.  It can only be calculated for variables measured on a ration scale. Such variables have a true zero and are usually always positive (Kelvin, abondance,...).
+The coefficient of variation may not have any meaning for variables measured on an interval scale (Celsius, Fahrenheit,...).
 The CV is defined for the absolute value of the mean to ensure it is always positive. 
 }
 \value{

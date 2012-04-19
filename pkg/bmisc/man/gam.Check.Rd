@@ -3,7 +3,7 @@
 \alias{gam.Check}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Some diagnostics for a fitted gam model
+Some diagnostics for a fitted gam model. 
 }
 \description{
 Takes a fitted gam object produced by gam() and produces some diagnostic

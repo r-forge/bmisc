@@ -11,8 +11,7 @@ day(x)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-%%     ~~Describe \code{x} here~~
+  \item{x}{an objects of classes "POSIXlt" and "POSIXct".
 }
 }
 \details{
@@ -41,6 +40,9 @@ day(x)
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-# will soon be available
+
+dates=strptime(c("02/27/92", "02/27/92", "01/14/92", "02/28/92", "02/01/92"),format="%m/%d/%y")
+
+day(dates)
 }
 

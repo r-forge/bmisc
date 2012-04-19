@@ -26,6 +26,8 @@ For Mac and Linux users, \code{.Rprofile} is either modified or created. On Wind
 \code{Rprofile.site} location. This file is usually in \code{"C:/Program Files/R/R-x.xx.x/etc"}. Once it's selected, 
 the file is modified to include the list of packages currently installed in R.
 
+This function is most usefull when changing R versions on Windows-based systems.
+
 }
 \value{
 %%  ~Describe the value returned

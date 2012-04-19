@@ -11,8 +11,15 @@
 ##-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-##
 #################################################################################
 
-plot.logit=function(object, ylab="Probabiliy",xlab="Length", se.pred=TRUE, 
-        leg=TRUE, ref=TRUE, range.x=c("data","full"), warn.val=TRUE, main,...)
+plot.logit=function(object, 
+                    ylab="Probability",
+                    xlab="Length", 
+                    se.pred=TRUE, 
+                    leg=TRUE, 
+                    ref=TRUE, 
+                    range.x=c("data","full"), 
+                    warn.val=TRUE, 
+                    main,...)
 {
 
 

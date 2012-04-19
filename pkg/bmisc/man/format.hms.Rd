@@ -6,7 +6,7 @@
 Format seconds into hours
 }
 \description{
-Transforms time format
+Formats secondes into hours.
 }
 \usage{
 format.hms(sec)
@@ -20,7 +20,7 @@ format.hms(sec)
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-returns hrs:min:sec
+Returns a character vector with format="%H:%M:%S".
 }
 \references{
 %% ~put references to the literature/web site here ~

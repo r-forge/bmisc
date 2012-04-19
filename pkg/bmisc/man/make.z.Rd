@@ -3,22 +3,19 @@
 \alias{make.z}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-make z
+Make Z-values
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Calculates Z-values (standard scores).
 }
 \usage{
 make.z(x, index = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-%%     ~~Describe \code{x} here~~
+  \item{x}{a numerical vector.)
 }
-  \item{index}{
-%%     ~~Describe \code{index} here~~
-}
+
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
@@ -46,6 +43,7 @@ make.z(x, index = NULL)
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-# will soon be available
+x=rnorm(100,200,25)
+make.z(x)
 }
 

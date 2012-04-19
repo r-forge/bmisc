@@ -6,7 +6,7 @@
 Print bmisc functions
 }
 \description{
-Print all functions of bmisc package
+Prints all functions of bmisc package
 }
 \usage{
 fct()

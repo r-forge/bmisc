@@ -24,12 +24,13 @@ Errbar(x, y, xinf=NULL, xsup=NULL, yinf=NULL, ysup=NULL, xint=NULL,
   \item{yinf, ysup}{numeric vectors containing the upper (ysup) and/or lower (yinf)
         limit of the confidence interval for y-axis values.
   }
-  \item{xint}{numeric vectors containing the confidence intervals for x-axis values.
+  \item{xint}{numeric vectors containing the difference between upper and lower limits (intervals) for x-axis values.
   }
-  \item{yint}{numeric vectors containing the confidence intervals for y-axis values.
+  \item{yint}{numeric vectors containing the difference between upper and lower limits (intervals) for y-axis values.
   }
-  \item{\dots}{additional graphical arguments (\code{\link{par}}) such as \code{col, lty, lwd}
-               and/or arguments for \code{\link{arrows}} .
+  \item{cap}{length of the caps on the error bars.
+  }
+  \item{\dots}{additional graphical arguments arguments for \code{\link{arrows}} .
 }
 }
 \details{
@@ -68,7 +69,7 @@ plot(x,y, ylim=c(min(y-yci),max(y+yci)), xlim=c(min(x-xci),max(x+xci)))
 Errbar( x, y, yint=yci, xint=xci )
 
 # Gives an Error message
-#plot(x,y, ylim=c(min(y-yci),max(y+yci)))  ## adds the yint and gives
+#plot(x,y, ylim=c(min(y-yci),max(y+yci)))   ## adds the yint and gives
 #Errbar( x, y, ysup=1, yint=yci)            ## an error message for the ysup
 
 }

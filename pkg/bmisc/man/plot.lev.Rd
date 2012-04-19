@@ -14,7 +14,7 @@ plot(obj, which=1L:4L, \dots)
 \arguments{
   \item{obj}{an object of class \code{'lev'} resulting from a calls to \code{\link{lev}}.
 }
-  \item{which}{if a subset of the plots is required, specify a subset of the numbers 1:4:
+  \item{which}{numerical vector indicating the subset of the plots required:
      \itemize{
             \item \code{1} : residuals of mean (Levene)
             \item \code{2} : residuals of trimmed mean (Robust Levene)
