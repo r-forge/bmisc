@@ -11,7 +11,7 @@ day(x)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{an objects of classes "POSIXlt" and "POSIXct".
+  \item{x}{an objects of classes \"POSIXlt\" and \"POSIXct\".
 }
 }
 \details{
@@ -41,7 +41,7 @@ day(x)
 }
 \examples{
 
-dates=strptime(c("02/27/92", "02/27/92", "01/14/92", "02/28/92", "02/01/92"),format="%m/%d/%y")
+dates=strptime(c(\"02/27/92\", \"02/27/92\", \"01/14/92\", \"02/28/92\", \"02/01/92\"),format=\"%m/%d/%y\")
 
 day(dates)
 }

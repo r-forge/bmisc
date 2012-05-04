@@ -1,7 +1,7 @@
 Package: bmisc
 Type: Package
 Title: Ben's Miscellaneous functions
-Version: 0.2-14
+Version: 0.2-15
 Author: Benoit Bruneau
 Maintainer: Benoit Bruneau <benoit.bruneau1@gmail.com>
 URL: http://benoitr.comze.com/R/
